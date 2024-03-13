@@ -35,9 +35,17 @@ const Lines = () => {
 	const dir = setTextDirection(count.general.lng);
 
 	let url = 'https://latinet.co.il/'+lng+'/lines_data/';
-	const [lines, setLines] = useState({});
+	const [lines, setLines] = useState(undefined);
 
-	
+	let getTagInfo = (tid, data) => {
+		let result = "no";
+		let filter = data.filter(item => item.tid == tid);
+		if(filter.length > 0){
+			result = filter[0].name;
+		}
+		console.log("ddd");
+		return result;
+	}
 
 
 
@@ -46,9 +54,9 @@ const Lines = () => {
 		.then((res) => res.json())
 		.then((data) => {
 
-			console.log("ddd");
+			
 
-			setLines(data);
+			setLines(data.data);
 			
 
 
@@ -57,7 +65,56 @@ const Lines = () => {
 	}, []);
 	return(
 		<View style={styles.container}>
-			<Text>{JSON.stringify(lines)}</Text>
+			
+			{lines != undefined &&
+			<View style={styles.containerValues}>
+				<View style={styles.filterItems}>
+					{Object.keys(lines.used_dance_floors).map((index) => {
+						return(
+							<View style={styles.filterItem}>
+								<TouchableOpacity>
+									<Text>{getTagInfo(index, lines.dance_floors)}</Text>
+								</TouchableOpacity>
+							</View>
+						);
+					})}
+				</View>
+
+
+				<View style={styles.filterItems}>
+					{Object.keys(lines.used_area).map((index) => {
+						return(
+							<View style={styles.filterItem}>
+								<TouchableOpacity>
+									<Text>{getTagInfo(index, lines.areas)}</Text>
+								</TouchableOpacity>
+							</View>
+						);
+					})}
+				</View>
+
+
+				<View style={styles.daysControls}>
+					{Object.keys(lines.days_of_week_short).map((index) => {
+						return(
+							<View style={styles.dayFilterItem}>
+								<TouchableOpacity>
+									<Text>{lines.days_of_week_short[index]}</Text>
+									<Text>{lines.days_of_week_short_date[index]}</Text>
+								</TouchableOpacity>
+							</View>
+						);
+					})}
+            	</View>
+
+
+
+
+			</View>
+			}
+			
+
+
 		</View>
 	);
 }
@@ -65,5 +122,24 @@ export default Lines;
 const styles = StyleSheet.create({
 	container:{
 		flex: 1
+	},
+	filterItems:{
+		flexDirection:"row",
+		alignContent:"space-around",
+		alignSelf:"stretch",
+	},
+	filterItem:{
+		borderWidth:1,
+		alignContent:"center",
+		padding:3
+	},
+	daysControls:{
+		flexDirection:"row",
+	},
+	dayFilterItem:{
+		flex:1,
+		alignItems:"center",
+		borderWidth:1,
+		borderRightWidth:0
 	}
 });

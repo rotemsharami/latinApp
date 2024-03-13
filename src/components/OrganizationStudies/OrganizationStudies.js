@@ -51,7 +51,8 @@ const OrganizationStudies = (organizationStudies) => {
                         marginRight:  I18nManager.isRTL ? 0 : 0,
                         paddingBottom:3,
                     }}>
-                        <Text style={styles.dayText}>{prop.starting_from}</Text>
+                        
+                        <Text style={styles.studyTitle}>{prop.course_type[0].name} {nice_list_text(prop.course_dance_style)}</Text>
                     </View>
                 </TouchableOpacity>
             );
@@ -59,16 +60,33 @@ const OrganizationStudies = (organizationStudies) => {
             </View>
             <View style={styles.contentBox}>
 
-                <View style={styles.dance_floors}>
-                    <Text style={styles.danceFloorsText}>{organizationStudies.organizationStudies.organizationStudies.filter(item => item.nid == selectedLine)[0].course_type[0].name} {nice_list_text(organizationStudies.organizationStudies.organizationStudies.filter(item => item.nid == selectedLine)[0].course_dance_style)}</Text>
+                <View style={styles.starting_from}>
+                    <View style={styles.label}>
+                        <Text>Starting From:</Text>
+                    </View>
+                    <View style={styles.value}>
+                        <Text style={styles.dayText}>{organizationStudies.organizationStudies.organizationStudies.filter(item => item.nid == selectedLine)[0].starting_from}</Text>
+                    </View>
                 </View>
 
-                <View style={styles.dance_floors}>
-                    <Text style={styles.danceFloorsText}>{nice_list_text(organizationStudies.organizationStudies.organizationStudies.filter(item => item.nid == selectedLine)[0].danse_level)}</Text>
+                <View style={styles.danse_level}>
+                    <View style={styles.label}>
+                        <Text>Level:</Text>
+                    </View>
+                    <View style={styles.value}>
+                        <Text style={styles.danceFloorsText}>{nice_list_text(organizationStudies.organizationStudies.organizationStudies.filter(item => item.nid == selectedLine)[0].danse_level)}</Text>
+                    </View>
                 </View>
 
-                <View style={styles.dance_floors}>
-                    <Text style={styles.danceFloorsText}>{nice_list_text(organizationStudies.organizationStudies.organizationStudies.filter(item => item.nid == selectedLine)[0].gender)}</Text>
+
+
+                <View style={styles.gender}>
+                    <View style={styles.label}>
+                        <Text>Gender:</Text>
+                    </View>
+                    <View style={styles.value}>
+                        <Text style={styles.danceFloorsText}>{nice_list_text(organizationStudies.organizationStudies.organizationStudies.filter(item => item.nid == selectedLine)[0].gender)}</Text>
+                    </View>
                 </View>
 
 
@@ -133,6 +151,9 @@ const OrganizationStudies = (organizationStudies) => {
 }
 export default OrganizationStudies;
 const styles = StyleSheet.create({
+    studyTitle:{
+        fontSize:16
+    },
     menuList:{
         flexDirection:"row"
     },
@@ -167,10 +188,5 @@ const styles = StyleSheet.create({
     },
     textBox:{
         flexDirection:"column"
-    },
-    text:{
-        paddingRight: I18nManager.isRTL ? 4 : 0,
-        paddingLeft: I18nManager.isRTL ? 0 : 4,
-        fontSize:15
     },
 });

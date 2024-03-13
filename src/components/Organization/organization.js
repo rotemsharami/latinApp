@@ -6,6 +6,7 @@ import DanceFloors from '../DanceFloors/DanceFloors.js';
 import SliderX from '../SliderX/SliderX.js';
 import OrganizationLines from '../OrganizationLines/OrganizationLines.js';
 import Services from '../Services/Services.js';
+import Location from '../Location/Location';
 import ContactInfo from '../ContactInfo/ContactInfo.js';
 import storage from '../../storage/storage';
 import OrganizationEvents from '../OrganizationEvents/OrganizationEvents.js';
@@ -132,15 +133,15 @@ const Organization = (info) => {
 				<TouchableOpacity key={key} style={
 					StyleSheet.create({
 						flexDirection:"column",
-						color:prop.active ? "#000" : "#FFF",
+						color:prop.active ? "#730874" : "#FFF",
 						justifyContent:"center",
 						width:width / menu.length,
-						backgroundColor: prop.active ? "#000" : "#FFF",
+						backgroundColor: prop.active ? "#730874" : "#FFF",
 						height:30
 					})
 				} onPress={() => setSelectedMenuItem(prop.name)}>
 					<Text style={{
-							color:prop.active ? "#FFF" : "#000",
+							color:prop.active ? "#FFF" : "#730874",
 							textAlign:"center"
 						}}>{prop.title}</Text>
 				</TouchableOpacity>
@@ -159,29 +160,13 @@ const Organization = (info) => {
 									<DanceServices danceServices={danceServicesList}></DanceServices>
 									<DanceFloors danceFloors={danceFloors}></DanceFloors>
 								</View>
-								<View>
-									<Services services={servicesList}></Services>
-								</View>
-								<View style={styles.fullInfoBox}>
-									<RenderHtml
-										contentWidth={width}
-										source={setText(organization.text)}
-										enableExperimentalMarginCollapsing={true}
-										tagsStyles={{
-											li:{
-												paddingLeft:5,
-												textAlign:dir,
-												direction:"ltr",
-											},
-											ul:{
-												direction:"ltr",
-												alignContent:"flex-end"
-											}
-										}}
-										renderersProps={renderersProps}
-										style={{backgroundColor:"none"}}
-									/>
-								</View>
+								<Services services={servicesList}></Services>
+
+
+								<Location organization={organization}></Location>
+
+
+
 							</View>
 						}
 						{menuOn("lines") &&
@@ -194,8 +179,17 @@ const Organization = (info) => {
 							<OrganizationStudies organizationStudies={{organizationStudies, labels:organization.labels, selectedNid: info.route.params.type == "studie" ? info.route.params.selectedNid : 0}}></OrganizationStudies>
 						}
 
-					</View>
+
+
+						</View>
+						<View style={styles.ContactInfoFooter}>
+							{Object.keys(organization).length > 0 &&  
+								<ContactInfo organization={organization}></ContactInfo>
+							}
+						</View>
 				</ScrollView>
+
+
 			</View>
 		</View>
 	);
@@ -228,9 +222,12 @@ const styles = StyleSheet.create({
 	organizationMenu:{
 		flexDirection: 'row',
 		width:"100%",
-		backgroundColor:"#000"
+		backgroundColor:"#730874"
 	},
 	DanceServicesAndDanceFloors:{
-		flexDirection: 'row',
+		
+	},
+	ContactInfoFooter:{
+		
 	}
 });

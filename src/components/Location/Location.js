@@ -2,49 +2,58 @@ import {
     StyleSheet,
     Text,
     View,
+    Linking,
     Dimensions,
     ImageBackground,
 	TouchableOpacity,
 	I18nManager
 	} from 'react-native';
 
-import React, {useRef, useState, useEffect} from 'react';
 import {setArray} from "../../tools/tools.js";
 import { Icon } from 'react-native-elements';
 import { Flex } from '@react-native-material/core';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 const {width, height} = Dimensions.get('screen');
 const logoWidth = width/5;
 const textWidth = width - logoWidth;
-const DanceServices = (danceServices) => {
+const Location = (organization) => {
     return(
-        <View style={styles.listBox}>
-            <View style={styles.list}>
-        {setArray(danceServices.danceServices).map((prop, key) => {
-            return (
-                <View style={styles.listItem} key={key}>
-                    <View style={styles.iconBox}>
-                        <Icon style={styles.mainMenuListItemIcon} name='check-circle' color='#730874' size={17}/>
-                    </View>
-                    <View style={styles.textBox}>
-                        <Text style={styles.text}>{prop.name}</Text>
-                    </View>
+        <View style={styles.container}>
+            <View style={styles.iconAndText}>
+                <View style={styles.icon}>
+                    <MaterialCommunityIcons name="map-marker" size={16} color="#730874" />
                 </View>
-            );
-        })}
+                <View style={styles.text}>
+                    <Text>{organization.organization.address}, {organization.organization.city}</Text>
+                </View>
             </View>
         </View>
     );
 }
-export default DanceServices;
+export default Location;
 const styles = StyleSheet.create({
+    iconAndText:{
+        flexDirection:"row"
+    },
+
+    icon:{
+
+    },
+
+    text:{
+
+    },
+
+
     listBox:{
         flexDirection:"column",
         Flex:1
     },
     labelBox:{
         flexDirection:"column",
-        Flex:1
-        
+        Flex:1,
+
         
     },
     label:{

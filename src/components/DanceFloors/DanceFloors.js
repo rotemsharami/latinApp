@@ -17,12 +17,17 @@ const textWidth = width - logoWidth;
 const DanceFloors = (danceFloors) => {
     return(
         <View style={styles.listBox}>
+
+            <View style={styles.labelBox}>
+                <Text style={styles.label}>{"Music Ganers"}:</Text>
+            </View>
+
             <View style={styles.list}>
         {setArray(danceFloors.danceFloors).map((prop, key) => {
             return (
                 <View style={styles.listItem} key={key}>
                     <View style={styles.iconBox}>
-                        <Icon style={styles.mainMenuListItemIcon} name='audiotrack' color='#ed60d6' size={17}/>
+                        <Icon style={styles.mainMenuListItemIcon} name='audiotrack' color='#730874' size={17}/>
                     </View>
                     <View style={styles.textBox}>
                         <Text style={styles.text}>{prop.name}</Text>
@@ -39,20 +44,43 @@ const DanceFloors = (danceFloors) => {
 }
 export default DanceFloors;
 const styles = StyleSheet.create({
+    labelBox:{
+        
+        
+        
+    },
+    label:{
+        
+    },
     listBox:{
-        padding:10
+        padding:10,
+        flexDirection:'column',
+        
     },
     list:{
-    
+        flexDirection:"row",
     },
     listItem:{
-        flexDirection:"row"
+        flexDirection:"row",
+        borderColor:"#730874",
+        borderWidth:1,
+        borderRadius:50,
+        marginLeft: I18nManager.isRTL ? 4 : 0,
+        marginRight: I18nManager.isRTL ? 0 : 4,
+        paddingTop:0,
+        paddingLeft: I18nManager.isRTL ? 4 : 2,
+        paddingRight: I18nManager.isRTL ? 7 : 4,
+        paddingBottom:1
+        
     },
     iconBox:{
-        flexDirection:"column"
+        paddingTop:2,
+        flexDirection:"column",
     },
     textBox:{
-        flexDirection:"column"
+        marginLeft: I18nManager.isRTL ? 0 : -2,
+        marginRight: I18nManager.isRTL ? -2 : 0,
+
     },
     text:{
         paddingRight: I18nManager.isRTL ? 4 : 0,

@@ -30,6 +30,7 @@ const HomePage = (info) => {
 	return(
 		<View style={styles.container}>
 			<ScrollView
+				horizontal={false}
 				contentContainerStyle={styles.SVContainer}
 			>
 				<Slider organizationsCarusel={setArray(organizationsCarusel.organizations_carusel)}></Slider>

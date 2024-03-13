@@ -59,26 +59,7 @@ const OrganizationLines = (organizationLines) => {
                 <View style={styles.dance_floors}>
                     <Text style={styles.danceFloorsText}>{nice_list_text(organizationLines.organizationLines.organizationLines.filter(item => item.nid == selectedLine)[0].dance_floors)}</Text>
                 </View>
-                <View style={styles.fullInfoBox}>
-                    <RenderHtml
-                        contentWidth={width}
-                        source={setText(setArray(organizationLines.organizationLines.organizationLines).filter(item => item.nid == selectedLine)[0].text)}
-                        enableExperimentalMarginCollapsing={true}
-                        tagsStyles={{
-                            li:{
-                                paddingLeft:5,
-                                textAlign:dir,
-                                direction:"ltr",
-                            },
-                            ul:{
-                                direction:"ltr",
-                                alignContent:"flex-end"
-                            }
-                        }}
-                        renderersProps={renderersProps}
-                        style={{backgroundColor:"none"}}
-                    />
-                </View>
+
                 <Schedule schedule={{labels:organizationLines.organizationLines.labels, schedule:setArray(organizationLines.organizationLines.organizationLines).filter(item => item.nid == selectedLine)[0].time_part}}></Schedule>
                 <Prices prices={{labels:organizationLines.organizationLines.labels, prices:setArray(organizationLines.organizationLines.organizationLines).filter(item => item.nid == selectedLine)[0].tickets}}></Prices>
             </View>

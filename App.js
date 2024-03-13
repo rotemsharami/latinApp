@@ -6,6 +6,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import HomePage from "./src/components/homePage/homePage";
 import Redux from "./src/components/Redux/Redux";
 import Organization from "./src/components/Organization/organization";
+import Lines from './src/components/Lines/Lines';
 import { navigationRef } from './RootNavigation';
 import Configuration from "./src/components/Configuration/Configuration";
 import {LinearGradient} from 'expo-linear-gradient';
@@ -17,6 +18,7 @@ import { Provider } from 'react-redux';
 import { store } from './store/store';
 import { useSelector, useDispatch } from 'react-redux';
 import {increment, decrement} from './src/actions/counterActions';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 const Stack = createNativeStackNavigator();
 const {width, height} = Dimensions.get('screen');
 const appBox = () => {
@@ -60,6 +62,7 @@ const Flex = (navigation) => {
 						<Stack.Screen name="Configuration" component={Configuration}/>
 						<Stack.Screen name="HomePage" component={HomePage} />
 						<Stack.Screen name="Organization" component={Organization}/>
+						<Stack.Screen name="Lines" component={Lines}/>
 					</Stack.Navigator>
 				</NavigationContainer>
 			</View>
@@ -71,6 +74,21 @@ const Flex = (navigation) => {
 				>
 					<View style={styles.mainMenuList}>
 						<View style={styles.mainMenuListBox}>
+							<TouchableOpacity  style={styles.mainMenuListItem} onPress={() => {
+								navigate("Lines", {});
+								fadeIn();
+								}}
+							>
+								<View style={styles.mainMenuListItemBox}>
+									<View style={styles.mainMenuListItemIconBox}>
+										<Icon style={styles.mainMenuListItemIcon} name='facebook' color='#ed60d6' size={40}/>
+									</View>
+									<View style={styles.mainMenuListItemtextBox}>
+										<Text style={styles.mainMenuListItemtext}>Lines</Text>
+									</View>
+								</View>
+							</TouchableOpacity>
+
 							<TouchableOpacity  style={styles.mainMenuListItem} onPress={() => {
 								navigate("Configuration", {});
 								fadeIn();
@@ -85,6 +103,9 @@ const Flex = (navigation) => {
 									</View>
 								</View>
 							</TouchableOpacity>
+
+
+
 						</View>
 					</View>
 				</LinearGradient>

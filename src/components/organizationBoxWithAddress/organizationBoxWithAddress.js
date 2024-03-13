@@ -9,7 +9,6 @@ import {
 	} from 'react-native';
 import { setRowType, getSelectedLang, setTextDirection} from '../../tools/tools';
 
-
 import React, {useRef, useState, useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 const {width, height} = Dimensions.get('screen');
@@ -47,8 +46,6 @@ const OrganizationBox = (item) => {
                         marginTop:5,
                         marginBottom:5,
                     }}>{item.organization.slogen}</Text>
-                    
-
                 </View>
             </View>
         </View>

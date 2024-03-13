@@ -8,54 +8,8 @@ import {navigate} from "../../../RootNavigation";
 import { useSelector } from 'react-redux';
 const {width, height} = Dimensions.get('screen');
 
-const Item = (v) => {
-	const lng = getSelectedLang();
-	const count = useSelector((store) => store.count.count);
-	const dir = setTextDirection(count.general.lng);
-	return(
-		<View  style={styles.itemBox} onPress={() => navigate("Organization", {nid: v.item.item.organization.nid, type:"line", selectedNid:v.item.item.nid})}>
-			<View style={{
-				width: "100%",
-				padding:10,
-				flexDirection: setRowType(count.general.lng),
-			}}>
-				<View style={styles.generalImageBox}>
-					<View style={styles.generalImage}>
-						<Image
-							style={{width: '100%', height: '100%'}}
-							source={{uri:'https://latinet.co.il/'+v.item.item.organization.general_image[0]}}
-						/>
-					</View>
-				</View>
-				<View style={styles.textBox}>
-					<View style={styles.textBoxInner}>
-						<View style={styles.title}>
-							<Text style={{
-								color:"#3a2f3a",
-								fontSize:20,
-								paddingRight: lng =="he" ? 10 : 0,
-								paddingLeft: lng =="he" ? 0 : 10,
-								fontWeight:"bold",
-								textAlign:dir
-							}}>{nice_list_text(v.item.item.dance_floors)}</Text>
-						</View>
-					</View>
-					<View style={styles.subTitle}><Text style={{
-						color:"#3a2f3a",
-						fontSize:14,
-						paddingRight: lng =="he" ? 10 : 0,
-						paddingLeft: lng =="he" ? 0 : 10,
-						textAlign: dir
-					}}>{v.item.item.organization.title}</Text></View>
-				</View>
-			</View>
-		</View>
-	);
-}
 const TodaysLines = (todaysLinesData) => {
 	const count = useSelector((store) => store.count.count);
-
-
 	const [labels, setLabels] = useState([]);
 	useEffect(() => {
 		setLabels(setArray(todaysLinesData.todaysLinesData.labels));
@@ -67,16 +21,14 @@ const TodaysLines = (todaysLinesData) => {
 		<View style={styles.displayBox}>
 			<View style={styles.display}>
 				<View style={{
-		backgroundColor:"#333444",
-		flexDirection: setRowType(count.general.lng),
-		justifyContent:"center",
-		padding:10,
-		width:"100%",
-		borderTopLeftRadius:10,
-		borderTopRightRadius:10,
-	}}>
-
-
+					backgroundColor:"#333444",
+					justifyContent:"center",
+					padding:10,
+					width:"100%",
+					borderTopLeftRadius:10,
+					borderTopRightRadius:10,
+					flexDirection:"row"
+				}}>
 					<View style={styles.iconBox}>
 						<Icon name='wifi-tethering' color='#f442a6' style={styles.icon} />
 					</View>
@@ -85,15 +37,47 @@ const TodaysLines = (todaysLinesData) => {
 					</View>
 				</View>
 				<View style={styles.listBox}>
-
-					<FlatList
-							style={styles.list}
-							data={todaysLinesData.todaysLinesData.lines}
-							renderItem={(item) => <Item item={item} />}
-							keyExtractor={item => item.nid}
-						/>
-
-
+					{setArray(todaysLinesData.todaysLinesData.lines).map((item, key) => {
+					return (
+					<View  style={styles.itemBox} key={"today-line-"+item.nid}>
+						<TouchableOpacity style={styles.logoAndTextBox} onPress={() => navigate("Organization", {nid: item.organization.nid, type:"line", selectedNid:item.nid})}>
+						<View style={{
+							width: "100%",
+							padding:10,
+							flexDirection:"row"
+						}}>
+							<View style={styles.generalImageBox}>
+								<View style={styles.generalImage}>
+									<Image
+										style={{width: '100%', height: '100%'}}
+										source={{uri:'https://latinet.co.il/'+item.organization.general_image[0]}}
+									/>
+								</View>
+							</View>
+							<View style={styles.textBox}>
+								<View style={styles.textBoxInner}>
+									<View style={styles.title}>
+										<Text style={{
+											color:"#3a2f3a",
+											fontSize:20,
+											paddingRight: I18nManager.isRTL ? 10 : 0,
+											paddingLeft: I18nManager.isRTL ? 0 : 10,
+											fontWeight:"bold",
+										}}>{nice_list_text(item.dance_floors)}</Text>
+									</View>
+								</View>
+								<View style={styles.subTitle}><Text style={{
+									color:"#3a2f3a",
+									fontSize:14,
+									paddingRight: I18nManager.isRTL ? 10 : 0,
+									paddingLeft: I18nManager.isRTL ? 0 : 10,
+								}}>{item.organization.title}</Text></View>
+								</View>
+							</View>
+						</TouchableOpacity>
+					</View>
+        			);
+        			})}
 				</View>
 			</View>
 		</View>
@@ -104,24 +88,11 @@ const styles = StyleSheet.create({
 		color:"#FFF",
 		fontSize:20,
 	},
-	displayBox:{
-		justifyContent:"center",
-		width:"100%",
-		flexDirection:"row",
-	},
 	display: {
-		flexDirection:"column",
-		width:width-20,
 		marginTop:10,
-	},
-	iconBox: {
-		flexDirection:"column"
 	},
 	icon: {
 		color:"#FFF",
-	},
-	textBox: {
-		flexDirection:"column"
 	},
 	itemBox:{
 		backgroundColor:"#dbdbdb",
@@ -138,11 +109,8 @@ const styles = StyleSheet.create({
 		width:"100%",
 		borderRadius: 150 / 2,
 		overflow: "hidden",
-		
 	},
 	textBox:{
-		flexDirection:"column",
-		width: width - ((width-20) * 0.2),
 		paddingTop:10
 	},
 });

@@ -38,7 +38,7 @@ const Slider = ({organizationsCarusel}) => {
 				horizontal
 				pagingEnabled
 				snapToAlignment="start"
-				showsHorizontalScrollIndicator={false}
+				showsHorizontalScrollIndicator={true}
 				onScroll={handleOnScroll}
 				viewabilityConfig={viewabilityConfig}
 			/>

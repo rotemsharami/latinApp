@@ -12,8 +12,8 @@ import {navigate} from "../../../RootNavigation";
 import { useSelector, useDispatch } from 'react-redux';
 import { setRowType, getSelectedLang, setTextDirection} from '../../tools/tools';
 const {width, height} = Dimensions.get('screen');
-const logoWidth = width / 5;
-const textWidth = width - logoWidth; 
+const logoWidth = 80;
+const textWidth = 80; 
 
 
 

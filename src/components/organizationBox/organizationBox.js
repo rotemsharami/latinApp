@@ -13,7 +13,7 @@ import { setRowType, getSelectedLang, setTextDirection} from '../../tools/tools'
 import React, {useRef, useState, useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 const {width, height} = Dimensions.get('screen');
-const logoWidth = width/5;
+const logoWidth = 80;
 const textWidth = width - logoWidth;
 
 const OrganizationBox = (item) => {
@@ -71,6 +71,8 @@ logoAndText:{
 },
 logo:{
     flexDirection:'column',
+    borderRadius: 150 / 2,
+	overflow: "hidden",
 },
 logoImage:{
     width:logoWidth,

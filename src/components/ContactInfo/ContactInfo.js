@@ -20,7 +20,6 @@ const logoWidth = width/5;
 const textWidth = width - logoWidth;
 const ContactInfo = (organization) => {
 
-    console.log(organization.organization.facebook.uri);
 
     return(
         <View style={styles.container}>

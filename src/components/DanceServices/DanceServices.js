@@ -56,13 +56,11 @@ const styles = StyleSheet.create({
         
     },
     list:{
-        flexDirection:"row",
+        flexDirection:"column",
+        width:"auto"
     },
     listItem:{
         flexDirection:"row",
-        borderColor:"#730874",
-        borderWidth:1,
-        borderRadius:50,
         marginLeft: I18nManager.isRTL ? 4 : 0,
         marginRight: I18nManager.isRTL ? 0 : 4,
         paddingTop:0,

@@ -8,7 +8,7 @@ import {navigate} from "../../../RootNavigation";
 import { useSelector } from 'react-redux';
 const {width, height} = Dimensions.get('screen');
 
-const TodaysLines = (todaysLinesData) => {
+const DayLines = (todaysLinesData) => {
 	const count = useSelector((store) => store.count.count);
 	const [labels, setLabels] = useState([]);
 	useEffect(() => {
@@ -20,22 +20,7 @@ const TodaysLines = (todaysLinesData) => {
 	return(
 		<View style={styles.displayBox}>
 			<View style={styles.display}>
-				<View style={{
-					backgroundColor:"#333444",
-					justifyContent:"center",
-					padding:10,
-					width:"100%",
-					borderTopLeftRadius:10,
-					borderTopRightRadius:10,
-					flexDirection:"row"
-				}}>
-					<View style={styles.iconBox}>
-						<Icon name='wifi-tethering' color='#f442a6' style={styles.icon} />
-					</View>
-					<View style={styles.DisplayTitletBox}>
-						<Text style={styles.DisplayTitle}> {todaysLinesData.todaysLinesData.labels[0]}</Text>
-					</View>
-				</View>
+
 				<View style={styles.listBox}>
 					{setArray(todaysLinesData.todaysLinesData.lines).map((item, key) => {
 					return (
@@ -89,7 +74,7 @@ const styles = StyleSheet.create({
 		fontSize:20,
 	},
 	display: {
-		marginTop:10,
+		marginTop:0,
 	},
 	icon: {
 		color:"#FFF",
@@ -114,4 +99,4 @@ const styles = StyleSheet.create({
 		paddingTop:10
 	},
 });
-export default TodaysLines;
+export default DayLines;

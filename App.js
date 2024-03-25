@@ -12,7 +12,6 @@ import Configuration from "./src/components/Configuration/Configuration";
 import {LinearGradient} from 'expo-linear-gradient';
 import { Icon } from 'react-native-elements';
 import {navigate} from "./RootNavigation";
-import axios from 'axios';
 import {getData, storeData, setArray} from "./src/tools/tools";
 import { Provider } from 'react-redux';
 import { store } from './store/store';

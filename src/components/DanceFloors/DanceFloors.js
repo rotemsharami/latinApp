@@ -31,9 +31,6 @@ const DanceFloors = (danceFloors) => {
                     </View>
                     <View style={styles.textBox}>
                         <Text style={styles.text}>{prop.name}</Text>
-
-
-
                     </View>
                 </View>
             );

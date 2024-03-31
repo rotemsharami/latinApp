@@ -5,37 +5,52 @@ import TodaysLines from '../TodaysLines/TodaysLines';
 import {setArray, getSelectedLang} from "../../tools/tools.js";
 import EventsList from '../EventsList/EventsList';
 import { useSelector, useDispatch } from 'react-redux';
+import SliderZ from '../SliderZ/SliderZ';
+import EventsCalender from '../EventsCalender/EventsCalender';
 
-const lng = getSelectedLang();
+
 
 
 
 const HomePage = (info) => {
 
+
+	const count = useSelector((store) => store.count.count);
+
+
+	const [events, setEvents] = useState([]);
+	const [organizationsCarusel, setOrganizationsCarusel] = useState({});
+	
+	
+	const lng = getSelectedLang();
+	//const lng = "en";
 	
 
-	const [todaysLinesData, setTodaysLinesData] = useState([]);
-	const [events, setEvents] = useState([]);
-	const count = useSelector((store) => store.count.count);
-	const [organizationsCarusel, setOrganizationsCarusel] = useState({});
-	let url = 'https://latinet.co.il/'+count.general.lng+'/general_data/';
-	const [organization, setOrganization] = useState({});
+	
+
 	useEffect(() => {
-		fetch(url)
-		.then((res) => res.json())
-		.then((data) => {
-			setOrganizationsCarusel(data.data);
-		});
-	}, []);
+			let url = 'https://latinet.co.il/'+count.general.lng+'/general_data/';
+			fetch(url)
+			.then((res) => res.json())
+			.then((data) => {
+				setOrganizationsCarusel(data.data);
+			});
+		
+	}, [count.general.lng]);
 	return(
 		<View style={styles.container}>
 			<ScrollView
 				horizontal={false}
 				contentContainerStyle={styles.SVContainer}
 			>
-				<Slider organizationsCarusel={setArray(organizationsCarusel.organizations_carusel)}></Slider>
+				{/* {organizationsCarusel != undefined &&
+					<Slider organizationsCarusel={setArray(organizationsCarusel.organizations_carusel)}></Slider>
+				} */}
 				<TodaysLines todaysLinesData={{lines:setArray(organizationsCarusel.todays_lines), labels: setArray(organizationsCarusel.labels)}}></TodaysLines>
-				{events.length > 0 && <EventsList events={{events, lng:sdata}}></EventsList>}
+
+				<EventsCalender></EventsCalender>
+
+
 			</ScrollView>
 		</View>
 	);

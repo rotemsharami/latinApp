@@ -2,7 +2,7 @@
 const initialState = {
 	count: {
 		general:{
-			lng:""
+			lng:"he"
 		}
 	},
 };

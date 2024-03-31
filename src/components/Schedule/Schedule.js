@@ -24,45 +24,61 @@ const Schedule = (schedule) => {
     const setText = (text) => {
         return {html:text}
     }
+
+    const NumberToStringTime = (number) => {
+        let intNumber = (parseInt(number) / 60) / 60;
+        let hower = Math.floor(intNumber);
+        let minuts =  Math.round((intNumber - hower) * 60);
+        minuts = minuts == 0 ? "00" : minuts;
+        return hower+":"+minuts;
+    }
+
     return(
         <View style={styles.section}>
             <View style={styles.sectionTitle}>
                 <Text style={styles.sectionTitleText}> {schedule.schedule.labels[4]}:</Text>
             </View>
             <View style={styles.scheduleList}>
-                <View style={styles.scheduleListItemIconAndLabel}>
-                    <View style={styles.scheduleListItemIcon}>
-                        <MaterialCommunityIcons name="door-open" size={14} color="#000" />
+                {schedule.schedule.schedule.opening != undefined &&
+                    <View style={styles.scheduleListItemIconAndLabel}>
+                        <View style={styles.scheduleListItemIcon}>
+                            <MaterialCommunityIcons name="door-open" size={14} color="#000" />
+                        </View>
+                        
+                        <View style={styles.scheduleListItemLabel}>
+                            <Text>{schedule.schedule.labels[7]}:</Text>
+                        </View>
+                        <View style={styles.scheduleListItemHour}>
+                            <Text>{NumberToStringTime(schedule.schedule.schedule.opening)}</Text>
+                        </View>
                     </View>
-                    <View style={styles.scheduleListItemLabel}>
-                        <Text>Opening:</Text>
+                }
+                {schedule.schedule.schedule.lessons != undefined &&
+                    <View style={styles.scheduleListItemIconAndLabel}>
+                        <View style={styles.scheduleListItemIcon}>
+                            <MaterialCommunityIcons name="school" size={14} color="#000" />
+                        </View>
+                        <View style={styles.scheduleListItemLabel}>
+                            <Text>{schedule.schedule.labels[8]}:</Text>
+                        </View>
+                        <View style={styles.scheduleListItemHour}>
+                            <Text>{NumberToStringTime(schedule.schedule.schedule.lessons)}</Text>
+                        </View>
                     </View>
-                    <View style={styles.scheduleListItemLabel}>
-                        <Text>21:00</Text>
+                }
+                {schedule.schedule.schedule.party != undefined &&
+                    <View style={styles.scheduleListItemIconAndLabel}>
+                        <View style={styles.scheduleListItemIcon}>
+                            <MaterialCommunityIcons name="music" size={14} color="#000" />
+                        </View>
+                        <View style={styles.scheduleListItemLabel}>
+                            <Text>{schedule.schedule.labels[9]}:</Text>
+                        </View>
+                        <View style={styles.scheduleListItemHour}>
+                            <Text>{NumberToStringTime(schedule.schedule.schedule.party)}</Text>
+                        </View>
                     </View>
-                </View>
-                <View style={styles.scheduleListItemIconAndLabel}>
-                    <View style={styles.scheduleListItemIcon}>
-                        <MaterialCommunityIcons name="school" size={14} color="#000" />
-                    </View>
-                    <View style={styles.scheduleListItemLabel}>
-                        <Text>Lessons:</Text>
-                    </View>
-                    <View style={styles.scheduleListItemLabel}>
-                        <Text>21:30</Text>
-                    </View>
-                </View>
-                <View style={styles.scheduleListItemIconAndLabel}>
-                    <View style={styles.scheduleListItemIcon}>
-                        <MaterialCommunityIcons name="music" size={14} color="#000" />
-                    </View>
-                    <View style={styles.scheduleListItemLabel}>
-                        <Text>Party:</Text>
-                    </View>
-                    <View style={styles.scheduleListItemLabel}>
-                        <Text>22:30</Text>
-                    </View>
-                </View>
+                }
             </View>
         </View>
     );
@@ -102,8 +118,7 @@ const styles = StyleSheet.create({
     },
 
     scheduleListItemLabel:{
-        padding:2,
-        width:60
+        width:100
     },
 
 

@@ -24,22 +24,13 @@ const setText = (text) => {
 }
 
 const Organization = (info) => {
-
     const scrollRef = useRef();
-
-
-
 	const [organizationNid, setOrganizationNid] = useState(info.route.params.nid);
-	const renderersProps = {
-		ul: {
-		  enableExperimentalRtl: true
-		}
-	  };
-
     const lng = getSelectedLang();
 	const count = useSelector((store) => store.count.count);
 	const dir = setTextDirection(count.general.lng);
 	const [sdata, setSdata] = useState({});
+
 	useEffect(() => {
 		storage
 		.load({
@@ -67,22 +58,12 @@ const Organization = (info) => {
 	}, [sdata]);
 	
 	const [organization, setOrganization] = useState({});
-	const [danceServicesList, setDanceServices] = useState([]);
-	const [servicesList, setServicesList] = useState([]);
-	const [danceFloors, setDanceFloors] = useState([]);
-	const [gallery, setGallery] = useState([]);
-	const [organizationLines, setOrganizationLines] = useState([]);
-	const [organizationEvents, setOrganizationEvents] = useState([]);
-	const [organizationStudies, setOrganizationStudies] = useState([]);
-
-	
-	
-
 	const [menu, setMenu] = useState([]);
-	const [logo, setLogoUrl] = useState("");
-	const setLogo = (value) => {
-		return "https://latinet.co.il/"+value;
-	}
+	const [organizationLinesData, setOrganizationLinesData] = useState([]);
+
+    const [selectedLine, setSelectedLine] = useState();    
+
+
 	const setSelectedMenuItem = (name) => {
 		setMenu(menu.map(artwork => {
 			if (artwork.name === name) {
@@ -103,6 +84,11 @@ const Organization = (info) => {
 		.then((res) => res.json())
 		.then((data) => {
 			setOrganization(data.data);
+			//organizationLines:organization.lines
+			setOrganizationLinesData(data.data.lines);
+			console.log(setArray(data.data.lines)[0].nid);
+			setSelectedLine(setArray(data.data.lines)[0].nid);
+
 			let menu = [
 				{name: "info", title: data.data.labels[0], active: info.route.params.type == "global" ? true : false}
 			];
@@ -122,6 +108,7 @@ const Organization = (info) => {
 			});
 		});
 	}, [organizationNid]);
+
 	return(
 		<View style={styles.container}>
 			<OrganizationBox organization={organization}></OrganizationBox>
@@ -178,8 +165,8 @@ const Organization = (info) => {
 
 							</View>
 						}
-						{menuOn("lines") &&
-							<OrganizationLines organizationLines={{organizationLines:organization.lines, labels:organization.labels, selectedNid: info.route.params.type == "line" ? info.route.params.selectedNid : 0}}></OrganizationLines>
+						{(menuOn("lines") && organizationLinesData != undefined) && 
+							<OrganizationLines _selectedLine={selectedLine} _setSelectedLine={setSelectedLine} organizationLines={{organizationLines:organizationLinesData, labels:organization.labels, selectedNid: info.route.params.type == "line" ? info.route.params.selectedNid : 0}}></OrganizationLines>
 						}
 						{menuOn("events") &&
 							<OrganizationEvents organizationEvents={{organizationEvents:organization.events, labels:organization.labels, selectedNid: info.route.params.type == "event" ? info.route.params.selectedNid : 0}}></OrganizationEvents>
@@ -203,7 +190,7 @@ const Organization = (info) => {
 								<View style={styles.otherOrganizations}>
 									{/* <Text>{JSON.stringify(organization.other_organizations, null, 2)}</Text> */}
 									<View style={styles.otherOrganizationsLabel}>
-										<Text style={styles.otherOrganizationsLabelText}>Other Organizations</Text>
+										<Text style={styles.otherOrganizationsLabelText}>{organization.labels[10]}</Text>
 									</View>
 									{organization.other_organizations.map((item, key) => {
 										return (

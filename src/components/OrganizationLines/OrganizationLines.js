@@ -3,35 +3,33 @@ import {
     Text,
     View,
     Dimensions,
-    ImageBackground,
 	TouchableOpacity,
 	I18nManager,
-    useWindowDimensions
 	} from 'react-native';
 import React, {useRef, useState, useEffect} from 'react';
 import { setRowType, getSelectedLang, setTextDirection, setArray, nice_list_text} from '../../tools/tools';
-import { Icon } from 'react-native-elements';
-import { WebView } from 'react-native-webview';
-import RenderHtml from 'react-native-render-html';
 import Schedule from '../Schedule/Schedule.js';
 import Prices from '../Prices/Prices.js';
 import { useSelector, useDispatch } from 'react-redux';
 const {width, height} = Dimensions.get('screen');
-const logoWidth = width/5;
-const textWidth = width - logoWidth;
-const renderersProps = {
-    ul: {
-      enableExperimentalRtl: true
-    }
-  };
+
 const OrganizationLines = (organizationLines) => {
-    const lng = getSelectedLang();
+    console.log(organizationLines);
+
+
 	const count = useSelector((store) => store.count.count);
-	const dir = setTextDirection(count.general.lng);
-    const { widthA } = useWindowDimensions();
-    const [selectedLine, setSelectedLine] = useState(organizationLines.organizationLines.selectedNid != 0 ? organizationLines.organizationLines.selectedNid : setArray(organizationLines.organizationLines.organizationLines)[0].nid);
-    const setText = (text) => {
-        return {html:text}
+    const getSchedule = (_line) => {
+        let schedule = {};
+        if(_line.opening != undefined){
+            schedule.opening = _line.opening;
+        }
+        if(_line.opening != undefined){
+            schedule.lessons = _line.lessons;
+        }
+        if(_line.opening != undefined){
+            schedule.party = _line.party;
+        }
+        return schedule;
     }
     return(
         <View style={styles.listBox}>
@@ -40,9 +38,9 @@ const OrganizationLines = (organizationLines) => {
 				}}>
         {setArray(organizationLines.organizationLines.organizationLines).map((prop, key) => {
             return (
-                <TouchableOpacity key={prop.nid} style={styles.menuListItem} onPress={() => setSelectedLine(prop.nid)}>
+                <TouchableOpacity key={prop.nid} style={styles.menuListItem} onPress={() => {organizationLines._setSelectedLine(prop.nid)}}>
                     <View style={{
-                        borderBottomWidth:prop.nid == selectedLine ? 3 : 0,
+                        borderBottomWidth:prop.nid == organizationLines._selectedLine ? 3 : 0,
                         paddingRight:10,
                         paddingLeft:10,
                         marginLeft:  I18nManager.isRTL ? 0 : 0,
@@ -55,14 +53,19 @@ const OrganizationLines = (organizationLines) => {
             );
         })}
             </View>
+            {organizationLines.organizationLines.organizationLines.filter(item => item.nid == organizationLines._selectedLine).length > 0 && 
             <View style={styles.contentBox}>
                 <View style={styles.dance_floors}>
-                    <Text style={styles.danceFloorsText}>{nice_list_text(organizationLines.organizationLines.organizationLines.filter(item => item.nid == selectedLine)[0].dance_floors)}</Text>
+                    <Text style={styles.danceFloorsText}>{nice_list_text(organizationLines.organizationLines.organizationLines.filter(item => item.nid == organizationLines._selectedLine)[0].dance_floors)}</Text>
                 </View>
-
-                <Schedule schedule={{labels:organizationLines.organizationLines.labels, schedule:setArray(organizationLines.organizationLines.organizationLines).filter(item => item.nid == selectedLine)[0].time_part}}></Schedule>
-                <Prices prices={{labels:organizationLines.organizationLines.labels, prices:setArray(organizationLines.organizationLines.organizationLines).filter(item => item.nid == selectedLine)[0].tickets}}></Prices>
+                <Schedule
+                    schedule={{labels:organizationLines.organizationLines.labels,
+                    schedule:setArray(organizationLines.organizationLines.organizationLines).filter(item => item.nid == organizationLines._selectedLine)[0].time_part,
+                    schedule:getSchedule(setArray(organizationLines.organizationLines.organizationLines).filter(item => item.nid == organizationLines._selectedLine)[0])
+                    }}></Schedule>
+                <Prices prices={{labels:organizationLines.organizationLines.labels, prices:setArray(organizationLines.organizationLines.organizationLines).filter(item => item.nid == organizationLines._selectedLine)[0].tickets}}></Prices>
             </View>
+            }
         </View>
     );
 }

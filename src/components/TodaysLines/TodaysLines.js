@@ -1,22 +1,9 @@
-import { faAlignRight } from '@fortawesome/free-solid-svg-icons';
 import React, {Component, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity, I18nManager} from 'react-native';
-import { Button, Icon } from 'react-native-elements';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Icon } from 'react-native-elements';
 import {nice_list_text, setArray, getSelectedLang, setRowType, setTextDirection} from "../../tools/tools.js";
 import {navigate} from "../../../RootNavigation";
-import { useSelector } from 'react-redux';
-const {width, height} = Dimensions.get('screen');
-
 const TodaysLines = (todaysLinesData) => {
-	const count = useSelector((store) => store.count.count);
-	const [labels, setLabels] = useState([]);
-	useEffect(() => {
-		setLabels(setArray(todaysLinesData.todaysLinesData.labels));
-	}, []);
-	
-	//todaysLinesData.todaysLinesData.labels[0]
-	
 	return(
 		<View style={styles.displayBox}>
 			<View style={styles.display}>
@@ -84,12 +71,15 @@ const TodaysLines = (todaysLinesData) => {
 	);
 }
 const styles = StyleSheet.create({
+	displayBox:{
+		padding:10
+	},
 	DisplayTitle:{
 		color:"#FFF",
 		fontSize:20,
 	},
 	display: {
-		marginTop:10,
+		marginTop:0,
 	},
 	icon: {
 		color:"#FFF",

@@ -1,16 +1,5 @@
 import {Image,StyleSheet,Text,View,Dimensions,Animated,Easing,ImageBackground,TouchableOpacity,I18nManager,ScrollView, SafeAreaView, StatusBar} from 'react-native';
 import React, {useRef, useState, useEffect} from 'react';
-import OrganizationBox from '../organizationBox/organizationBox.js';
-import DanceServices from '../DanceServices/DanceServices';
-import DanceFloors from '../DanceFloors/DanceFloors.js';
-import SliderX from '../SliderX/SliderX.js';
-import OrganizationLines from '../OrganizationLines/OrganizationLines.js';
-import Services from '../Services/Services.js';
-import Location from '../Location/Location';
-import ContactInfo from '../ContactInfo/ContactInfo.js';
-import storage from '../../storage/storage';
-import OrganizationEvents from '../OrganizationEvents/OrganizationEvents.js';
-import RenderHtml from 'react-native-render-html';
 import moment from 'moment';
 import { setRowType, getSelectedLang, setTextDirection, setArray, nice_list_text} from '../../tools/tools';
 import { useSelector, useDispatch } from 'react-redux';
@@ -195,9 +184,11 @@ const Lines = () => {
 
 	return(
 		<View style={styles.container}>
-			<View style={styles.pageTitle}>
-				<Text style={styles.pageTitleText}>Weekly dance schedule</Text>
-			</View>
+			{lines != undefined &&
+				<View style={styles.pageTitle}>
+					<Text style={styles.pageTitleText}>{lines.labels[0]}</Text>
+				</View>
+			}
 			{lines != undefined &&
 			<View style={styles.containerValues}>
 				<View style={styles.filterItems}>

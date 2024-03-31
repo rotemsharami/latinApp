@@ -1,13 +1,22 @@
 import {Animated, FlatList, StyleSheet, Text, View, Dimensions} from 'react-native';
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useRef, useState, useEffect, useCallback} from 'react';
 import SlideItem from './SlideItem';
 
 const {width, height} = Dimensions.get('screen');
 const Slider = ({organizationsCarusel}) => {
+	
 	const [data, setData] = useState([]);
 	const [index, setIndex] = useState(0);
 	const scrollX = useRef(new Animated.Value(0)).current;
 	const dataFetchedRef = useRef(false).current;
+
+	const renderItem = useCallback(({item}) => (
+		<View key={item.nid}>
+		   <SlideItem item={item} />
+		</View>
+	), []);
+
+
 	const handleOnScroll = event => {
 		Animated.event([{
 				nativeEvent: {
@@ -30,17 +39,23 @@ const Slider = ({organizationsCarusel}) => {
 	}).current;
 
 	return (
+
 		
 		<View style={styles.container}>
 			<FlatList
 				data={organizationsCarusel}
-				renderItem={({item}) => <SlideItem item={item} />}
+				// renderItem={({item}) => <SlideItem item={item} />}
+				renderItem={renderItem}
 				horizontal
+				keyExtractor={(item, index) => index.toString()}
+				vertical={false}
 				pagingEnabled
 				snapToAlignment="start"
 				showsHorizontalScrollIndicator={true}
 				onScroll={handleOnScroll}
 				viewabilityConfig={viewabilityConfig}
+				nestedScrollEnabled={false}
+				removeClippedSubviews={true}
 			/>
 		</View>
 	);

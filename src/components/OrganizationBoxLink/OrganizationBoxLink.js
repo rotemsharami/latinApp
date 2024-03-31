@@ -7,7 +7,7 @@ import {
 	TouchableOpacity,
 	I18nManager
 	} from 'react-native';
-import { setRowType, getSelectedLang, setTextDirection} from '../../tools/tools';
+import { setRowType, getSelectedLang, setTextDirection, setArray} from '../../tools/tools';
 import {navigate} from "../../../RootNavigation";
 
 import React, {useRef, useState, useEffect, useCallback} from 'react';

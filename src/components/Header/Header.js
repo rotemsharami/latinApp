@@ -6,6 +6,8 @@ import {nice_list_text, setArray, getSelectedLang, setRowType, setTextDirection}
 import { useSelector } from 'react-redux';
 import { Flex } from "@react-native-material/core";
 const {width, height} = Dimensions.get('screen');
+import {navigate} from "../../../RootNavigation";
+
 
 const Header = (info) => {
 
@@ -14,24 +16,25 @@ const Header = (info) => {
 	const dir = setTextDirection(count.general.lng);
 
 	return(
-		<View style={styles.header}> 
-			<View style={styles.logoAndAppName}>
-				<View style={styles.logo}>
-					<Image style={styles.logoImage} source={require('../../../assets/logo.png')} />
-				</View>
-				<View style={styles.appName}>
-					<Text style={{
-					paddingRight: I18nManager.isRTL ? 5 : 0,
-					paddingLeft: I18nManager.isRTL ? 0 : 5,
-					fontWeight:"bold",
-					color:"#FFF",
-					fontSize:40,
-					alignSelf:'center',
+		<View style={styles.header}>
+			<TouchableOpacity onPress={()=>navigate("HomePage", {})}>
+				<View style={styles.logoAndAppName}>
+					<View style={styles.logo}>
+						<Image style={styles.logoImage} source={require('../../../assets/logo.png')} />
+					</View>
+					<View style={styles.appName}>
+						<Text style={{
+						paddingRight: I18nManager.isRTL ? 5 : 0,
+						paddingLeft: I18nManager.isRTL ? 0 : 5,
+						fontWeight:"bold",
+						color:"#FFF",
+						fontSize:40,
+						alignSelf:'center',
 
-				}}>LatinApp</Text>
+					}}>LatinApp</Text>
+					</View>
 				</View>
-			</View>
-
+			</TouchableOpacity>
 			<View style={styles.mainMenu}>
 				<TouchableOpacity onPress={()=>info.fadeIn()}>
 					<View><Icon name='bars' type='font-awesome' color='#FFF' size={30}/></View>

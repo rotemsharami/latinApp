@@ -68,6 +68,8 @@ const Configuration = (info) => {
 						setSelectedIndex(value);
 						changeLng(lng);
 						setObjectValue({lng:lng});
+						
+
 						navigate("HomePage", {});
 					}}
 					containerStyle={{ marginBottom: 20 }}

@@ -4,6 +4,9 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Header from "./src/components/Header/Header";
 import { NavigationContainer } from "@react-navigation/native";
 import HomePage from "./src/components/homePage/homePage";
+import DayEvents from "./src/components/DayEvents/DayEvents";
+
+
 import Redux from "./src/components/Redux/Redux";
 import Organization from "./src/components/Organization/organization";
 import Lines from './src/components/Lines/Lines';
@@ -56,10 +59,14 @@ const Flex = (navigation) => {
 		<View style={styles.app}>
 			<View style={styles.appBox}>
 				<Header style={styles.header} fadeIn={fadeIn}></Header>
+
 				<NavigationContainer ref={navigationRef}>
 					<Stack.Navigator screenOptions={{ headerShown: false }}>
-						<Stack.Screen name="Configuration" component={Configuration}/>
 						<Stack.Screen name="HomePage" component={HomePage} />
+						<Stack.Screen name="Configuration" component={Configuration}/>
+
+						<Stack.Screen name="DayEvents" component={DayEvents}/>
+						
 						<Stack.Screen name="Organization" component={Organization}/>
 						<Stack.Screen name="Lines" component={Lines}/>
 					</Stack.Navigator>

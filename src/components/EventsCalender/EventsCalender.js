@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import OrganizationStudies from '../OrganizationStudies/OrganizationStudies.js';
 import DayLines from '../DayLines/DayLines.js';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-
+import {navigate} from "../../../RootNavigation";
 const {width, height} = Dimensions.get('screen');
 const logoWidth = width/5;
 const textWidth = width - logoWidth;
@@ -140,12 +140,6 @@ const EventsCalender = () => {
 					filterdEvents = lines.events.filter((event) => {
 						let today = moment();
 						let in_day = event.event_date == moment(day.date).format('YYYY-MM-DD');
-
-						//console.log(moment(today).format('YYYY-MM-DD'));
-
-						//console.log(moment(day.date).format('YYYY-MM-DD'));
-
-
 						const formattedDate = moment(today).format('YYYY-MM-DD');
 						let result = in_day;
 						return result;
@@ -226,17 +220,30 @@ const EventsCalender = () => {
 											<View style={styles.calenderWeekContainer}>
 												{Object.keys(weeklyData[weekIndex]).map((dayIndex) => {
 													return(
-														<View key={"day-"+weekIndex+"-"+dayIndex} style={{
-															flex:1,
-															alignItems:"center",
-															borderRightWidth:dayIndex == 6 ? 0 : 1,
-															paddingBottom:5,
-															paddingTop:5,
-															backgroundColor:weeklyData[weekIndex][dayIndex].today ? "#ffbaff" : "#FFF"
-														}}>
+														<View
+															key={"day-"+weekIndex+"-"+dayIndex}
+															
+															style={{
+																flex:1,
+																alignItems:"center",
+																borderRightWidth:dayIndex == 6 ? 0 : 1,
+																paddingBottom:5,
+																paddingTop:5,
+																backgroundColor:weeklyData[weekIndex][dayIndex].today ? "#ffbaff" : "#FFF"
+															}}
+>
+															<TouchableOpacity
+															onPress={() => {
+																navigate("DayEvents", {events:weeklyData[weekIndex][dayIndex].events, date:weeklyData[weekIndex][dayIndex].date});
+															}}
+														
+
+														>
 															<View style={styles.dayEvents}>
 																{weeklyData[weekIndex][dayIndex].events != undefined && 
-																	<Text>{weeklyData[weekIndex][dayIndex].events.length > 0 ? "*" : " "}</Text>
+									
+																		<Text>{weeklyData[weekIndex][dayIndex].events.length > 0 ? "*" : " "}</Text>
+																	
 																}
 																</View>
 															<View style={styles.dayDate}>
@@ -244,7 +251,10 @@ const EventsCalender = () => {
 																	<Text>{weeklyData[weekIndex][dayIndex].day_of_month}</Text>
 																}
 															</View>
+															</TouchableOpacity>
+															
 														</View>
+														
 													);
 												})}
 											</View>

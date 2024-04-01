@@ -5,7 +5,7 @@ import Header from "./src/components/Header/Header";
 import { NavigationContainer } from "@react-navigation/native";
 import HomePage from "./src/components/homePage/homePage";
 import DayEvents from "./src/components/DayEvents/DayEvents";
-
+import Event from "./src/components/Event/Event";
 
 import Redux from "./src/components/Redux/Redux";
 import Organization from "./src/components/Organization/organization";
@@ -66,6 +66,7 @@ const Flex = (navigation) => {
 						<Stack.Screen name="Configuration" component={Configuration}/>
 
 						<Stack.Screen name="DayEvents" component={DayEvents}/>
+						<Stack.Screen name="Event" component={Event}/>
 						
 						<Stack.Screen name="Organization" component={Organization}/>
 						<Stack.Screen name="Lines" component={Lines}/>

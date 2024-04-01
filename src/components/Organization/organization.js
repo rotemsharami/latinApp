@@ -183,9 +183,6 @@ const Organization = (info) => {
 								<ContactInfo organization={organization}></ContactInfo>
 							}
 						</View>
-						
-
-
 							{organization.other_organizations != undefined &&
 								<View style={styles.otherOrganizations}>
 									{/* <Text>{JSON.stringify(organization.other_organizations, null, 2)}</Text> */}
@@ -199,10 +196,6 @@ const Organization = (info) => {
 									})}
 								</View>
 							}
-
-
-
-
 				</ScrollView>
 			</View>
 		</View>

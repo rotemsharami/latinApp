@@ -6,7 +6,7 @@ import DanceServices from '../DanceServices/DanceServices';
 import DanceFloors from '../DanceFloors/DanceFloors.js';
 import SliderX from '../SliderX/SliderX.js';
 import OrganizationLines from '../OrganizationLines/OrganizationLines.js';
-import Services from '../Services/Services.js';
+import ServicesX from '../ServicesX/ServicesX.js';
 import Location from '../Location/Location';
 import ContactInfo from '../ContactInfo/ContactInfo.js';
 import storage from '../../storage/storage';
@@ -151,14 +151,22 @@ const Organization = (info) => {
 						{menuOn("info") &&
 							<View>
 								<SliderX gallery={organization.gallery}></SliderX>
-								<View style={styles.DanceServicesAndDanceFloors}>
-									<DanceServices danceServices={organization.dance_services}></DanceServices>
-									<DanceServices danceServices={organization.dance_floors}></DanceServices>
-									
+
+
+
+
+								<View style={styles.danceFloorsAndServices}>
+									<View style={styles.danceFloors}>
+										<DanceFloors danceServices={organization.dance_floors}></DanceFloors>
+									</View>
+									<View style={styles.services}>
+										<DanceServices danceServices={organization.dance_floors}></DanceServices>
+									</View>
 								</View>
-								<Services services={organization.services}></Services>
 
 
+
+								<ServicesX services={organization.services}></ServicesX>
 								<Location organization={organization}></Location>
 
 
@@ -203,6 +211,18 @@ const Organization = (info) => {
 }
 export default Organization;
 const styles = StyleSheet.create({
+
+	danceFloorsAndServices:{
+		flexDirection:"row"
+	},
+	danceFloors:{
+		flexDirection:"column"
+	},
+	services:{
+		flexDirection:"column"
+	},
+
+
 	fullInfoBox:{
 		paddingLeft:10,
 		paddingRight:10

@@ -11,23 +11,20 @@ import {
 import React, {useRef, useState, useEffect} from 'react';
 import {setArray} from "../../tools/tools.js";
 import { Icon } from 'react-native-elements';
+import { Flex } from '@react-native-material/core';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 const {width, height} = Dimensions.get('screen');
 const logoWidth = width/5;
 const textWidth = width - logoWidth;
-const DanceFloors = (danceFloors) => {
+const DanceFloors = (danceServices) => {
     return(
         <View style={styles.listBox}>
-
-            <View style={styles.labelBox}>
-                <Text style={styles.label}>{"Music Ganers"}:</Text>
-            </View>
-
             <View style={styles.list}>
-        {setArray(danceFloors.danceFloors).map((prop, key) => {
+        {setArray(danceServices.danceServices).map((prop, key) => {
             return (
                 <View style={styles.listItem} key={key}>
                     <View style={styles.iconBox}>
-                        <Icon style={styles.mainMenuListItemIcon} name='audiotrack' color='#730874' size={17}/>
+                        <MaterialCommunityIcons name="music" size={30} color="#000" />
                     </View>
                     <View style={styles.textBox}>
                         <Text style={styles.text}>{prop.name}</Text>
@@ -41,8 +38,13 @@ const DanceFloors = (danceFloors) => {
 }
 export default DanceFloors;
 const styles = StyleSheet.create({
+    listBox:{
+        flexDirection:"column",
+        Flex:1
+    },
     labelBox:{
-        
+        flexDirection:"column",
+        Flex:1
         
         
     },
@@ -55,13 +57,11 @@ const styles = StyleSheet.create({
         
     },
     list:{
-        flexDirection:"row",
+        flexDirection:"column",
+        width:"auto"
     },
     listItem:{
         flexDirection:"row",
-        borderColor:"#730874",
-        borderWidth:1,
-        borderRadius:50,
         marginLeft: I18nManager.isRTL ? 4 : 0,
         marginRight: I18nManager.isRTL ? 0 : 4,
         paddingTop:0,
@@ -82,6 +82,6 @@ const styles = StyleSheet.create({
     text:{
         paddingRight: I18nManager.isRTL ? 4 : 0,
         paddingLeft: I18nManager.isRTL ? 0 : 4,
-        fontSize:15
+        fontSize:24
     },
 });

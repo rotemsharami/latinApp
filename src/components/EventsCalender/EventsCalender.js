@@ -10,6 +10,9 @@ import {navigate} from "../../../RootNavigation";
 const {width, height} = Dimensions.get('screen');
 const logoWidth = width/5;
 const textWidth = width - logoWidth;
+
+
+
 const setText = (text) => {
 
 	return {html:text}
@@ -19,7 +22,6 @@ const EventsCalender = () => {
     const lng = getSelectedLang();
 	const count = useSelector((store) => store.count.count);
 	const dir = setTextDirection(count.general.lng);
-	let url = 'https://latinet.co.il/'+lng+'/events_data/';
 	const [lines, setLines] = useState(undefined);
 	const [weeklyData, setWeeklyData] = useState([]);
 	const [selectedDanceFloors, setSelectedDanceFloors] = useState([]);
@@ -156,6 +158,12 @@ const EventsCalender = () => {
     }
 
 	useEffect(() => {
+		setLines(undefined);
+	}, [count.general.lng]);
+
+	useEffect(() => {
+		console.log(count.general.lng);
+		let url = 'https://latinet.co.il/'+count.general.lng+'/events_data/';
 		if(lines === undefined){
 			fetch(url)
 			.then((res) => res.json())
@@ -165,11 +173,10 @@ const EventsCalender = () => {
 		}
 		if(lines != undefined){
 			filterDayEvents().then(function(filterd) {
-				console.log(filterd);
 				setWeeklyData(pre => filterd);
 			});
 		}
-	}, [lines]);
+	}, [count.general.lng, lines]);
 
 	useEffect(() => {
 		if(weeklyData.length > 0){
@@ -202,7 +209,7 @@ const EventsCalender = () => {
 													style={{
 														color: selectedDanceFloors.includes(index) ? "#FFF" : "#000",
 													}}
-												>{lines.days_of_week[index]}</Text>
+												>{lines.days_of_week_short[index]}</Text>
 											</TouchableOpacity>
 										</View>
 									);

@@ -10,7 +10,6 @@ const logoWidth = 100;
 const textWidth = width - logoWidth;
 
 const DayEvents = (info) => {
-	console.log(info.route.params.date);
 	return(
 		<View style={styles.container}>
 			{info.route.params.date != undefined &&

@@ -28,6 +28,11 @@ const EventsCalender = () => {
 	const [selectedAreas, setSelectedAreas] = useState([]);
 	const [selectedDay, setSelectedDay] = useState("0");
 
+	const [selectedDisplay, setSelectedDisplay] = useState("Calender");
+
+
+
+
 	let getTagInfo = (tid, data) => {
 		let result = "no";
 		let filter = data.filter(item => item.tid == tid);
@@ -162,7 +167,6 @@ const EventsCalender = () => {
 	}, [count.general.lng]);
 
 	useEffect(() => {
-		console.log(count.general.lng);
 		let url = 'https://latinet.co.il/'+count.general.lng+'/events_data/';
 		if(lines === undefined){
 			fetch(url)
@@ -189,8 +193,61 @@ const EventsCalender = () => {
 
 	return(
 		<View>
+
+
+
+
+
 			{lines != undefined &&
 				<View style={styles.container}>
+
+					<View style={styles.calenderListSwitch}>
+						<View style={[styles.calenderListSwitchButton,{backgroundColor: selectedDisplay == "Calender" ? "#730874" :"#FFF"}]}>
+							<TouchableOpacity style={styles.calenderListSwitchButtonTouch} onPress={()=>setSelectedDisplay("Calender")}>
+								<View style={styles.calenderListSwitchButtonIconBox}>
+									<MaterialCommunityIcons name="calendar-blank" size={17} color={selectedDisplay == "Calender" ? "#FFF" :"#000"} />
+								</View>
+								<View style={styles.calenderListSwitchButtonText}>
+									<Text style={[styles.calenderListSwitchButtonTextText, {
+										color: selectedDisplay == "Calender" ? "#FFF" :"#000"
+									}]}>Calender</Text>
+								</View>
+							</TouchableOpacity>
+						</View>
+						<View style={[styles.calenderListSwitchButton,{backgroundColor: selectedDisplay == "List" ? "#730874" :"#FFF"}]}>
+							<TouchableOpacity style={styles.calenderListSwitchButtonTouch} onPress={()=>setSelectedDisplay("List")}>
+								<View style={styles.calenderListSwitchButtonIconBox}>
+									<MaterialCommunityIcons name="view-list" size={17} color={selectedDisplay == "List" ? "#FFF" :"#000"} />
+								</View>
+								<View style={styles.calenderListSwitchButtonText}>
+								<Text style={[styles.calenderListSwitchButtonTextText, {
+										color: selectedDisplay == "List" ? "#FFF" :"#000"
+									}]}>List</Text>
+								</View>
+							</TouchableOpacity>
+						</View>
+					</View>
+
+
+
+					<View style={styles.calenderButtonsAndMonth}>
+						<View style={styles.calenderButton}>
+							<View style={styles.iconBox}>
+                        		<MaterialCommunityIcons name="arrow-left-bold-circle" size={30} color="#000" />
+                    		</View>
+						</View>
+						<View style={styles.calenderMonth}>
+							<Text style={styles.calenderMonthText}>{lines.months[moment().month()]}</Text>
+						</View>
+						<View style={styles.calenderButton}>
+							<View style={styles.iconBox}>
+                        		<MaterialCommunityIcons name="arrow-right-bold-circle" size={30} color="#000" />
+                    		</View>
+						</View>
+					</View>
+
+
+
 					<View style={styles.containerBox}>
 						<View style={styles.daysOfWeekContainer}>
 							<View style={styles.daysOfWeek}>
@@ -281,6 +338,34 @@ const EventsCalender = () => {
 }
 export default EventsCalender;
 const styles = StyleSheet.create({
+	calenderListSwitchButtonTouch:{
+		flexDirection:"row",
+		padding:3
+	},
+	calenderListSwitchButton:{
+		flexDirection:"row",
+		
+	},
+	calenderListSwitch:{
+		flexDirection:"row",
+		borderWidth:1,
+		alignSelf: 'flex-start'
+	},
+	calenderButtonsAndMonth:{
+		flexDirection:"row",
+		
+	},
+	calenderMonthText:{
+		fontSize:26
+	},
+	calenderMonth:{
+		width: width - (2 * 40) - 20,
+		alignItems:"center"
+	},
+	calenderButton:{
+		width:40,
+		alignItems:"center"
+	},
 	container:{
 		padding:10
 	},

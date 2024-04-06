@@ -6,6 +6,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import HomePage from "./src/components/homePage/homePage";
 import DayEvents from "./src/components/DayEvents/DayEvents";
 import Event from "./src/components/Event/Event";
+import EventsCalender from "./src/components/EventsCalender/EventsCalender";
 
 import Redux from "./src/components/Redux/Redux";
 import Organization from "./src/components/Organization/organization";
@@ -21,6 +22,7 @@ import { store } from './store/store';
 import { useSelector, useDispatch } from 'react-redux';
 import {increment, decrement} from './src/actions/counterActions';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Main from './src/components/Main/Main';
 const Stack = createNativeStackNavigator();
 const {width, height} = Dimensions.get('screen');
 const appBox = () => {
@@ -59,17 +61,23 @@ const Flex = (navigation) => {
 		<View style={styles.app}>
 			<View style={styles.appBox}>
 				<Header style={styles.header} fadeIn={fadeIn}></Header>
+				
+				
 
 				<NavigationContainer ref={navigationRef}>
 					<Stack.Navigator screenOptions={{ headerShown: false }}>
+						<Stack.Screen name="Lines" component={Lines}/>
 						<Stack.Screen name="HomePage" component={HomePage} />
 						<Stack.Screen name="Configuration" component={Configuration}/>
+
+						<Stack.Screen name="EventsCalender" component={EventsCalender}/>
+						
 
 						<Stack.Screen name="DayEvents" component={DayEvents}/>
 						<Stack.Screen name="Event" component={Event}/>
 						
 						<Stack.Screen name="Organization" component={Organization}/>
-						<Stack.Screen name="Lines" component={Lines}/>
+						
 					</Stack.Navigator>
 				</NavigationContainer>
 			</View>

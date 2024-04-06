@@ -3,7 +3,8 @@ const initialState = {
 	count: {
 		general:{
 			lng:"he"
-		}
+		},
+		selectedScreen:"Lines"
 	},
 };
 

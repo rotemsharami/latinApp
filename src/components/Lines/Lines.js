@@ -18,7 +18,7 @@ const Lines = () => {
     const lng = getSelectedLang();
 	const count = useSelector((store) => store.count.count);
 	const dir = setTextDirection(count.general.lng);
-	let url = 'https://latinet.co.il/'+lng+'/lines_data/';
+	
 	const [lines, setLines] = useState(undefined);
 	const [weeklyData, setWeeklyData] = useState([]);
 	const [selectedDanceFloors, setSelectedDanceFloors] = useState([]);
@@ -160,6 +160,12 @@ const Lines = () => {
     }
 
 	useEffect(() => {
+		setLines(undefined);
+	}, [count.general.lng]);
+
+
+	useEffect(() => {
+		let url = 'https://latinet.co.il/'+count.general.lng+'/lines_data/';
 		if(lines === undefined){
 			fetch(url)
 			.then((res) => res.json())
@@ -172,7 +178,7 @@ const Lines = () => {
 				setWeeklyData(pre => filterd);
 			});
 		}
-	}, [lines]);
+	}, [count.general.lng, lines]);
 
 	useEffect(() => {
 		if(weeklyData.length > 0){
@@ -184,11 +190,6 @@ const Lines = () => {
 
 	return(
 		<View style={styles.container}>
-			{lines != undefined &&
-				<View style={styles.pageTitle}>
-					<Text style={styles.pageTitleText}>{lines.labels[0]}</Text>
-				</View>
-			}
 			{lines != undefined &&
 			<View style={styles.containerValues}>
 				<View style={styles.filterItems}>

@@ -28,7 +28,7 @@ const DayEvents = (info) => {
 							<View style={styles.eventsListBox}>
 								{info.route.params.events.map((event) =>{
 									return(
-										<TouchableOpacity onPress={() => navigate("Event", {event: event})}>
+										<TouchableOpacity kay={"calenderEventItem"+event.nid} onPress={() => navigate("Event", {event: event})}>
 																		
 										<View style={styles.eventItem}>
 											<View style={styles.image}>

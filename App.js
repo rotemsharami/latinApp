@@ -1,5 +1,5 @@
 import React, {useRef, useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Image, Button, ScrollView, Animated, Dimensions, TouchableOpacity, AppRegistry} from 'react-native';
+import {StyleSheet, View, Text, Image, Button, ScrollView, Animated, Dimensions, TouchableOpacity, AppRegistry, I18nManager} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Header from "./src/components/Header/Header";
 import { NavigationContainer } from "@react-navigation/native";
@@ -39,15 +39,23 @@ const Flex = (navigation) => {
 	const [fadeAnimVal, setFadeAnimVal] = useState(-width);
 	const fadeAnim = useRef(new Animated.Value(-width)).current;
 	const [lng, setLng] = useState("he");
+
+	const count = useSelector((store) => store.count.count);
+
 	let [globalData, setGlobalData] = useState({});
 	const handleIncrement = (value) => {
 		dispatch(increment(value));
 	};
-	const getUsers = async () => {
-		let res = await axios.get("https://latinet.co.il/en/general_data/");
-		let { data } = res.data.data;
-		return res.data.data;
-	};
+	// const getUsers = async () => {
+	// 	let res = await axios.get("https://latinet.co.il/en/general_data/");
+	// 	let { data } = res.data.data;
+	// 	return res.data.data;
+	// };
+
+			I18nManager.forceRTL(false);
+			I18nManager.allowRTL(false);
+
+
 	const fadeIn = () => {
 		let v = fadeAnimVal == 0 ? -width : 0;
 		setFadeAnimVal(v);

@@ -86,6 +86,42 @@ export const setArray = (values) => {
 }
 
 
+export const getTranslationString = (string, lng) => {
+    let translations = {
+        "Calender":"חודשי",
+        "List": "רשימה",
+        "Lines": "ליינים",
+        "Events": "אירועים",
+    };
+    let result = string;
+    if(lng != "en" && translations[string] != undefined){
+        result = translations[string];
+    }
+    return result;
+}
+
+
+export const getTranslationMonth = (index) => {
+    let translations = [
+        "ינואר",
+        "פברואר",
+        "מרץ",
+        "אפריל",
+        "מאי",
+        "יוני",
+        "יולי",
+        "אוגוסט",
+        "ספטמבר",
+        "אוקטובר",
+        "נובמבר",
+        "דצמבר",
+    ];
+    return translations[index] != undefined ? translations[index] : index;
+}
+
+
+
+
 export const getDateFormat = (value, type) => {
     let date = "";
     switch (type) {

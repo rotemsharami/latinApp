@@ -40,7 +40,9 @@ const Schedule = (schedule) => {
             </View>
             <View style={styles.scheduleList}>
                 {schedule.schedule.schedule.opening != undefined &&
-                    <View style={styles.scheduleListItemIconAndLabel}>
+                        <View style={[styles.scheduleListItemIconAndLabel, {
+                            flexDirection: count.general.lng == "en" ? "row" : "row-reverse",
+                        }]}>
                         <View style={styles.scheduleListItemIcon}>
                             <MaterialCommunityIcons name="door-open" size={14} color="#000" />
                         </View>
@@ -54,7 +56,9 @@ const Schedule = (schedule) => {
                     </View>
                 }
                 {schedule.schedule.schedule.lessons != undefined &&
-                    <View style={styles.scheduleListItemIconAndLabel}>
+                        <View style={[styles.scheduleListItemIconAndLabel, {
+                            flexDirection: count.general.lng == "en" ? "row" : "row-reverse",
+                        }]}>
                         <View style={styles.scheduleListItemIcon}>
                             <MaterialCommunityIcons name="school" size={14} color="#000" />
                         </View>
@@ -67,7 +71,10 @@ const Schedule = (schedule) => {
                     </View>
                 }
                 {schedule.schedule.schedule.party != undefined &&
-                    <View style={styles.scheduleListItemIconAndLabel}>
+
+                        <View style={[styles.scheduleListItemIconAndLabel, {
+                            flexDirection: count.general.lng == "en" ? "row" : "row-reverse",
+                        }]}>
                         <View style={styles.scheduleListItemIcon}>
                             <MaterialCommunityIcons name="music" size={14} color="#000" />
                         </View>
@@ -109,7 +116,7 @@ const styles = StyleSheet.create({
     },
 
     scheduleListItemIconAndLabel:{
-        flexDirection:"row"
+        
     },
     scheduleListItemIcon:{
         padding:1,

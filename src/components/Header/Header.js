@@ -1,7 +1,7 @@
 import React, {Component, useState, useRef, useEffect} from "react";
 import {StyleSheet, View, Text, Image, Dimensions, SafeAreaView, Animated, TouchableOpacity, I18nManager} from 'react-native';
 import { Button, Icon } from 'react-native-elements';
-import {nice_list_text, setArray, getSelectedLang, setRowType, setTextDirection} from "../../tools/tools.js";
+import {nice_list_text, setArray, getSelectedLang, setRowType, setTextDirection, getTranslationString} from "../../tools/tools.js";
 import { useSelector, useDispatch } from 'react-redux';
 import { Flex } from "@react-native-material/core";
 const {width, height} = Dimensions.get('screen');
@@ -70,12 +70,13 @@ const Header = (info) => {
 					</TouchableOpacity>
 				</View>
 			</View>
-			<View style={styles.headerMenuAndTitle}>
+			<View style={[styles.headerMenuAndTitle, {
+				flexDirection: count.general.lng == "en" ? "row" : "row-reverse",
+			}]}>
 				<View style={styles.headerMenuTitle}>
-					<Text style={styles.headerMenuTitleText}>{selectedRouth == "Lines" ? "Lines" : "Events"}</Text>
+					<Text style={styles.headerMenuTitleText}>{selectedRouth == "Lines" ? getTranslationString("Lines", count.general.lng) : getTranslationString("Events", count.general.lng)}</Text>
 				</View>
 				<View style={styles.headerMenu}>
-
 					<TouchableOpacity onPress={()=>{
 						navigate("EventsCalender", {});
 						setSelectedRouth("Events");
@@ -101,46 +102,51 @@ const Header = (info) => {
 const styles = StyleSheet.create({
 
 	lang:{
-	paddingRight:10
 	},
 	langText:{
 		color:"#fff",
-		fontSize:26
+		fontSize:20,
+		textDecorationLine:"underline",
+		paddingRight:10,
+		paddingLeft:10,
 	},
-
 
 	headerMenuTitleText:{
 		color:"#FFF",
-		fontSize:30
+		fontSize:28,
+		paddingRight:15,
+		paddingLeft:15,
+		height:50,
+		alignItems:"center",
+		justifyContent:"center",
 	},
 	headerMenuItem:{
 		width:40,
-		backgroundColor:"#4a0a55",
+		height:40,
+		alignItems:"center",
+		justifyContent: 'center',
+
 		
 	},
 	headerMenuTitle:{
-		width:width - (2 * 40)
+		width:width - (2 * 42)
 	},
 	headerMenu:{
 		flexDirection:"row"
 	},
 	headerMenuAndTitle:{
-		flexDirection:"row",
-		backgroundColor:"#4a0a55",
-		padding:5
+		backgroundColor:"#474747",
+		
 	},
 	header:{
 		backgroundColor:"#4a0a55",
-		padding:10,
-		borderBottomColor:"#FFF",
-		borderBottomWidth:2,
 		flexDirection:"row",
 		
 
 	},
 	logoAndAppName:{
-		width:width-70,
-		flexDirection:"row"
+		width:width-50,
+		flexDirection:"row",
 		
 	},
 	icon:{
@@ -158,7 +164,6 @@ const styles = StyleSheet.create({
 	},
 	mainMenu:{
 		alignSelf:"center",
-		padding:10
 	},
 });
 

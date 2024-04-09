@@ -24,12 +24,14 @@ const DayLines = (todaysLinesData) => {
 				<View style={styles.listBox}>
 					{setArray(todaysLinesData.todaysLinesData.lines).map((item, key) => {
 					return (
-					<View  style={styles.itemBox} key={"today-line-"+item.nid}>
+					<View  style={[styles.itemBox, {
+						
+					}]} key={"today-line-"+item.nid}>
 						<TouchableOpacity style={styles.logoAndTextBox} onPress={() => navigate("Organization", {nid: item.organization.nid, type:"line", selectedNid:item.nid})}>
 						<View style={{
 							width: "100%",
 							padding:10,
-							flexDirection:"row"
+							flexDirection: count.general.lng == "en" ? "row" : "row-reverse",
 						}}>
 							<View style={styles.generalImageBox}>
 								<View style={styles.generalImage}>
@@ -45,8 +47,8 @@ const DayLines = (todaysLinesData) => {
 										<Text style={{
 											color:"#3a2f3a",
 											fontSize:20,
-											paddingRight: I18nManager.isRTL ? 10 : 0,
-											paddingLeft: I18nManager.isRTL ? 0 : 10,
+											paddingLeft: 10,
+											paddingRight: 10,
 											fontWeight:"bold",
 										}}>{nice_list_text(item.dance_floors)}</Text>
 									</View>
@@ -54,8 +56,9 @@ const DayLines = (todaysLinesData) => {
 								<View style={styles.subTitle}><Text style={{
 									color:"#3a2f3a",
 									fontSize:14,
-									paddingRight: I18nManager.isRTL ? 10 : 0,
-									paddingLeft: I18nManager.isRTL ? 0 : 10,
+									paddingLeft: 10,
+									paddingRight: 10,
+									textAlign: count.general.lng == "en" ? "left" : "right",
 								}}>{item.organization.title}</Text></View>
 								</View>
 							</View>

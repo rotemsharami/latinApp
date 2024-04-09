@@ -78,8 +78,14 @@ const Organization = (info) => {
 	}
 
 	
+	// useEffect(() => {
+	// 	setLines(undefined);
+	// }, [count.general.lng]);
+
+
+
 	useEffect(() => {
-		let url = 'https://latinet.co.il/'+lng+'/organization_mobile/'+organizationNid;
+		let url = 'https://latinet.co.il/'+count.general.lng+'/organization_mobile/'+organizationNid;
 		fetch(url)
 		.then((res) => res.json())
 		.then((data) => {
@@ -107,7 +113,7 @@ const Organization = (info) => {
 				animated: true,
 			});
 		});
-	}, [organizationNid]);
+	}, [organizationNid, count.general.lng]);
 
 	return(
 		<View style={styles.container}>

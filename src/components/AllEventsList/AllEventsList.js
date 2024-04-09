@@ -8,25 +8,16 @@ import { useSelector } from 'react-redux';
 const {width, height} = Dimensions.get('screen');
 const logoWidth = 100;
 const textWidth = width - logoWidth;
-const DayEvents = (info) => {
+const AllEventsList = (events) => {
 const count = useSelector((store) => store.count.count);
 	return(
 		<View style={styles.container}>
-			{info.route.params.date != undefined &&
+			{events != undefined &&
 				<View style={styles.containerBox}>
-					<View
-						style={[styles.title, {
-							paddingTop:10,
-							justifyContent:"center",
-							alignItems:"center"
-						}]}
-					>
-						<Text style={styles.pageTitleText}>{info.route.params.date.format('DD/MM/YYYY')}</Text>
-					</View>
 					<View style={styles.eventsList}>
-						{info.route.params.events != undefined &&
+						{events.events != undefined &&
 							<View style={styles.eventsListBox}>
-								{info.route.params.events.map((event) =>{
+								{events.events.map((event) =>{
 									return(
 										<TouchableOpacity kay={"calenderEventItem"+event.nid} onPress={() => navigate("Event", {event: event})}>
 										<View style={[styles.eventItem, {
@@ -93,4 +84,4 @@ const styles = StyleSheet.create({
 		lineHeight:20,
 	},
 });
-export default DayEvents;
+export default AllEventsList;

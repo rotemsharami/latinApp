@@ -192,7 +192,9 @@ const Lines = () => {
 		<View style={styles.container}>
 			{lines != undefined &&
 			<View style={styles.containerValues}>
-				<View style={styles.filterItems}>
+				<View style={[styles.filterItems, {
+					flexDirection: count.general.lng == "en" ? "row" : "row-reverse",
+				}]}>
 					<View style={styles.filterIcon}><MaterialCommunityIcons name="music" size={14} color="#fff" /></View>
 					{Object.keys(lines.used_dance_floors).map((index) => {
 						return(
@@ -213,7 +215,9 @@ const Lines = () => {
 						);
 					})}
 				</View>
-				<View style={styles.filterItems}>
+				<View style={[styles.filterItems, {
+					flexDirection: count.general.lng == "en" ? "row" : "row-reverse",
+				}]}>
 					<View style={styles.filterIcon}><MaterialCommunityIcons name="map-marker" size={14} color="#fff" /></View>
 					{Object.keys(lines.used_area).map((index) => {
 						return(
@@ -234,7 +238,9 @@ const Lines = () => {
 						);
 					})}
 				</View>
-				<View style={styles.daysControls}>
+				<View style={[styles.daysControls, {
+					flexDirection: count.general.lng == "en" ? "row" : "row-reverse",
+				}]}>
 					{Object.keys(lines.days_of_week_short).map((index) => {
 						return(
 							<View key={"day-"+index} style={{

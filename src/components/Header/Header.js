@@ -76,22 +76,34 @@ const Header = (info) => {
 				<View style={styles.headerMenuTitle}>
 					<Text style={styles.headerMenuTitleText}>{selectedRouth == "Lines" ? getTranslationString("Lines", count.general.lng) : getTranslationString("Events", count.general.lng)}</Text>
 				</View>
-				<View style={styles.headerMenu}>
+				<View style={[styles.headerMenu, {
+					flexDirection: count.general.lng == "en" ? "row" : "row-reverse",
+				}]}>
 					<TouchableOpacity onPress={()=>{
 						navigate("EventsCalender", {});
 						setSelectedRouth("Events");
 
 						}}>
-						<View style={styles.headerMenuItem}>
-                            <MaterialCommunityIcons name="calendar-star" size={30} color={selectedRouth == "Events" ? "#f640b2" : "#FFF"} />
+						<View style={[styles.headerMenuItem, {
+							borderRightWidth:1,
+							borderEndColor:"#1e1e1e",
+							height:50,
+							backgroundColor:"#545454"
+						}]}>
+                            <MaterialCommunityIcons name="calendar-star" size={30} color={selectedRouth == "Events" ? "#f640b2" : "#d3d3d3"} />
                         </View>
 					</TouchableOpacity>
 					<TouchableOpacity onPress={()=>{
 						navigate("Lines", {});
 						setSelectedRouth("Lines");
 						}}>
-						<View style={[styles.headerMenuItem,{}]}>
-                            <MaterialCommunityIcons name="clock-time-four-outline" size={30} color={selectedRouth == "Lines" ? "#f640b2" : "#FFF"} />
+						<View style={[styles.headerMenuItem, {
+							borderRightWidth:1,
+							borderEndColor:"#1e1e1e",
+							height:50,
+							backgroundColor:"#545454"
+						}]}>
+                            <MaterialCommunityIcons name="clock-time-four-outline" size={30} color={selectedRouth == "Lines" ? "#f640b2" : "#d3d3d3"} />
                         </View>
 					</TouchableOpacity>
 				</View>
@@ -117,8 +129,8 @@ const styles = StyleSheet.create({
 		paddingRight:15,
 		paddingLeft:15,
 		height:50,
-		alignItems:"center",
-		justifyContent:"center",
+		paddingTop:5
+
 	},
 	headerMenuItem:{
 		width:40,
@@ -129,10 +141,10 @@ const styles = StyleSheet.create({
 		
 	},
 	headerMenuTitle:{
-		width:width - (2 * 42)
+		width:width - (2 * 42),
 	},
 	headerMenu:{
-		flexDirection:"row"
+		
 	},
 	headerMenuAndTitle:{
 		backgroundColor:"#474747",

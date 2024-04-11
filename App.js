@@ -23,6 +23,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {increment, decrement} from './src/actions/counterActions';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Main from './src/components/Main/Main';
+import Footer from './src/components/Footer/Footer';
 const Stack = createNativeStackNavigator();
 const {width, height} = Dimensions.get('screen');
 const appBox = () => {
@@ -88,9 +89,13 @@ const Flex = (navigation) => {
 						
 					</Stack.Navigator>
 				</NavigationContainer>
+
+				
 			</View>
+			<Footer style={styles.footer}></Footer>
 			
-			<Animated.View style={[styles.mainMenuBox, { marginLeft: fadeAnim}]}>
+
+			{/* <Animated.View style={[styles.mainMenuBox, { marginLeft: fadeAnim}]}>
 				<LinearGradient
 					style={styles.LinearGradient}
 					colors={['#27042c','#27042c','#9b0ea5','#9b0ea5','#390641','#390641']}
@@ -126,13 +131,11 @@ const Flex = (navigation) => {
 									</View>
 								</View>
 							</TouchableOpacity>
-
-
-
 						</View>
 					</View>
 				</LinearGradient>
-			</Animated.View>
+			</Animated.View> */}
+
 		</View>
 	);
 };
@@ -145,10 +148,13 @@ app: {
 },
 appBox:{
 zIndex:1,
-height:height,
+height:height-100,
 },
 header: {
 	flex: 1,
+},
+footer:{
+	flex:1
 },
 LinearGradient:{
 	height:"100%",

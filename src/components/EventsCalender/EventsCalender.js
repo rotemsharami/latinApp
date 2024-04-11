@@ -5,21 +5,14 @@ import { setRowType, getSelectedLang, setTextDirection, setArray, nice_list_text
 import { useSelector, useDispatch } from 'react-redux';
 import OrganizationStudies from '../OrganizationStudies/OrganizationStudies';
 import DayLines from '../DayLines/DayLines.js';
-
 import AllEventsList from '../AllEventsList/AllEventsList';
-
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {navigate} from "../../../RootNavigation";
+import {LinearGradient} from 'expo-linear-gradient';
+
 const {width, height} = Dimensions.get('screen');
 const logoWidth = width/5;
 const textWidth = width - logoWidth;
-
-
-
-const setText = (text) => {
-
-	return {html:text}
-}
 
 const EventsCalender = () => {
     const lng = getSelectedLang();
@@ -30,11 +23,8 @@ const EventsCalender = () => {
 	const [selectedDanceFloors, setSelectedDanceFloors] = useState([]);
 	const [selectedAreas, setSelectedAreas] = useState([]);
 	const [selectedDay, setSelectedDay] = useState("0");
-
+	const [selectedMonth, setSelectedMonth] = useState(moment().format("MM"));
 	const [selectedDisplay, setSelectedDisplay] = useState("Calender");
-
-
-
 
 	let getTagInfo = (tid, data) => {
 		let result = "no";
@@ -71,6 +61,13 @@ const EventsCalender = () => {
 		return index;
 	}
 
+	let getSelectedMonth = async (index) => {
+		return index;
+	}
+
+	
+
+
 	let setFirstData = async (data) => {
 		setLines(pre => data);
 		return true;
@@ -94,7 +91,14 @@ const EventsCalender = () => {
 		});
 	}
 
+	function changeMonth(type) {
+		let currentMonth = moment(moment().year()+"-"+selectedMonth+"-02");
+		let _currentMonth =  type == 1 ? currentMonth.add(1, 'months').format("MM") : currentMonth.subtract(1, 'months').format("MM");
+		setSelectedMonth(_currentMonth);
+	}
 
+
+	
 
     const set_zero = (num)=> {
         return num < 10 ? "0"+num : num;
@@ -103,9 +107,16 @@ const EventsCalender = () => {
 
     const getWeekly = () => {
 
+
 		let date_obj = moment();
 
-        const startOfMonth = date_obj.startOf('month').day();
+		
+
+		date_obj = moment(date_obj.year()+"-"+selectedMonth+"-01");
+
+		//console.log(stringTodayDate);
+
+		const startOfMonth = date_obj.startOf('month').day();
         const endOfMonth = parseInt(date_obj.endOf('month').format('DD'));
         let endOfMonthAddition = 6 - date_obj.endOf('month').day();
         let week = [];
@@ -200,7 +211,7 @@ const EventsCalender = () => {
 				setWeeklyData(pre => filterd);
 			});
 		}
-	}, [selectedAreas, selectedDanceFloors, selectedDay]);
+	}, [selectedMonth]);
 
 	return(
 		<View>
@@ -229,6 +240,7 @@ const EventsCalender = () => {
 						<View style={[styles.calenderListSwitchButton,{backgroundColor: selectedDisplay == "List" ? "#730874" :"#FFF"}]}>
 							<TouchableOpacity style={[styles.calenderListSwitchButtonTouch, {
 								flexDirection: count.general.lng == "en" ? "row" : "row-reverse",
+								
 							}]} onPress={()=>setSelectedDisplay("List")}>
 								<View style={styles.calenderListSwitchButtonIconBox}>
 									<MaterialCommunityIcons name="view-list" size={15} color={selectedDisplay == "List" ? "#FFF" :"#000"} />
@@ -255,7 +267,11 @@ const EventsCalender = () => {
 							<View style={[styles.daysOfWeekContainer, {
 								height:31
 							}]}>
-								<View style={styles.daysOfWeek}>
+								<LinearGradient style={[styles.daysOfWeek, {
+									
+								}]}
+								colors={['#a7a7a7','#888888','#a7a7a7']}
+								>
 									{Object.keys(lines.days_of_week).map((index) => {
 										return(
 											<View key={"dnacFloor-"+index} style={{
@@ -264,23 +280,27 @@ const EventsCalender = () => {
 												borderRightWidth:index == 6 ? 0 : 1,
 												paddingBottom:5,
 												paddingTop:5,
-												borderBottomWidth:1
+												borderBottomWidth:1,
 											}}>
 												<TouchableOpacity onPress={() => changeDanceFloor(index)}>
 													<Text
 														style={{
-															color: selectedDanceFloors.includes(index) ? "#FFF" : "#000",
+															color: "#FFF",
 														}}
 													>{lines.days_of_week_short[index]}</Text>
 												</TouchableOpacity>
 											</View>
 										);
 									})}
-								</View>
+								</LinearGradient>
 							</View>
 						
 							{weeklyData != undefined && 
-								<View style={styles.daysOfWeekContainer}>
+								<LinearGradient
+									style={styles.daysOfWeekContainer}
+									resizeMode="cover"
+									colors={['#FFF','#f3c6ff','#efd7ff']}
+								>
 									{Object.keys(weeklyData).map((weekIndex) => {
 										return(
 											<View key={"week-"+weekIndex} style={{
@@ -298,8 +318,9 @@ const EventsCalender = () => {
 																	justifyContent: 'center',
 																	alignItems: 'center',
 																	borderRightWidth:dayIndex == 6 ? 0 : 1,
-																	backgroundColor:weeklyData[weekIndex][dayIndex].today ? "#f3f3f3" : "#FFF",
+																	//backgroundColor:weeklyData[weekIndex][dayIndex].today ? "#f3f3f3" : "#FFF",
 																	height:(height-340) / 5,
+																	height:60
 																	
 																}}
 															>
@@ -311,7 +332,7 @@ const EventsCalender = () => {
 																		}}
 																	>
 																		<View style={[styles.dayDate, {
-																			backgroundColor:"#730874",
+																			backgroundColor:"#000",
 																			borderRadius:100,
 																			width:40,
 																			height:40,
@@ -330,11 +351,6 @@ const EventsCalender = () => {
 																	}
 
 																	{getDayEventsState(weeklyData[weekIndex][dayIndex].events) == false &&
-																	<TouchableOpacity
-																		onPress={() => {
-																			navigate("DayEvents", {events:weeklyData[weekIndex][dayIndex].events, date:weeklyData[weekIndex][dayIndex].date});
-																		}}
-																	>
 																		<View style={[styles.dayDate, {
 																			borderRadius:100,
 																			width:30,
@@ -350,7 +366,6 @@ const EventsCalender = () => {
 																				}}>{weeklyData[weekIndex][dayIndex].day_of_month}</Text>
 																			}
 																		</View>
-																		</TouchableOpacity>
 																	}
 
 
@@ -363,7 +378,7 @@ const EventsCalender = () => {
 											</View>
 										);
 									})}
-								</View>
+								</LinearGradient>
 							}
 						</View>
 						<View style={[styles.calenderButtonsAndMonth, {
@@ -372,19 +387,23 @@ const EventsCalender = () => {
 							<View style={[styles.calenderButton, {
 								flexDirection: count.general.lng == "en" ? "column" : "column-reverse",
 							}]}>
-								<View style={styles.iconBox}>
-									<MaterialCommunityIcons name={count.general.lng == "en" ? "arrow-left-bold-circle" : "arrow-right-bold-circle"} size={30} color="#000" />
-								</View>
+								<TouchableOpacity onPress={()=>changeMonth(1)}>
+									<View style={styles.iconBox}>
+										<MaterialCommunityIcons name={count.general.lng == "en" ? "arrow-left-bold-circle" : "arrow-right-bold-circle"} size={30} color="#000" />
+									</View>
+								</TouchableOpacity>
 							</View>
 							<View style={styles.calenderMonth}>
-								<Text style={styles.calenderMonthText}>{lines.months[moment().month()]}</Text>
+								<Text style={styles.calenderMonthText}>{lines.months[moment(moment().year()+"-"+selectedMonth+"-01").month()]}</Text>
 							</View>
 							<View style={[styles.calenderButton, {
 								flexDirection: count.general.lng == "en" ? "column" : "column-reverse",
 							}]}>
+								<TouchableOpacity onPress={()=>changeMonth(0)}>
 								<View style={styles.iconBox}>
 									<MaterialCommunityIcons name={count.general.lng == "en" ? "arrow-right-bold-circle" : "arrow-left-bold-circle"} size={30} color="#000" />
 								</View>
+								</TouchableOpacity>
 							</View>
 						</View>
 
@@ -408,29 +427,30 @@ const styles = StyleSheet.create({
 
 	},
 	eventlogo:{
+
 	},
 	calenderListSwitchButtonTouch:{
 		padding:3
 	},
 	calenderSection:{
-		marginTop:15,
+		margin:10
 	},
 	calenderListSwitchButtonIconBox:{
 		paddingTop:3
 	},
 
 	calenderListSwitchButton:{
-		flexDirection:"row",
 		
 	},
 	calenderListSwitch:{
 		borderWidth:1,
-		marginTop:15
+		margin:10
 	},
 	calenderButtonsAndMonth:{
 		backgroundColor:"#474747",
 		height:70,
 		alignItems:"center"
+		
 		
 	},
 	calenderMonthText:{
@@ -438,7 +458,7 @@ const styles = StyleSheet.create({
 		color:"#FFF"
 	},
 	calenderMonth:{
-		width: width - (2 * 40),
+		width: width - (2 * 40) - 20,
 		alignItems:"center"
 	},
 	calenderButton:{

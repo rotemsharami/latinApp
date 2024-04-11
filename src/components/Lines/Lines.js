@@ -333,12 +333,6 @@ const styles = StyleSheet.create({
 		top:-10
 		
 	},
-	pageTitle:{
-		padding:5
-	},
-	pageTitleText:{
-		fontSize:20
-	},
 	dayShort:{
 		borderRadius: 40, 
 		borderWidth:2,

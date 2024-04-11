@@ -26,6 +26,7 @@ const Schedule = (schedule) => {
     }
 
     const NumberToStringTime = (number) => {
+        console.log(number);
         let intNumber = (parseInt(number) / 60) / 60;
         let hower = Math.floor(intNumber);
         let minuts =  Math.round((intNumber - hower) * 60);

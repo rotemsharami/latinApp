@@ -1,4 +1,4 @@
-import {Image,StyleSheet,Text,View,Dimensions,Animated,Easing,ImageBackground,TouchableOpacity,I18nManager,ScrollView, SafeAreaView, StatusBar} from 'react-native';
+import {Image,StyleSheet,Text,View,Dimensions,Animated,Easing,ImageBackground,TouchableOpacity,I18nManager,ScrollView, SafeAreaView, StatusBar, Pressable} from 'react-native';
 import React, {useRef, useState, useEffect} from 'react';
 import OrganizationBox from '../organizationBox/organizationBox.js';
 import OrganizationBoxLink from '../OrganizationBoxLink/OrganizationBoxLink.js';
@@ -11,7 +11,6 @@ import Location from '../Location/Location';
 import ContactInfo from '../ContactInfo/ContactInfo.js';
 import storage from '../../storage/storage';
 import OrganizationEvents from '../OrganizationEvents/OrganizationEvents.js';
-import RenderHtml from 'react-native-render-html';
 import { setRowType, getSelectedLang, setTextDirection, setArray, nice_list_text} from '../../tools/tools';
 import { useSelector, useDispatch } from 'react-redux';
 import OrganizationStudies from '../OrganizationStudies/OrganizationStudies.js';
@@ -60,9 +59,7 @@ const Organization = (info) => {
 	const [organization, setOrganization] = useState({});
 	const [menu, setMenu] = useState([]);
 	const [organizationLinesData, setOrganizationLinesData] = useState([]);
-
     const [selectedLine, setSelectedLine] = useState();    
-
 
 	const setSelectedMenuItem = (name) => {
 		setMenu(menu.map(artwork => {
@@ -77,24 +74,14 @@ const Organization = (info) => {
 		return menu.filter(item => item.name == type && item.active).length > 0;
 	}
 
-	
-	// useEffect(() => {
-	// 	setLines(undefined);
-	// }, [count.general.lng]);
-
-
-
 	useEffect(() => {
 		let url = 'https://latinet.co.il/'+count.general.lng+'/organization_mobile/'+organizationNid;
 		fetch(url)
 		.then((res) => res.json())
 		.then((data) => {
 			setOrganization(data.data);
-			//organizationLines:organization.lines
 			setOrganizationLinesData(data.data.lines);
-			console.log(setArray(data.data.lines)[0].nid);
 			setSelectedLine(setArray(data.data.lines)[0].nid);
-
 			let menu = [
 				{name: "info", title: data.data.labels[0], active: info.route.params.type == "global" ? true : false}
 			];
@@ -122,7 +109,7 @@ const Organization = (info) => {
 			{menu.map((prop, key) => {
 			return (
 				<View key={"menu"+key}>
-					<TouchableOpacity style={
+					<Pressable style={
 						{
 							flexDirection:"column",
 							color:prop.active ? "#730874" : "#FFF",
@@ -143,7 +130,7 @@ const Organization = (info) => {
 								color:prop.active ? "#FFF" : "#730874",
 								textAlign:"center"
 							}}>{prop.title}</Text>
-					</TouchableOpacity>
+					</Pressable>
 				</View>
 			);
 			})}
@@ -157,10 +144,6 @@ const Organization = (info) => {
 						{menuOn("info") &&
 							<View>
 								<SliderX gallery={organization.gallery}></SliderX>
-
-
-
-
 								<View style={styles.danceFloorsAndServices}>
 									<View style={styles.danceFloors}>
 										<DanceFloors danceServices={organization.dance_floors}></DanceFloors>
@@ -169,14 +152,8 @@ const Organization = (info) => {
 										<DanceServices danceServices={organization.dance_floors}></DanceServices>
 									</View>
 								</View>
-
-
-
 								<ServicesX services={organization.services}></ServicesX>
 								<Location organization={organization}></Location>
-
-
-
 							</View>
 						}
 						{(menuOn("lines") && organizationLinesData != undefined) && 
@@ -188,28 +165,25 @@ const Organization = (info) => {
 						{menuOn("studies") &&
 							<OrganizationStudies organizationStudies={{organizationStudies: organization.org_courses, labels:organization.labels, selectedNid: info.route.params.type == "studie" ? info.route.params.selectedNid : 0}}></OrganizationStudies>
 						}
-
-
-
+					</View>
+					<View style={styles.ContactInfoFooter}>
+						{Object.keys(organization).length > 0 &&  
+							<ContactInfo organization={organization}></ContactInfo>
+						}
+					</View>
+					{organization.other_organizations != undefined &&
+						<View style={styles.otherOrganizations}>
+							{/* <Text>{JSON.stringify(organization.other_organizations, null, 2)}</Text> */}
+							<View style={styles.otherOrganizationsLabel}>
+								<Text style={styles.otherOrganizationsLabelText}>{organization.labels[10]}</Text>
+							</View>
+							{organization.other_organizations.map((item, key) => {
+								return (
+									<OrganizationBoxLink _setOrganizationNid={setOrganizationNid} organization={item} key={"org-"+key}></OrganizationBoxLink>
+								);
+							})}
 						</View>
-						<View style={styles.ContactInfoFooter}>
-							{Object.keys(organization).length > 0 &&  
-								<ContactInfo organization={organization}></ContactInfo>
-							}
-						</View>
-							{organization.other_organizations != undefined &&
-								<View style={styles.otherOrganizations}>
-									{/* <Text>{JSON.stringify(organization.other_organizations, null, 2)}</Text> */}
-									<View style={styles.otherOrganizationsLabel}>
-										<Text style={styles.otherOrganizationsLabelText}>{organization.labels[10]}</Text>
-									</View>
-									{organization.other_organizations.map((item, key) => {
-										return (
-											<OrganizationBoxLink _setOrganizationNid={setOrganizationNid} organization={item} key={"org-"+key}></OrganizationBoxLink>
-										);
-									})}
-								</View>
-							}
+					}
 				</ScrollView>
 			</View>
 		</View>
@@ -217,7 +191,6 @@ const Organization = (info) => {
 }
 export default Organization;
 const styles = StyleSheet.create({
-
 	danceFloorsAndServices:{
 		flexDirection:"row"
 	},
@@ -227,8 +200,6 @@ const styles = StyleSheet.create({
 	services:{
 		flexDirection:"column"
 	},
-
-
 	fullInfoBox:{
 		paddingLeft:10,
 		paddingRight:10
@@ -266,9 +237,6 @@ const styles = StyleSheet.create({
 	},
 	DanceServicesAndDanceFloors:{
 		flexDirection:"row"
-	},
-	ContactInfoFooter:{
-		
 	},
 	otherOrganizationsLabelText:{
 		fontSize:20

@@ -6,7 +6,6 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSelector, useDispatch } from 'react-redux';
 const Main = (info) => {
 	const count = useSelector((store) => store.count.count);
-	console.log(count);
 	return(
 		<View>
 			{count.selectedScreen == "Lines" && 

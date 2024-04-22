@@ -2,15 +2,8 @@ import moment from "moment";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import storage from "../storage/storage";
 import { I18nManager } from "react-native";
-import countReducer from "../reducers/countReducer";
 import { useSelector } from 'react-redux';
-import {store} from "../../store/store";
 
-
-export const getSelectedLang = ()=> {
-    const count = useSelector((store) => store.count.count);
-    return count.general.lng;
-}
 
 
 

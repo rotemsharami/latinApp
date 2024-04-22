@@ -1,7 +1,7 @@
 import React, { PureComponent, useRef, useState} from 'react';
 import { View, Text, FlatList, StyleSheet, Animated, ImageBackground, TouchableOpacity} from 'react-native';
 import SlideItem from '../SliderZ/SliderZItem';
-import { setRowType, getSelectedLang, setTextDirection} from '../../tools/tools';
+import { setRowType, setTextDirection} from '../../tools/tools';
 import { useSelector, useDispatch } from 'react-redux';
 // Custom PureComponent for rendering each item
 class MyListItem extends PureComponent {
@@ -12,7 +12,7 @@ class MyListItem extends PureComponent {
 		<ImageBackground source={{uri:"https://latinet.co.il/"+item.gallery[0]}} resizeMode="cover" style={styles.image}>
 		<TouchableOpacity style={styles.logoAndTextBox} onPress={() => navigate("Organization", {nid: item.nid, type:"global", selectedNid:0})}>
 		  <View style={{
-			flexDirection: setRowType(getSelectedLang()),
+			flexDirection: setRowType(),
 		  }}>
 			<View style={styles.logo}>
 			  <ImageBackground source={{uri:"https://latinet.co.il/"+item.general_image[0]}} resizeMode="cover" style={styles.logoImage}></ImageBackground>

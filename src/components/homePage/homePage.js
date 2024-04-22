@@ -2,7 +2,7 @@ import React, {useRef, useState, useEffect} from 'react';
 import { View, Text, ScrollView, I18nManager, SafeAreaView, StatusBar, StyleSheet} from 'react-native';
 import Slider from '../Slider/Slider';
 import TodaysLines from '../TodaysLines/TodaysLines';
-import {setArray, getSelectedLang} from "../../tools/tools.js";
+import {setArray} from "../../tools/tools.js";
 import EventsList from '../EventsList/EventsList';
 import { useSelector, useDispatch } from 'react-redux';
 import SliderZ from '../SliderZ/SliderZ';
@@ -22,21 +22,20 @@ const HomePage = (info) => {
 	const [organizationsCarusel, setOrganizationsCarusel] = useState({});
 	
 	
-	const lng = getSelectedLang();
 	//const lng = "en";
 	
 
 	
 
 	useEffect(() => {
-			let url = 'https://latinet.co.il/'+count.general.lng+'/general_data/';
+			let url = 'https://latinet.co.il/'+count.lng+'/general_data/';
 			fetch(url)
 			.then((res) => res.json())
 			.then((data) => {
 				setOrganizationsCarusel(data.data);
 			});
 		
-	}, [count.general.lng]);
+	}, [count.lng]);
 	return(
 		<View style={styles.container}>
 			<ScrollView

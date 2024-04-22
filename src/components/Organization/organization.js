@@ -11,7 +11,7 @@ import Location from '../Location/Location';
 import ContactInfo from '../ContactInfo/ContactInfo.js';
 import storage from '../../storage/storage';
 import OrganizationEvents from '../OrganizationEvents/OrganizationEvents.js';
-import { setRowType, getSelectedLang, setTextDirection, setArray, nice_list_text} from '../../tools/tools';
+import { setRowType, setTextDirection, setArray, nice_list_text} from '../../tools/tools';
 import { useSelector, useDispatch } from 'react-redux';
 import OrganizationStudies from '../OrganizationStudies/OrganizationStudies.js';
 
@@ -24,10 +24,8 @@ const setText = (text) => {
 
 const Organization = (info) => {
     const scrollRef = useRef();
-	const [organizationNid, setOrganizationNid] = useState(info.route.params.nid);
-    const lng = getSelectedLang();
+	const [organizationNid, setOrganizationNid] = useState(info._organizationNid);
 	const count = useSelector((store) => store.count.count);
-	const dir = setTextDirection(count.general.lng);
 	const [sdata, setSdata] = useState({});
 
 	useEffect(() => {
@@ -75,7 +73,7 @@ const Organization = (info) => {
 	}
 
 	useEffect(() => {
-		let url = 'https://latinet.co.il/'+count.general.lng+'/organization_mobile/'+organizationNid;
+		let url = 'https://latinet.co.il/'+count.lng+'/organization_mobile/'+organizationNid;
 		fetch(url)
 		.then((res) => res.json())
 		.then((data) => {
@@ -100,7 +98,7 @@ const Organization = (info) => {
 				animated: true,
 			});
 		});
-	}, [organizationNid, count.general.lng]);
+	}, [organizationNid, count.lng]);
 
 	return(
 		<View style={styles.container}>

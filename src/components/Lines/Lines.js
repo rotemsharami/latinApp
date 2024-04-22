@@ -1,10 +1,10 @@
-import {Image,StyleSheet,Text,View,Dimensions,Animated,Easing,ImageBackground,TouchableOpacity,I18nManager,ScrollView, SafeAreaView, StatusBar} from 'react-native';
+import {Image,StyleSheet,Text,View,Dimensions,Animated, PanResponder, Easing,ImageBackground,TouchableOpacity,I18nManager,ScrollView, SafeAreaView, StatusBar} from 'react-native';
 import React, {useRef, useState, useEffect} from 'react';
 import moment from 'moment';
 import { setRowType, getSelectedLang, setTextDirection, setArray, nice_list_text} from '../../tools/tools';
 import { useSelector, useDispatch } from 'react-redux';
 import OrganizationStudies from '../OrganizationStudies/OrganizationStudies.js';
-import DayLines from '../DayLines/DayLines.js';
+import Line from '../Line/Line';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const {width, height} = Dimensions.get('screen');
@@ -14,17 +14,16 @@ const setText = (text) => {
 	return {html:text}
 }
 
-const Lines = () => {
-    const lng = getSelectedLang();
+const Lines = (info) => {
 	const count = useSelector((store) => store.count.count);
-	const dir = setTextDirection(count.general.lng);
-	
-	const [lines, setLines] = useState(undefined);
+	const dir = setTextDirection(count.lng);
+	const [lines, setLines] = useState(count.lines);
 	const [weeklyData, setWeeklyData] = useState([]);
 	const [selectedDanceFloors, setSelectedDanceFloors] = useState([]);
 	const [selectedAreas, setSelectedAreas] = useState([]);
 	const [selectedDay, setSelectedDay] = useState("0");
-
+	const animationValues = useRef([]).current;
+	
 	let getTagInfo = (tid, data) => {
 		let result = "no";
 		let filter = data.filter(item => item.tid == tid);
@@ -96,7 +95,7 @@ const Lines = () => {
                 "dayObject": dayObject,
                 "date_short": dayObject.format('DD/MM'),
                 "active": dayObject.format('YYYY-MM-DD') == moment().format('YYYY-MM-DD') ? true : false,
-                "day_of_week": lines.days_of_week[dayObject.day()],
+                "day_of_week": count.lines.global_metadata.days_of_week[dayObject.day()],
                 "day_index": dayObject.day(),
                 "events":[]
             };
@@ -110,15 +109,9 @@ const Lines = () => {
 		let filterdEvents = [];
         newWeeklyData.forEach((day, index) => {
             if(day.events != undefined){
-				filterdEvents = lines.events.filter((event) => {
-                    let in_day;
-                    if(event.event_type[Object.keys(event.event_type)[0]].tid == "49"){
-                        in_day = parseInt(event.week_day) == parseInt(day.day_index);
-                    }
+				filterdEvents = count.lines.lines.filter((event) => {
+                    let in_day = parseInt(event.week_day) == parseInt(day.day_index);
 					
-                    else if(event.event_type[Object.keys(event.event_type)[0]].tid == "55"){
-                        in_day = day.date == event.event_date;
-                    }
 					
                     if(event.changed_type != undefined && event.event_type[Object.keys(event.event_type)[0]].tid == "49"){
                         if(event.changed_type == "1"){
@@ -161,39 +154,72 @@ const Lines = () => {
 
 	useEffect(() => {
 		setLines(undefined);
-	}, [count.general.lng]);
+	}, [count.lng]);
 
 
 	useEffect(() => {
-		let url = 'https://latinet.co.il/'+count.general.lng+'/lines_data/';
+		let url = 'https://latinet.co.il/'+count.lng+'/lines_data/';
 		if(lines === undefined){
-			fetch(url)
-			.then((res) => res.json())
-			.then((data) => {
-				setLines(pre => data.data);
-			});
+			// fetch(url)
+			// .then((res) => res.json())
+			// .then((data) => {
+				//setLines(pre => data.data);
+				setLines(count.lines);
+				//console.log(count.lines);
+
+
+
+				  
+
+			// });
 		}
 		if(lines != undefined){
 			filterDayEvents().then(function(filterd) {
 				setWeeklyData(pre => filterd);
+
+				//animationValues.current = setArray(weeklyData[selectedDay].events).map(() => new Animated.Value(-60));
+
+			// Animated.stagger(60, weeklyData[selectedDay].events.map(item => Animated.timing(item, {
+			// 	toValue: 0,
+			// 	duration: 180,
+			// 	useNativeDriver: true,
+			//   })).concat()).start();
+
+				
 			});
 		}
-	}, [count.general.lng, lines]);
+	}, [lines]);
 
 	useEffect(() => {
 		if(weeklyData.length > 0){
 			filterDayEvents().then(function(filterd) {
 				setWeeklyData(pre => filterd);
+				// animationValues.current = setArray(weeklyData[selectedDay].events).map(() => new Animated.Value(-60));
+
+				// Animated.stagger(60, weeklyData[selectedDay].events.map(item => Animated.timing(item, {
+				// 	toValue: 0,
+				// 	duration: 180,
+				// 	useNativeDriver: true,
+				//   })).concat()).start();
+
 			});
 		}
+
 	}, [selectedAreas, selectedDanceFloors, selectedDay]);
 
+
+
+
+
+
 	return(
-		<View style={styles.container}>
+		<View
+			style={[styles.box]}
+			>
 			{lines != undefined &&
 			<View style={styles.containerValues}>
 				<View style={[styles.filterItems, {
-					flexDirection: count.general.lng == "en" ? "row" : "row-reverse",
+					flexDirection: count.lng == "en" ? "row" : "row-reverse",
 				}]}>
 					<View style={styles.filterIcon}><MaterialCommunityIcons name="music" size={14} color="#fff" /></View>
 					{Object.keys(lines.used_dance_floors).map((index) => {
@@ -209,14 +235,14 @@ const Lines = () => {
 										style={{
 											color: selectedDanceFloors.includes(index) ? "#FFF" : "#000",
 										}}
-									>{getTagInfo(index, lines.dance_floors)}</Text>
+									>{getTagInfo(index, lines.dance_floors[count.lng])}</Text>
 								</TouchableOpacity>
 							</View>
 						);
 					})}
 				</View>
 				<View style={[styles.filterItems, {
-					flexDirection: count.general.lng == "en" ? "row" : "row-reverse",
+					flexDirection: count.lng == "en" ? "row" : "row-reverse",
 				}]}>
 					<View style={styles.filterIcon}><MaterialCommunityIcons name="map-marker" size={14} color="#fff" /></View>
 					{Object.keys(lines.used_area).map((index) => {
@@ -232,16 +258,77 @@ const Lines = () => {
 										style={{
 											color: selectedAreas.includes(index) ? "#FFF" : "#000",
 										}}
-									>{getTagInfo(index, lines.areas)}</Text>
+									>{getTagInfo(index, lines.areas[count.lng])}</Text>
 								</TouchableOpacity>
 							</View>
 						);
 					})}
 				</View>
+				
+				{weeklyData[selectedDay] !== undefined && 
+					<View style={styles.day}>
+						{weeklyData[selectedDay].events !== undefined && 
+							<View style={styles.linesList}>
+									{weeklyData[selectedDay] !== undefined && 
+										<View>
+											{weeklyData[selectedDay].events !== undefined && 
+												<View>
+													{weeklyData[selectedDay].events[0] !== undefined && 
+														<SafeAreaView style={{
+															height:height-332,
+															backgroundColor:"#b7b7b7"
+
+															}}>
+															<ScrollView style={{flex:1}}>
+																
+
+
+
+																<View style={styles.displayBox}>
+																	<View style={styles.display}>
+																		<View style={styles.listBox}>
+																			{setArray(weeklyData[selectedDay].events).map((item, key) => {
+																			return (
+																				// <Animated.View
+																				// 	key={key}
+																				// 	style={[styles.item, { transform: [{ translateX: animationValues[key] }] }]}
+																				// >
+																					<Line
+																						key={"line-"+item.nid}
+																						item={item}
+																						_organizationNid={info._organizationNid}
+																						_setOrganizationNid={info._setOrganizationNid}
+																						_setSelectedScreen={info._setSelectedScreen}
+																						>
+																					</Line>
+																			// </Animated.View>
+																			);
+																			})}
+																		</View>
+																	</View>
+																</View>
+
+
+
+															</ScrollView>
+														</SafeAreaView>
+													}
+												</View>
+											}
+										</View>
+									}
+							</View>
+						}
+					</View>
+				}
+
+
+
+
 				<View style={[styles.daysControls, {
-					flexDirection: count.general.lng == "en" ? "row" : "row-reverse",
+					flexDirection: count.lng == "en" ? "row" : "row-reverse",
 				}]}>
-					{Object.keys(lines.days_of_week_short).map((index) => {
+					{Object.keys(count.lines.global_metadata.days_of_week_short[count.lng]).map((index) => {
 						return(
 							<View key={"day-"+index} style={{
 								backgroundColor: selectedDay == index ? "#730874" : "#e7e7e7",
@@ -278,42 +365,27 @@ const Lines = () => {
 											style={{
 												color: "#000",
 											}}
-										>{lines.days_of_week_short[index]}</Text>
+										>{count.lines.global_metadata.days_of_week_short[count.lng][index]}</Text>
 
 								</View>
 								<Text
 										style={{
 											color: selectedDay == index ? "#FFF" : "#000",
 										}}
-									>{lines.days_of_week_short_date[index]}</Text>
+									>{count.lines.global_metadata.days_of_week_short[count.lng][index]}</Text>
 								</TouchableOpacity>
 							</View>
 						);
 					})}
             	</View>
-				{weeklyData[selectedDay] !== undefined && 
-					<View style={styles.day}>
-						{weeklyData[selectedDay].events !== undefined && 
-							<View style={styles.linesList}>
-									{weeklyData[selectedDay] !== undefined && 
-										<View>
-											{weeklyData[selectedDay].events !== undefined && 
-												<View>
-													{weeklyData[selectedDay].events[0] !== undefined && 
-														<SafeAreaView style={{height:height-340}}>
-															<ScrollView style={{flex:1}}>
-																<DayLines todaysLinesData={{lines:weeklyData[selectedDay].events, labels: []}}></DayLines>
-															</ScrollView>
-														</SafeAreaView>
-													}
-												</View>
-											}
-										</View>
-									}
-							</View>
-						}
-					</View>
-				}
+
+
+
+
+
+
+
+
 			</View>
 			}
 		</View>

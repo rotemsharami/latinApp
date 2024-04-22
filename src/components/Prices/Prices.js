@@ -9,7 +9,7 @@ import {
 	} from 'react-native';
 
 import React, {useRef, useState, useEffect} from 'react';
-import {setArray, getSelectedLang, setTextDirection, setRowType} from "../../tools/tools.js";
+import {setArray, setTextDirection, setRowType} from "../../tools/tools.js";
 import { Icon } from 'react-native-elements';
 import RenderHtml from 'react-native-render-html';
 import { useSelector, useDispatch } from 'react-redux';
@@ -20,16 +20,14 @@ const Prices = (prices) => {
     const setText = (text) => {
         return {html:text}
     }
-
-	const lng = getSelectedLang();
 	const count = useSelector((store) => store.count.count);
-	const dir = setTextDirection(count.general.lng);
+	const dir = setTextDirection(count.lng);
 
 
     return(
         <View style={styles.listBox}>
             <View style={{
-                flexDirection:setRowType(count.general.lng),
+                flexDirection:setRowType(count.lng),
                 marginBottom:6
             }}>
                 <View style={styles.iconBox}>
@@ -44,7 +42,7 @@ const Prices = (prices) => {
             return (
                 <View
                     style={{
-                        flexDirection:setRowType(count.general.lng),
+                        flexDirection:setRowType(count.lng),
                         backgroundColor:"#dbdbdb",
                         marginBottom:2,
                     }}

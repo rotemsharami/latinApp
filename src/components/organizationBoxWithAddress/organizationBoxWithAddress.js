@@ -7,7 +7,7 @@ import {
 	TouchableOpacity,
 	I18nManager
 	} from 'react-native';
-import { setRowType, getSelectedLang, setTextDirection} from '../../tools/tools';
+import { setRowType, setTextDirection} from '../../tools/tools';
 
 import React, {useRef, useState, useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -16,13 +16,12 @@ const logoWidth = width/5;
 const textWidth = width - logoWidth;
 
 const OrganizationBox = (item) => {
-    const lng = getSelectedLang();
 	const count = useSelector((store) => store.count.count);
-	const dir = setTextDirection(count.general.lng);
+	const dir = setTextDirection(count.lng);
     return(
         <View style={styles.logoAndTextBox}>
             <View style={{
-                flexDirection: setRowType(count.general.lng),
+                flexDirection: setRowType(count.lng),
             }}>
                 <View style={styles.logo}>
                     <ImageBackground source={{uri:"https://latinet.co.il/"+item.organization.general_image}} resizeMode="cover" style={styles.logoImage}></ImageBackground>

@@ -30,7 +30,7 @@ const count = useSelector((store) => store.count.count);
 									return(
 										<TouchableOpacity kay={"calenderEventItem"+event.nid} onPress={() => navigate("Event", {event: event})}>
 										<View style={[styles.eventItem, {
-											flexDirection: count.general.lng == "en" ? "row" : "row-reverse",
+											flexDirection: count.lng == "en" ? "row" : "row-reverse",
 											
 										}]}>
 											<View style={styles.image}>
@@ -40,20 +40,20 @@ const count = useSelector((store) => store.count.count);
 													/>
 											</View>
 											<View style={[styles.titleAndText, {
-												alignItems: count.general.lng == "en" ? "flex-start" : "flex-end",
+												alignItems: count.lng == "en" ? "flex-start" : "flex-end",
 												padding:10
 											}]}>
 
 												<View style={styles.itemTitle}>
 													<Text style={[styles.titleText, {
-														textAlign: count.general.lng == "en" ? "left" : "right",
+														textAlign: count.lng == "en" ? "left" : "right",
 													}]}>
 
 														{event.title}
 												</Text>
 
 													<Text style={[styles.textText, {
-														textAlign: count.general.lng == "en" ? "left" : "right",
+														textAlign: count.lng == "en" ? "left" : "right",
 													}]}>
 														{event.address}
 														</Text>

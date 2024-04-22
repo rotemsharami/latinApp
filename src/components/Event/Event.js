@@ -1,7 +1,7 @@
-import { View, Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity, I18nManager} from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity, I18nManager, Animated} from 'react-native';
 
 import React, {useRef, useState, useEffect} from 'react';
-import {setArray, getSelectedLang, setTextDirection, setRowType} from "../../tools/tools.js";
+import {setArray, setTextDirection, setRowType} from "../../tools/tools.js";
 import { Icon } from 'react-native-elements';
 import RenderHtml from 'react-native-render-html';
 import { useSelector, useDispatch } from 'react-redux';
@@ -19,12 +19,27 @@ import moment from 'moment';
 const {width, height} = Dimensions.get('screen');
 const logoWidth = width/3;
 const textWidth = width - logoWidth;
-const Event = (event) => {
-	const lng = getSelectedLang();
-	const count = useSelector((store) => store.count.count);
-	const dir = setTextDirection(count.general.lng);
 
+
+
+const Event = (event) => {
+	const count = useSelector((store) => store.count.count);
+	const dir = setTextDirection(count.lng);
+	const scaleAnim = useRef(new Animated.Value(0)).current;
 	const [eventData, setEventData] = useState();
+
+
+	useEffect(() => {
+		Animated.timing(
+		  scaleAnim,
+		  {
+			toValue: 1,
+			duration: 1000,
+			useNativeDriver: true
+		  }
+		).start();
+	}, [scaleAnim]);
+
 
 
 	useEffect(() => {
@@ -33,10 +48,6 @@ const Event = (event) => {
 		.then((res) => res.json())
 		.then((data) => {
 			setEventData(data.data);
-			console.log(data.data);
-
-
-	
 		});
 	}, []);
 
@@ -62,6 +73,14 @@ const Event = (event) => {
 
 
     return(
+
+<Animated.View
+      style={{
+        ...props.style,
+        transform: [{ scale: scaleAnim }],
+      }}
+    >
+
         <View style={styles.section}>
 			{eventData != undefined && 
 				<View style={styles.sectionBox}>
@@ -107,6 +126,7 @@ const Event = (event) => {
 			}
 
         </View>
+		</Animated.View>
     );
 }
 export default Event;

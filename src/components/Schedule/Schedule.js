@@ -9,7 +9,7 @@ import {
 	} from 'react-native';
 
 import React, {useRef, useState, useEffect} from 'react';
-import {setArray, getSelectedLang, setTextDirection, setRowType} from "../../tools/tools.js";
+import {setArray, setTextDirection, setRowType} from "../../tools/tools.js";
 import { Icon } from 'react-native-elements';
 import RenderHtml from 'react-native-render-html';
 import { useSelector, useDispatch } from 'react-redux';
@@ -18,9 +18,8 @@ const {width, height} = Dimensions.get('screen');
 const logoWidth = width/5;
 const textWidth = width - logoWidth;
 const Schedule = (schedule) => {
-	const lng = getSelectedLang();
 	const count = useSelector((store) => store.count.count);
-	const dir = setTextDirection(count.general.lng);
+	const dir = setTextDirection(count.lng);
     const setText = (text) => {
         return {html:text}
     }
@@ -42,7 +41,7 @@ const Schedule = (schedule) => {
             <View style={styles.scheduleList}>
                 {schedule.schedule.schedule.opening != undefined &&
                         <View style={[styles.scheduleListItemIconAndLabel, {
-                            flexDirection: count.general.lng == "en" ? "row" : "row-reverse",
+                            flexDirection: count.lng == "en" ? "row" : "row-reverse",
                         }]}>
                         <View style={styles.scheduleListItemIcon}>
                             <MaterialCommunityIcons name="door-open" size={14} color="#000" />
@@ -58,7 +57,7 @@ const Schedule = (schedule) => {
                 }
                 {schedule.schedule.schedule.lessons != undefined &&
                         <View style={[styles.scheduleListItemIconAndLabel, {
-                            flexDirection: count.general.lng == "en" ? "row" : "row-reverse",
+                            flexDirection: count.lng == "en" ? "row" : "row-reverse",
                         }]}>
                         <View style={styles.scheduleListItemIcon}>
                             <MaterialCommunityIcons name="school" size={14} color="#000" />
@@ -74,7 +73,7 @@ const Schedule = (schedule) => {
                 {schedule.schedule.schedule.party != undefined &&
 
                         <View style={[styles.scheduleListItemIconAndLabel, {
-                            flexDirection: count.general.lng == "en" ? "row" : "row-reverse",
+                            flexDirection: count.lng == "en" ? "row" : "row-reverse",
                         }]}>
                         <View style={styles.scheduleListItemIcon}>
                             <MaterialCommunityIcons name="music" size={14} color="#000" />

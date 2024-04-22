@@ -1,7 +1,7 @@
 import React, {Component, useState, useRef, useEffect} from "react";
 import {StyleSheet, View, Text, Image, Dimensions, SafeAreaView, Animated, TouchableOpacity, I18nManager} from 'react-native';
 import { Button, Icon } from 'react-native-elements';
-import {nice_list_text, setArray, getSelectedLang, setRowType, setTextDirection, getTranslationString} from "../../tools/tools.js";
+import {nice_list_text, setArray, setRowType, setTextDirection, getTranslationString} from "../../tools/tools.js";
 import { useSelector, useDispatch } from 'react-redux';
 import { Flex } from "@react-native-material/core";
 const {width, height} = Dimensions.get('screen');
@@ -20,9 +20,8 @@ const Footer = () => {
 		dispatch(changeLanguage(lng));
 	};
 
-	const lng = getSelectedLang();
 	const count = useSelector((store) => store.count.count);
-	const dir = setTextDirection(count.general.lng);
+	const dir = setTextDirection(count.lng);
 
 	return(
 		<View style={styles.headerContainer}>

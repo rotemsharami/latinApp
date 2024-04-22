@@ -9,7 +9,7 @@ import {
     useWindowDimensions
 	} from 'react-native';
 import React, {useRef, useState, useEffect} from 'react';
-import { setRowType, getSelectedLang, setTextDirection, setArray, nice_list_text} from '../../tools/tools';
+import { setRowType, setTextDirection, setArray, nice_list_text} from '../../tools/tools';
 import { Icon } from 'react-native-elements';
 import { WebView } from 'react-native-webview';
 import RenderHtml from 'react-native-render-html';
@@ -27,9 +27,8 @@ const renderersProps = {
 const OrganizationStudies = (organizationStudies) => {
 
 
-    const lng = getSelectedLang();
 	const count = useSelector((store) => store.count.count);
-	const dir = setTextDirection(count.general.lng);
+	const dir = setTextDirection(count.lng);
     const { widthA } = useWindowDimensions();
     const [selectedLine, setSelectedLine] = useState(organizationStudies.organizationStudies.selectedNid != 0 ? organizationStudies.organizationStudies.selectedNid : setArray(organizationStudies.organizationStudies.organizationStudies)[0].nid);
     const setText = (text) => {
@@ -38,7 +37,7 @@ const OrganizationStudies = (organizationStudies) => {
     return(
         <View style={styles.listBox}>
             <View style={{
-					flexDirection: setRowType(count.general.lng),
+					flexDirection: setRowType(count.lng),
 				}}>
         {setArray(organizationStudies.organizationStudies.organizationStudies).map((prop, key) => {
             return (

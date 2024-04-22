@@ -1,4 +1,4 @@
-import React, {Component, useState, useRef, useEffect} from "react";
+import React, {Component, useState, useRef, useEffect, useCallback} from "react";
 import {StyleSheet, View, Text, Image, Dimensions, SafeAreaView, Animated, TouchableOpacity, I18nManager} from 'react-native';
 import { Button, Icon } from 'react-native-elements';
 import {nice_list_text, setArray, getSelectedLang, setRowType, setTextDirection, getTranslationString} from "../../tools/tools.js";
@@ -7,30 +7,37 @@ import { Flex } from "@react-native-material/core";
 const {width, height} = Dimensions.get('screen');
 import {navigate, navigationRef} from "../../../RootNavigation";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import {increment, decrement, changeLanguage} from '../../actions/counterActions';
+import {increment, decrement, changeLanguage, changeSelectedScreen} from '../../actions/counterActions';
 const logoWidth = 40;
 const textWidth = width - logoWidth;
 
 
 
 const Header = (info) => {
+
+
 	//console.log(navigationRef?.getRootState()?.routes[0]);
 	const dispatch = useDispatch();
+	const changeScreen = (screen) => {
+		dispatch(changeSelectedScreen(screen));
+	};
+
 	const changeLng = (lng) => {
 		dispatch(changeLanguage(lng));
 	};
 
-
+	
+	const changeTheScreen = useCallback((screen) => {
+		info._setSelectedScreen(screen);
+	}, [info._setSelectedScreen]);
+	
 
 	const [selectedRouth, setSelectedRouth] = useState("Lines");
 	
 	
-	
-	const lng = getSelectedLang();
 	const count = useSelector((store) => store.count.count);
-	const dir = setTextDirection(count.general.lng);
+	const dir = setTextDirection(count.lng);
 
-	console.log(count.general);
 
 	
 	useEffect(() => {
@@ -63,25 +70,27 @@ const Header = (info) => {
 					</View>
 				</TouchableOpacity>
 				<View style={styles.mainMenu}>
-					<TouchableOpacity onPress={()=>changeLng(count.general.lng == "en" ? "he" : "en")}>
+					<TouchableOpacity onPress={()=>changeLng(count.lng == "en" ? "he" : "en")}>
 						<View style={styles.lang}>
-							<Text style={styles.langText}>{count.general.lng == "en" ? "עב" : "EN"}</Text>
+							<Text style={styles.langText}>{count.lng == "en" ? "עב" : "EN"}</Text>
 						</View>
 					</TouchableOpacity>
 				</View>
 			</View>
 			<View style={[styles.headerMenuAndTitle, {
-				flexDirection: count.general.lng == "en" ? "row" : "row-reverse",
+				flexDirection: count.lng == "en" ? "row" : "row-reverse",
 			}]}>
 				<View style={styles.headerMenuTitle}>
-					<Text style={styles.headerMenuTitleText}>{selectedRouth == "Lines" ? getTranslationString("Lines", count.general.lng) : getTranslationString("Events", count.general.lng)}</Text>
+					<Text style={styles.headerMenuTitleText}>{info._selectedScreen == "Lines" ? getTranslationString("Lines", count.lng) : getTranslationString("Events", count.lng)}</Text>
 				</View>
 				<View style={[styles.headerMenu, {
-					flexDirection: count.general.lng == "en" ? "row" : "row-reverse",
+					flexDirection: count.lng == "en" ? "row" : "row-reverse",
 				}]}>
 					<TouchableOpacity onPress={()=>{
-						navigate("EventsCalender", {});
-						setSelectedRouth("Events");
+						//navigate("EventsCalender", {});
+						changeTheScreen("Events");
+						info._changeScrinPan();
+						//changeScreen("Events");
 
 						}}>
 						<View style={[styles.headerMenuItem, {
@@ -90,12 +99,14 @@ const Header = (info) => {
 							height:50,
 							backgroundColor:"#545454"
 						}]}>
-                            <MaterialCommunityIcons name="calendar-star" size={30} color={selectedRouth == "Events" ? "#f640b2" : "#d3d3d3"} />
+                            <MaterialCommunityIcons name="calendar-star" size={30} color={info._selectedScreen == "Events" ? "#f640b2" : "#d3d3d3"} />
                         </View>
 					</TouchableOpacity>
 					<TouchableOpacity onPress={()=>{
-						navigate("Lines", {});
-						setSelectedRouth("Lines");
+						//navigate("Lines", {});
+						changeTheScreen("Lines");
+						info._changeScrinPan();
+						//changeScreen("Lines");
 						}}>
 						<View style={[styles.headerMenuItem, {
 							borderRightWidth:1,
@@ -103,7 +114,7 @@ const Header = (info) => {
 							height:50,
 							backgroundColor:"#545454"
 						}]}>
-                            <MaterialCommunityIcons name="clock-time-four-outline" size={30} color={selectedRouth == "Lines" ? "#f640b2" : "#d3d3d3"} />
+                            <MaterialCommunityIcons name="clock-time-four-outline" size={30} color={info._selectedScreen == "Lines" ? "#f640b2" : "#d3d3d3"} />
                         </View>
 					</TouchableOpacity>
 				</View>

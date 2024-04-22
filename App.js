@@ -4,10 +4,8 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Header from "./src/components/Header/Header";
 import { NavigationContainer } from "@react-navigation/native";
 import HomePage from "./src/components/homePage/homePage";
-import DayEvents from "./src/components/DayEvents/DayEvents";
 import Event from "./src/components/Event/Event";
 import EventsCalender from "./src/components/EventsCalender/EventsCalender";
-
 import Redux from "./src/components/Redux/Redux";
 import Organization from "./src/components/Organization/organization";
 import Lines from './src/components/Lines/Lines';
@@ -20,12 +18,14 @@ import {getData, storeData, setArray} from "./src/tools/tools";
 import { Provider } from 'react-redux';
 import { store } from './store/store';
 import { useSelector, useDispatch } from 'react-redux';
-import {increment, decrement} from './src/actions/counterActions';
+import {increment, decrement, setLines, setEvents} from './src/actions/counterActions';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Main from './src/components/Main/Main';
 import Footer from './src/components/Footer/Footer';
+
 const Stack = createNativeStackNavigator();
 const {width, height} = Dimensions.get('screen');
+
 const appBox = () => {
 	return(
 		<Provider store={store}>
@@ -35,64 +35,122 @@ const appBox = () => {
 		</Provider>
 	);
 }
-const Flex = (navigation) => {
+
+const Flex = () => {
 	const dispatch = useDispatch();
 	const [fadeAnimVal, setFadeAnimVal] = useState(-width);
-	const fadeAnim = useRef(new Animated.Value(-width)).current;
-	const [lng, setLng] = useState("he");
-
+	const [panBoxVal, setPanBoxVal] = useState(0);
+	const [organizationNid, setOrganizationNid] = useState(1);
+	const boxPan = useRef(new Animated.Value(0)).current;
+	const [selectedScreen, setSelectedScreen] = useState("Lines");
 	const count = useSelector((store) => store.count.count);
-
 	let [globalData, setGlobalData] = useState({});
+	const [isLinesReady, setIsLinesReady] = useState(false);
+	const [isEventsReady, setEventsReady] = useState(false);
+
+	useEffect(() => {
+		let linesUrl = 'https://latinet.co.il/'+count.lng+'/super_lines/';
+		if(isLinesReady === false){
+			fetch(linesUrl)
+			.then((res) => res.json())
+			.then((data) => {
+				dispatch(setLines(data.data));
+				setIsLinesReady(true);
+				let EventsUrl = 'https://latinet.co.il/'+count.lng+'/events_data/';
+				if(isEventsReady === false){
+					fetch(EventsUrl)
+					.then((res) => res.json())
+					.then((data) => {
+						dispatch(setEvents(data.data));
+						setEventsReady(true);
+						
+					});
+				}
+
+
+
+			});
+		}
+	}, [count.lng, isLinesReady]);
+
+
+
+
 	const handleIncrement = (value) => {
 		dispatch(increment(value));
 	};
-	// const getUsers = async () => {
-	// 	let res = await axios.get("https://latinet.co.il/en/general_data/");
-	// 	let { data } = res.data.data;
-	// 	return res.data.data;
-	// };
 
-			I18nManager.forceRTL(false);
-			I18nManager.allowRTL(false);
+	I18nManager.forceRTL(false);
+	I18nManager.allowRTL(false);
+
+	const changeScrinPan = () => {
+		let v = panBoxVal == 0 ? -width : 0;
 
 
-	const fadeIn = () => {
-		let v = fadeAnimVal == 0 ? -width : 0;
-		setFadeAnimVal(v);
-		Animated.timing(fadeAnim, {
+		setPanBoxVal(v);
+		
+		Animated.timing(boxPan, {
 			toValue: v,
 			duration: 280,
 			useNativeDriver: false,
 		}).start();	
+
 	};
+
+
+
+
 	return (
 		<View style={styles.app}>
 			<View style={styles.appBox}>
-				<Header style={styles.header} fadeIn={fadeIn}></Header>
+				<Header
+					style={styles.header}
+					_selectedScreen={selectedScreen}
+					_setSelectedScreen={setSelectedScreen}
+					_changeScrinPan={changeScrinPan}
+				>
+
+				</Header>
 				
+				
+				
+				{ (selectedScreen == "Lines" &&  isLinesReady) &&
+					<Lines
+						_setOrganizationNid={setOrganizationNid}
+						_organizationNid={organizationNid}
+						_setSelectedScreen={setSelectedScreen}
+					></Lines>
+				}
+				{ (selectedScreen == "Events" &&  isEventsReady) &&
+					<EventsCalender></EventsCalender>
+				}
+
+
+				{ (selectedScreen == "Organization") &&
+					<Organization _organizationNid={organizationNid}></Organization>
+				}
+
+					
+
+
+
 				
 
-				<NavigationContainer ref={navigationRef}>
+				{/* <NavigationContainer ref={navigationRef}>
 					<Stack.Navigator screenOptions={{ headerShown: false }}>
 						<Stack.Screen name="Lines" component={Lines}/>
 						<Stack.Screen name="HomePage" component={HomePage} />
 						<Stack.Screen name="Configuration" component={Configuration}/>
-
 						<Stack.Screen name="EventsCalender" component={EventsCalender}/>
-						
-
 						<Stack.Screen name="DayEvents" component={DayEvents}/>
 						<Stack.Screen name="Event" component={Event}/>
-						
 						<Stack.Screen name="Organization" component={Organization}/>
-						
 					</Stack.Navigator>
-				</NavigationContainer>
+				</NavigationContainer> */}
 
 				
 			</View>
-			<Footer style={styles.footer}></Footer>
+			
 			
 
 			{/* <Animated.View style={[styles.mainMenuBox, { marginLeft: fadeAnim}]}>
@@ -148,7 +206,7 @@ app: {
 },
 appBox:{
 zIndex:1,
-height:height-100,
+height:height-26,
 },
 header: {
 	flex: 1,
@@ -160,14 +218,6 @@ LinearGradient:{
 	height:"100%",
 	width:"100%",
 },
-mainMenuBox:{
-	height:height-60,
-	width:width,
-	top:60,
-	position:'absolute',
-	zIndex:2,
-},
-
 mainMenuList:{
 height:100,
 flexDirection:"row"

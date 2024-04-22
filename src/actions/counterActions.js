@@ -13,7 +13,28 @@ export const increment = (value) => {
     };
   };
 
-   
+  export const changeSelectedScreen = (selectedScreen) => {
+    return {
+      type: 'CHANGE_SELECTED_SCREEN',
+      payload: selectedScreen
+    };
+  };
+
+  export const setLines = (lines) => {
+    return {
+      type: 'SET_LINES',
+      payload: lines
+    };
+  };
+
+  export const setEvents = (events) => {
+    return {
+      type: 'SET_EVENTS',
+      payload: events
+    };
+  };
+
+
   export const decrement = () => {
     return {
       type: 'COUNT_DECRESE',

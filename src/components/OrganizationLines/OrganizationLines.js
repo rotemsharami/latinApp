@@ -14,7 +14,6 @@ import { useSelector, useDispatch } from 'react-redux';
 const {width, height} = Dimensions.get('screen');
 
 const OrganizationLines = (organizationLines) => {
-    console.log(organizationLines);
 
 
 	const count = useSelector((store) => store.count.count);
@@ -34,7 +33,7 @@ const OrganizationLines = (organizationLines) => {
     return(
         <View style={styles.listBox}>
             <View style={{
-					flexDirection: setRowType(count.general.lng),
+					flexDirection: setRowType(count.lng),
 				}}>
         {setArray(organizationLines.organizationLines.organizationLines).map((prop, key) => {
             return (

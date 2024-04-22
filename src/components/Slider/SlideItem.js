@@ -10,7 +10,7 @@ import {
 import React from 'react';
 import {navigate} from "../../../RootNavigation";
 import { useSelector, useDispatch } from 'react-redux';
-import { setRowType, getSelectedLang, setTextDirection} from '../../tools/tools';
+import { setRowType, setTextDirection} from '../../tools/tools';
 const {width, height} = Dimensions.get('screen');
 const logoWidth = 80;
 const textWidth = 80; 
@@ -19,15 +19,14 @@ const textWidth = 80;
 
 
 const SlideItem = ({item}) => {
-	const lng = getSelectedLang();
 	const count = useSelector((store) => store.count.count);
-	const dir = setTextDirection(count.general.lng);
-	//count.general.lng
+	const dir = setTextDirection(count.lng);
+	//count.lng
     return (
 		<ImageBackground source={{uri:"https://latinet.co.il/"+item.gallery[0]}} resizeMode="cover" style={styles.image}>
 			<TouchableOpacity style={styles.logoAndTextBox} onPress={() => navigate("Organization", {nid: item.nid, type:"global", selectedNid:0})}>
 				<View style={{
-					flexDirection: setRowType(count.general.lng),
+					flexDirection: setRowType(count.lng),
 				}}>
 					<View style={styles.logo}>
 						<ImageBackground source={{uri:"https://latinet.co.il/"+item.general_image[0]}} resizeMode="cover" style={styles.logoImage}></ImageBackground>

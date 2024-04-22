@@ -1,10 +1,10 @@
 // redux/reducers/countReducer.js
 const initialState = {
 	count: {
-		general:{
-			lng:"he"
-		},
-		selectedScreen:"Lines"
+		lng:"he",
+		selectedScreen:"Lines",
+		lines:undefined,
+		events:undefined,
 	},
 };
 
@@ -26,7 +26,39 @@ export default (state = initialState, action) => {
 		case 'CHANGE_LANGUAGE':
 		return {
 			...state,
-			count: {general:{lng:action.payload}},
+			count:{
+				...state.count,
+				lng:action.payload
+			}
+			
+		};
+
+		case 'CHANGE_SELECTED_SCREEN':
+		return {
+			...state,
+			count: {
+				...state.count,
+				selectedScreen:action.payload
+			},
+		};
+
+		case 'SET_LINES':
+		return {
+			...state,
+			count: {
+				...state.count,
+				lines:action.payload
+			},
+		};
+
+
+		case 'SET_EVENTS':
+		return {
+			...state,
+			count: {
+				...state.count,
+				events:action.payload
+			},
 		};
 
 		

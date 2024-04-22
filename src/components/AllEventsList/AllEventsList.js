@@ -1,5 +1,5 @@
-import React, {Component, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity, I18nManager} from 'react-native';
+import React, {useRef, Component, useState, useEffect } from 'react';
+import { Animated, Easing, View, Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity, I18nManager} from 'react-native';
 import { Icon } from 'react-native-elements';
 import {nice_list_text, setArray, getSelectedLang, setRowType, setTextDirection} from "../../tools/tools.js";
 import {navigate} from "../../../RootNavigation";
@@ -9,19 +9,56 @@ const {width, height} = Dimensions.get('screen');
 const logoWidth = 100;
 const textWidth = width - logoWidth;
 const AllEventsList = (events) => {
-const count = useSelector((store) => store.count.count);
+	const count = useSelector((store) => store.count.count);
+	const scaleAnim = useRef(new Animated.Value(0)).current;
+
+	useEffect(() => {
+		// Scale in animation
+		Animated.timing(
+		  scaleAnim,
+		  {
+			toValue: 1,
+			duration: 150,
+			easing: Easing.linear,
+			useNativeDriver: true
+		  }
+		).start();
+	
+		// Scale out animation on component unmount
+		return () => {
+		  Animated.timing(
+			scaleAnim,
+			{
+			  toValue: 0,
+			  duration: 500,
+			  easing: Easing.linear,
+			  useNativeDriver: true
+			}
+		  ).start();
+		};
+	  }, [scaleAnim]);
+
+
 	return(
-		<View style={styles.container}>
+
+<Animated.View
+      style={[styles.container,{
+        transform: [{ scale: scaleAnim }],
+        alignItems: 'center',
+        justifyContent: 'center'
+      }]}
+    >
+
 			{events != undefined &&
 				<View style={styles.containerBox}>
 					<View style={styles.eventsList}>
 						{events.events != undefined &&
 							<View style={styles.eventsListBox}>
-								{events.events.map((event) =>{
+								{events.events.map((event) => {
 									return(
 										<TouchableOpacity kay={"calenderEventItem"+event.nid} onPress={() => navigate("Event", {event: event})}>
 										<View style={[styles.eventItem, {
-											flexDirection: count.general.lng == "en" ? "row" : "row-reverse",
+											flexDirection: count.lng == "en" ? "row" : "row-reverse",
 											
 										}]}>
 											<View style={styles.image}>
@@ -31,20 +68,20 @@ const count = useSelector((store) => store.count.count);
 													/>
 											</View>
 											<View style={[styles.titleAndText, {
-												alignItems: count.general.lng == "en" ? "flex-start" : "flex-end",
+												alignItems: count.lng == "en" ? "flex-start" : "flex-end",
 												padding:10
 											}]}>
 
 												<View style={styles.itemTitle}>
 													<Text style={[styles.titleText, {
-														textAlign: count.general.lng == "en" ? "left" : "right",
+														textAlign: count.lng == "en" ? "left" : "right",
 													}]}>
 
 														{event.title}
 												</Text>
 
 													<Text style={[styles.textText, {
-														textAlign: count.general.lng == "en" ? "left" : "right",
+														textAlign: count.lng == "en" ? "left" : "right",
 													}]}>
 														{event.address}
 														</Text>
@@ -60,7 +97,7 @@ const count = useSelector((store) => store.count.count);
 					</View>
 				</View>
 			}
-		</View>
+		</Animated.View>
 	);
 }
 const styles = StyleSheet.create({

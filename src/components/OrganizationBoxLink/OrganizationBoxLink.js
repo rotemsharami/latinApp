@@ -7,7 +7,7 @@ import {
 	TouchableOpacity,
 	I18nManager
 	} from 'react-native';
-import { setRowType, getSelectedLang, setTextDirection, setArray} from '../../tools/tools';
+import { setRowType, setTextDirection, setArray} from '../../tools/tools';
 import {navigate} from "../../../RootNavigation";
 
 import React, {useRef, useState, useEffect, useCallback} from 'react';
@@ -17,9 +17,8 @@ const logoWidth = 60;
 const textWidth = width - logoWidth;
 
 const OrganizationBoxLink = (item) => {
-    const lng = getSelectedLang();
 	const count = useSelector((store) => store.count.count);
-	const dir = setTextDirection(count.general.lng);
+	const dir = setTextDirection(count.lng);
 
 
 
@@ -31,23 +30,23 @@ const OrganizationBoxLink = (item) => {
         <View style={styles.logoAndTextBox}>
             <TouchableOpacity onPress={() => changeNid(item.organization.nid)}>
                 <View style={{
-                    flexDirection: setRowType(count.general.lng),
+                    flexDirection: setRowType(count.lng),
                 }}>
                     <View style={styles.logo}>
                         <ImageBackground source={{uri:"https://latinet.co.il/"+item.organization.general_image}} resizeMode="cover" style={styles.logoImage}></ImageBackground>
                     </View>
                     <View style={styles.text}>
                         <Text style={{
-                            paddingRight: lng =="he" ? 10 : 0,
-                            paddingLeft: lng =="he" ? 0 : 10,
+                            paddingRight: count.lng =="he" ? 10 : 0,
+                            paddingLeft: count.lng =="he" ? 0 : 10,
                             textAlign: dir,
                             color: '#000',
                             fontSize: 20,
                             fontWeight: 'bold',
                         }}>{item.organization.title}</Text>
                         <Text style={{
-                            paddingRight: lng =="he" ? 10 : 0,
-                            paddingLeft: lng =="he" ? 0 : 10,
+                            paddingRight: count.lng =="he" ? 10 : 0,
+                            paddingLeft: count.lng =="he" ? 0 : 10,
                             color: '#000',
                             textAlign: dir,
                             fontSize: 16,

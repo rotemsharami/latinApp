@@ -30,8 +30,8 @@ const Services = (services) => {
                     <View style={styles.textBox}>
                         <Text style={{
                                 alignItems:"center",
-                                paddingRight: I18nManager.isRTL ? 4 : 0,
-                                paddingLeft: I18nManager.isRTL ? 0 : 4,
+                                paddingRight:4,
+                                paddingLeft: 4,
                                 fontSize:11,
                                 color: prop.active ? "#fff" : "#000",
                                 textAlign: 'center',
@@ -59,7 +59,6 @@ const styles = StyleSheet.create({
         paddingTop:10,
         flexDirection:"column",
         width:width/5,
-        backgroundColor:"#000",
     },
     iconBox:{
         

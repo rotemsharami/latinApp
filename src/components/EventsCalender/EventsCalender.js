@@ -114,7 +114,6 @@ const EventsCalender = () => {
 
 		date_obj = moment(date_obj.year()+"-"+selectedMonth+"-01");
 
-		//console.log(stringTodayDate);
 
 		const startOfMonth = date_obj.startOf('month').day();
         const endOfMonth = parseInt(date_obj.endOf('month').format('DD'));
@@ -351,7 +350,6 @@ const EventsCalender = () => {
 																		}}
 																	>
 																		<View style={[styles.dayDate, {
-																			backgroundColor:"#000",
 																			borderRadius:100,
 																			width:40,
 																			height:40,

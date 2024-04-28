@@ -7,7 +7,9 @@ import {
 	TouchableOpacity,
 	I18nManager
 	} from 'react-native';
-import { setRowType, setTextDirection} from '../../tools/tools';
+import { setRowType, setTextDirection, getImageUrl} from '../../tools/tools';
+import Location from '../Location/Location';
+import {LinearGradient} from 'expo-linear-gradient';
 
 
 import React, {useRef, useState, useEffect} from 'react';
@@ -17,40 +19,57 @@ const logoWidth = 80;
 const textWidth = width - logoWidth;
 
 const OrganizationBox = (item) => {
+
+    
+
 	const count = useSelector((store) => store.count.count);
 	const dir = setTextDirection(count.lng);
+
+
     return(
-        <View style={styles.logoAndTextBox}>
-            <View style={{
+        <LinearGradient style={styles.logoAndTextBox}
+            colors={['#efdbf7','#FFF']}
+        >
+
+
+
+            <View style={[{
                 flexDirection: setRowType(count.lng),
-            }}>
+            }]}
+            
+            >
+
                 <View style={styles.logo}>
-                    <ImageBackground source={{uri:"https://latinet.co.il/"+item.organization.general_image}} resizeMode="cover" style={styles.logoImage}></ImageBackground>
+                    <ImageBackground source={{uri:getImageUrl(item.organization.general_image)}} resizeMode="cover" style={styles.logoImage}></ImageBackground>
                 </View>
                 <View style={styles.text}>
                     <Text style={{
-						paddingRight: count.lng =="he" ? 10 : 0,
-						paddingLeft: count.lng =="he" ? 0 : 10,
+						paddingRight: 10,
+						paddingLeft: 10,
                         textAlign: dir,
                         color: '#000',
                         fontSize: 24,
+                        lineHeight:26,
                         fontWeight: 'bold',
-                    }}>{item.organization.title}</Text>
+                    }}>{item.organization[count.lng].title}</Text>
                     <Text style={{
-						paddingRight: count.lng =="he" ? 10 : 0,
-						paddingLeft: count.lng =="he" ? 0 : 10,
+						paddingRight: 10,
+						paddingLeft: 10,
                         color: '#000',
                         textAlign: dir,
                         fontSize: 18,
                         lineHeight:20,
-                        marginTop:5,
-                        marginBottom:5,
-                    }}>{item.organization.slogen}</Text>
-                    
-
+                    }}>{item.organization[count.lng].slogen}</Text>
+                    <View style={{
+                        paddingLeft:7,
+                        paddingRight:7
+                    }}>
+                        <Location organization={item.organization}></Location>
+                    </View>
                 </View>
             </View>
-        </View>
+            
+        </LinearGradient>
     );
 
 }
@@ -61,8 +80,8 @@ logoAndTextBox:{
     width:width,
     padding:10,
     flexDirection:"column",
-    borderBottomWidth:2,
-    borderBottomColor:"#730874",
+    borderBottomColor:"#474747",
+    height:100,
     
 },
 logoAndText:{
@@ -84,15 +103,11 @@ text: {
   width:textWidth-30,
 },
 title: {
-    paddingRight: I18nManager.isRTL ? 10 : 0,
-    paddingLeft: I18nManager.isRTL ? 0 : 10,
       color: '#000',
       fontSize: 24,
       fontWeight: 'bold',
 },
 description: {
-    paddingRight: I18nManager.isRTL ? 10 : 0,
-    paddingLeft: I18nManager.isRTL ? 0 : 10,
     color: '#000',
     fontSize: 18,
     lineHeight:20,

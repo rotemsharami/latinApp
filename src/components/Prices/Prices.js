@@ -17,9 +17,7 @@ const {width, height} = Dimensions.get('screen');
 const logoWidth = width/5;
 const textWidth = width - logoWidth;
 const Prices = (prices) => {
-    const setText = (text) => {
-        return {html:text}
-    }
+
 	const count = useSelector((store) => store.count.count);
 	const dir = setTextDirection(count.lng);
 
@@ -34,39 +32,26 @@ const Prices = (prices) => {
                     <Icon name='payment' color='#000' style={styles.icon} size={17} />
                 </View>
                 <View style={styles.DisplayTitletBox}>
-                    <Text style={styles.DisplayTitle}> {prices.prices.labels[5]}</Text>
+                    <Text style={styles.DisplayTitle}> {count.lines.global_metadata.labels[count.lng][9]}</Text>
                 </View>
             </View>
             <View style={styles.list}>
-        {setArray(prices.prices.prices).map((prop, key) => {
+        {setArray(prices.prices).map((prop, key) => {
             return (
                 <View
                     style={{
                         flexDirection:setRowType(count.lng),
-                        backgroundColor:"#dbdbdb",
+                        backgroundColor:"#a797ad",
                         marginBottom:2,
                     }}
                     key={key}
                 >
                     <View style={styles.titleAndText}>
                         <View style={styles.listItemTitle}>
-                            <Text style={styles.titleText}>{prop.title}</Text>
+                            
                         </View>
                         <View style={styles.listItemText}>
-                            <RenderHtml
-                                contentWidth={width}
-                                source={setText(prop.text)}
-                                enableExperimentalMarginCollapsing={true}
-                                tagsStyles={{
-                                    li:{
-                                        paddingLeft:5
-                                    },
-                                    p:{
-                                        marginTop:0,
-                                        marginBottom:0
-                                    },
-                                }}
-                            />
+                            <Text style={styles.titleText}>{prop[count.lng].title}</Text>
                         </View>
                     </View>
                     <View style={styles.price}>
@@ -85,7 +70,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width:80,
         flexDirection:"column",
-        backgroundColor:"#730874"
+        backgroundColor:"#474747",
     },
     listBox:{
         paddingRight:10,
@@ -93,6 +78,7 @@ const styles = StyleSheet.create({
         flexDirection:"column",
         width:width-10,
         marginTop:20,
+        height:height-179-104-30-216-50,
         
     },  
     priceText:{

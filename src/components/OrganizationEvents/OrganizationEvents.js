@@ -35,7 +35,6 @@ const OrganizationEvents = (organizationEvents) => {
     const { widthA } = useWindowDimensions();
     const [selectedLine, setSelectedLine] = useState(organizationEvents.organizationEvents.selectedNid != 0 ? organizationEvents.organizationEvents.selectedNid : setArray(organizationEvents.organizationEvents.organizationEvents)[0].nid);
     
-    console.log("https://latinet.co.il/"+setArray(organizationEvents.organizationEvents.organizationEvents).filter(item => item.nid == selectedLine)[0].general_image[0]);
     
     
     const setText = (text) => {

@@ -1,5 +1,5 @@
 import {Image,StyleSheet,Text,View,Dimensions,Animated,Easing,ImageBackground,TouchableOpacity,I18nManager,ScrollView, SafeAreaView, StatusBar, Pressable} from 'react-native';
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useRef, useState, useEffect, useCallback} from 'react';
 import OrganizationBox from '../organizationBox/organizationBox.js';
 import OrganizationBoxLink from '../OrganizationBoxLink/OrganizationBoxLink.js';
 import DanceServices from '../DanceServices/DanceServices';
@@ -7,7 +7,7 @@ import DanceFloors from '../DanceFloors/DanceFloors.js';
 import SliderX from '../SliderX/SliderX.js';
 import OrganizationLines from '../OrganizationLines/OrganizationLines.js';
 import ServicesX from '../ServicesX/ServicesX.js';
-import Location from '../Location/Location';
+import {LinearGradient} from 'expo-linear-gradient';
 import ContactInfo from '../ContactInfo/ContactInfo.js';
 import storage from '../../storage/storage';
 import OrganizationEvents from '../OrganizationEvents/OrganizationEvents.js';
@@ -23,41 +23,45 @@ const setText = (text) => {
 }
 
 const Organization = (info) => {
+
+
+	const changeOrganizationScreen = useCallback((screenType) => {
+		info._setOrganizationScreen(screenType);
+	}, [info._organizationScreen]);
     const scrollRef = useRef();
 	const [organizationNid, setOrganizationNid] = useState(info._organizationNid);
 	const count = useSelector((store) => store.count.count);
 	const [sdata, setSdata] = useState({});
-
-	useEffect(() => {
-		storage
-		.load({
-		  key: 'latinApp',
-		  autoSync: true,
-		  syncInBackground: true,
-		  syncParams: {
-			extraFetchOptions: {
-			},
-			someFlag: true
-		  }
-		})
-		.then(ret => {
-			setSdata(ret);
-		})
-		.catch(err => {
-		  console.warn(err.message);
-		  switch (err.name) {
-			case 'NotFoundError':
-			  break;
-			case 'ExpiredError':
-			  break;
-		  }
-		});
-	}, [sdata]);
+	// useEffect(() => {
+	// 	storage
+	// 	.load({
+	// 	  key: 'latinApp',
+	// 	  autoSync: true,
+	// 	  syncInBackground: true,
+	// 	  syncParams: {
+	// 		extraFetchOptions: {
+	// 		},
+	// 		someFlag: true
+	// 	  }
+	// 	})
+	// 	.then(ret => {
+	// 		setSdata(ret);
+	// 	})
+	// 	.catch(err => {
+	// 	  console.warn(err.message);
+	// 	  switch (err.name) {
+	// 		case 'NotFoundError':
+	// 		  break;
+	// 		case 'ExpiredError':
+	// 		  break;
+	// 	  }
+	// 	});
+	// }, [sdata]);
 	
 	const [organization, setOrganization] = useState({});
 	const [menu, setMenu] = useState([]);
 	const [organizationLinesData, setOrganizationLinesData] = useState([]);
-    const [selectedLine, setSelectedLine] = useState();    
+    const [selectedLine, setSelectedLine] = useState(null);    
 
 	const setSelectedMenuItem = (name) => {
 		setMenu(menu.map(artwork => {
@@ -73,36 +77,43 @@ const Organization = (info) => {
 	}
 
 	useEffect(() => {
-		let url = 'https://latinet.co.il/'+count.lng+'/organization_mobile/'+organizationNid;
-		fetch(url)
-		.then((res) => res.json())
-		.then((data) => {
-			setOrganization(data.data);
-			setOrganizationLinesData(data.data.lines);
-			setSelectedLine(setArray(data.data.lines)[0].nid);
+
+		
+			setOrganization(count.lines.organizations[info._organizationNid]);
+			setOrganizationLinesData(count.lines.organizations[info._organizationNid]);
+
+			//console.log(count.lines.organizations[info._organizationNid].lines);
+
+			setSelectedLine(count.lines.organizations[info._organizationNid].lines.length > 0 ? count.lines.organizations[info._organizationNid].lines[0].nid : null);
+			
 			let menu = [
-				{name: "info", title: data.data.labels[0], active: info.route.params.type == "global" ? true : false}
+				{name: "info", title: count.lines.global_metadata.labels[count.lng][1], active: info._organizationScreen == "info"}
 			];
-			if(data.data.lines != undefined){
-				menu.push({name: "lines", title: data.data.labels[1], active: info.route.params.type == "line" ? info.route.params.selectedNid : 0});
+			if(count.lines.organizations[info._organizationNid].lines != undefined){
+				menu.push({name: "lines", title: count.lines.global_metadata.labels[count.lng][2], active: info._organizationScreen == "lines"});
 			}
-			if(data.data.events != undefined){
-				menu.push({name: "events", title: data.data.labels[2], active: info.route.params.type == "event" ? info.route.params.selectedNid : 0});
+			if(count.lines.organizations[info._organizationNid].events != undefined){
+				menu.push({name: "events", title:count.lines.global_metadata.labels[count.lng][2], active: info._organizationScreen == "events"});
 			}
-			if(data.data.org_courses != undefined){
-				menu.push({name: "studies", title: data.data.labels[3], active: info.route.params.type == "studie" ? info.route.params.selectedNid : 0});
+			if(count.lines.organizations[info._organizationNid].studies != undefined){
+				menu.push({name: "studies", title: count.lines.global_metadata.labels[count.lng][2], active: info._organizationScreen == "studies"});
 			}
 			setMenu(menu);
 			scrollRef.current?.scrollTo({
 				y: 0,
 				animated: true,
 			});
-		});
+		
 	}, [organizationNid, count.lng]);
 
 	return(
-		<View style={styles.container}>
-			<OrganizationBox organization={organization}></OrganizationBox>
+		
+
+		<LinearGradient style={styles.container}
+            colors={['#FFF', '#FFF', '#efdbf7']}
+        >
+
+			<OrganizationBox organization={count.lines.organizations[info._organizationNid]}></OrganizationBox>
 			<View style={styles.organizationMenu}>
 			{menu.map((prop, key) => {
 			return (
@@ -110,10 +121,10 @@ const Organization = (info) => {
 					<Pressable style={
 						{
 							flexDirection:"column",
-							color:prop.active ? "#730874" : "#FFF",
+							color:"#FFF",
 							justifyContent:"center",
 							width:width / menu.length,
-							backgroundColor: prop.active ? "#730874" : "#FFF",
+							backgroundColor: prop.active ? "#474747" : "#bbacc1",
 							height:30
 						}
 					}
@@ -125,7 +136,7 @@ const Organization = (info) => {
 						setSelectedMenuItem(prop.name)
 						}}>
 						<Text style={{
-								color:prop.active ? "#FFF" : "#730874",
+								color:prop.active ? "#ff99d9" : "#000",
 								textAlign:"center"
 							}}>{prop.title}</Text>
 					</Pressable>
@@ -134,69 +145,92 @@ const Organization = (info) => {
 			})}
 			</View>
 			<View style={styles.subContainer}>
-				<ScrollView
-					ref={scrollRef}
-					style={styles.scrollView} 
-					contentContainerStyle={styles.contentContainer}>
-					<View>
-						{menuOn("info") &&
-							<View>
-								<SliderX gallery={organization.gallery}></SliderX>
-								<View style={styles.danceFloorsAndServices}>
-									<View style={styles.danceFloors}>
-										<DanceFloors danceServices={organization.dance_floors}></DanceFloors>
+				<View>
+					{menuOn("info") &&
+						<View>
+							<SliderX gallery={organization.gallery}></SliderX>
+
+							<View style={[styles.danceFloorsAndServices, {
+								flexDirection: count.lng == "en" ? "row" :"row-reverse",
+								
+							}]}>
+
+								<LinearGradient style={styles.danceServices}
+									colors={['#FFF','#efdbf7']}
+								>
+
+									<View style={styles.centerBox}>
+										<DanceServices danceServices={count.lines.organizations[info._organizationNid].dance_services}></DanceServices>
 									</View>
-									<View style={styles.services}>
-										<DanceServices danceServices={organization.dance_floors}></DanceServices>
+								</LinearGradient>
+
+								<LinearGradient style={styles.danceFloors}
+									colors={['#FFF','#efdbf7']}
+								>
+									<View style={styles.centerBox}>
+										<DanceFloors danceServices={count.lines.organizations[info._organizationNid].dance_floors}></DanceFloors>
 									</View>
-								</View>
-								<ServicesX services={organization.services}></ServicesX>
-								<Location organization={organization}></Location>
+								</LinearGradient>
+
+
+								<LinearGradient style={styles.globalServices}
+									colors={['#FFF','#efdbf7']}
+								>
+									
+									<View style={styles.centerBox}>
+										<ServicesX services={count.lines.organizations[info._organizationNid].global_services}></ServicesX>
+									</View>
+								</LinearGradient>
 							</View>
-						}
-						{(menuOn("lines") && organizationLinesData != undefined) && 
-							<OrganizationLines _selectedLine={selectedLine} _setSelectedLine={setSelectedLine} organizationLines={{organizationLines:organizationLinesData, labels:organization.labels, selectedNid: info.route.params.type == "line" ? info.route.params.selectedNid : 0}}></OrganizationLines>
-						}
-						{menuOn("events") &&
-							<OrganizationEvents organizationEvents={{organizationEvents:organization.events, labels:organization.labels, selectedNid: info.route.params.type == "event" ? info.route.params.selectedNid : 0}}></OrganizationEvents>
-						}
-						{menuOn("studies") &&
-							<OrganizationStudies organizationStudies={{organizationStudies: organization.org_courses, labels:organization.labels, selectedNid: info.route.params.type == "studie" ? info.route.params.selectedNid : 0}}></OrganizationStudies>
-						}
-					</View>
-					<View style={styles.ContactInfoFooter}>
-						{Object.keys(organization).length > 0 &&  
-							<ContactInfo organization={organization}></ContactInfo>
-						}
-					</View>
-					{organization.other_organizations != undefined &&
-						<View style={styles.otherOrganizations}>
-							{/* <Text>{JSON.stringify(organization.other_organizations, null, 2)}</Text> */}
-							<View style={styles.otherOrganizationsLabel}>
-								<Text style={styles.otherOrganizationsLabelText}>{organization.labels[10]}</Text>
-							</View>
-							{organization.other_organizations.map((item, key) => {
-								return (
-									<OrganizationBoxLink _setOrganizationNid={setOrganizationNid} organization={item} key={"org-"+key}></OrganizationBoxLink>
-								);
-							})}
 						</View>
 					}
-				</ScrollView>
+					{(menuOn("lines") && selectedLine != null) && 
+						<OrganizationLines
+							_selectedLine={selectedLine}
+							_setSelectedLine={setSelectedLine}
+							organizationLines={{organizationLines:count.lines.organizations[info._organizationNid].lines,
+							selectedNid: info._organizationScreen == "line" ? info.route.params.selectedNid : 0}}
+						></OrganizationLines>
+					}
+					{/* {menuOn("events") &&
+						<OrganizationEvents organizationEvents={{organizationEvents:organization.events, selectedNid: info._organizationScreen == "event" ? info.route.params.selectedNid : 0}}></OrganizationEvents>
+					} */}
+					{/* {menuOn("studies") &&
+						<OrganizationStudies organizationStudies={{organizationStudies: organization.org_courses, selectedNid: info._organizationScreen == "studie" ? info.route.params.selectedNid : 0}}></OrganizationStudies>
+					} */}
+				</View>
 			</View>
-		</View>
+			<ContactInfo organization={count.lines.organizations[info._organizationNid]}></ContactInfo>
+		</LinearGradient>
 	);
 }
 export default Organization;
 const styles = StyleSheet.create({
-	danceFloorsAndServices:{
-		flexDirection:"row"
+	container:{
+		
+	},
+	centerBox:{
+		alignSelf: "baseline"
+	},
+	danceServices:{
+		width:100,
+		justifyContent:"center",
+		
+		height:height-110-100-30-(Math.round(height/3))-50-72,
+		
 	},
 	danceFloors:{
-		flexDirection:"column"
+		width:120,
+		backgroundColor:"#efdbf7",
+		justifyContent:"center",
+		height:height-110-100-30-(Math.round(height/3))-50-72,
 	},
-	services:{
-		flexDirection:"column"
+	globalServices:{
+		width:width-220,
+		backgroundColor:"#efdbf7",
+		justifyContent:"center",
+		height:height-110-100-30-(Math.round(height/3))-50-72,
+
 	},
 	fullInfoBox:{
 		paddingLeft:10,
@@ -205,19 +239,12 @@ const styles = StyleSheet.create({
 	otherOrganizationsLabel:{
 		padding:10
 	},
-	container:{
-		flex: 1,
-	},
 	logoImage:{
 		width:logoWidth,
 		height:logoWidth
 	},
 	contentContainer:{
-		paddingBottom: 100
-	},
-	subContainer:{
-		height:500,
-		flex: 1,
+		
 	},
 	menuItem:{
 		flexDirection:"column",
@@ -230,8 +257,7 @@ const styles = StyleSheet.create({
 	},
 	organizationMenu:{
 		flexDirection: 'row',
-		width:"100%",
-		backgroundColor:"#730874"
+		height:30
 	},
 	DanceServicesAndDanceFloors:{
 		flexDirection:"row"

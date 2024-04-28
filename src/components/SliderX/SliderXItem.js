@@ -8,7 +8,9 @@ import {
 	I18nManager
 	} from 'react-native';
   import React from 'react';
+  import { setRowType, setTextDirection, getImageUrl} from '../../tools/tools';
   import {navigate} from "../../../RootNavigation";
+  
   const {width, height} = Dimensions.get('screen');
   const logoWidth = width / 5;
   const textWidth = width - logoWidth; 
@@ -16,7 +18,7 @@ import {
 
 
     return (
-		<ImageBackground source={{uri:"https://latinet.co.il/"+item}} resizeMode="cover" style={styles.image}></ImageBackground>
+		<ImageBackground source={{uri:getImageUrl(item)}} resizeMode="cover" style={styles.image}></ImageBackground>
     );
   };
   export default SlideItem;

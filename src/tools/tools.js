@@ -40,31 +40,38 @@ export const setTextDirection = (appLng) => {
 }
 
 
-export const nice_list_text = (list) => {
-	let lng = "he";
-    let plus_charcter = lng == "he" ? " ו" : " & "
-    if(list != undefined){
-        let text = "";
+export const getImageUrl = (uri) => {
+    return uri.replace("public://", "https://latinet.co.il/sites/default/files/");
+}
+
+
+
+export const nice_list_text = (list, taxonomy, lng) => {
+    let text = "Bug!";
+    if(list != null){
+        text = "";
+        list = list.split(",");
+        let plus_charcter = lng == "he" ? " ו" : " & ";
         if(Object.keys(list).length == 1){
-            text = list[Object.keys(list)[0]].name;
+            text += taxonomy[list[0]][lng];
         }
         else if(Object.keys(list).length == 2){
-            text = list[Object.keys(list)[0]].name + plus_charcter + list[Object.keys(list)[1]].name
+            text += taxonomy[list[0]][lng] + plus_charcter + taxonomy[list[1]][lng];
         }
         else{
             for (let index = 0; index < Object.keys(list).length; index++) {
                 if(index == Object.keys(list).length-2){
-                    text += list[Object.keys(list)[index]].name+plus_charcter;
+                    text += taxonomy[list[index]][lng]+plus_charcter;
                 }else if(index == Object.keys(list).length-1){
-                    text += list[Object.keys(list)[index]].name;
+                    text += taxonomy[list[index]][lng];
                 }
                 else{
-                    text += list[Object.keys(list)[index]].name+", ";
+                    text += taxonomy[list[index]][lng]+", ";
                 }
             }
         }
-        return text;
     }
+    return text;
 }
 
 

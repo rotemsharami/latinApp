@@ -34,7 +34,7 @@ const SliderX = (gallery) => {
 	return (
 		<View style={styles.container}>
 			<FlatList
-				data={gallery.gallery}
+				data={gallery.gallery.split(",")}
 				renderItem={({item}) => <SlideItem item={item} />}
 				horizontal
 				pagingEnabled
@@ -50,6 +50,6 @@ const SliderX = (gallery) => {
 export default SliderX;
 const styles = StyleSheet.create({
 	container:{
-		height:(height/3),
+		height:height/3,
 	}
 });

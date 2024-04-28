@@ -14,6 +14,7 @@ import {setArray} from "../../tools/tools.js";
 import { Icon } from 'react-native-elements';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
+import {LinearGradient} from 'expo-linear-gradient';
 
 const {width, height} = Dimensions.get('screen');
 const logoWidth = width/5;
@@ -21,16 +22,18 @@ const textWidth = width - logoWidth;
 const ContactInfo = (organization) => {
 
 
+
     return(
-        <View style={styles.container}>
-            <View style={styles.titleLabel}>
-                <Text style={styles.titleLabelText}></Text>
-            </View>
+
+
+        <LinearGradient style={styles.container}
+            colors={['#9f86ab','#d8b8e7']}
+        >
 
 
             <View style={styles.list}>
                 {organization.organization.facebook != undefined &&
-                    <TouchableOpacity onPress={() => { Linking.openURL(organization.organization.facebook.uri); }}>
+                    <TouchableOpacity onPress={() => { Linking.openURL(organization.organization.facebook); }}>
                         <View style={styles.listItem}>
                             <View style={styles.iconBox}>
                                 <Icon style={styles.mainMenuListItemIcon} name='facebook' color='#FFF' size={30}/>
@@ -50,7 +53,7 @@ const ContactInfo = (organization) => {
                 }
 
                 {organization.organization.instegram != undefined &&
-                    <TouchableOpacity onPress={() => { Linking.openURL(organization.organization.instegram.uri); }}>
+                    <TouchableOpacity onPress={() => { Linking.openURL(organization.organization.instegram); }}>
                         <View style={styles.listItem}>
                             <View style={styles.iconBox}>
                                 <MaterialCommunityIcons name="instagram" size={30} color="#FFF" />
@@ -60,7 +63,7 @@ const ContactInfo = (organization) => {
                 }
 
                 {organization.organization.site != undefined &&
-                    <TouchableOpacity onPress={() => { Linking.openURL(organization.organization.site.uri); }}>
+                    <TouchableOpacity onPress={() => { Linking.openURL(organization.organization.site); }}>
                         <View style={styles.listItem}>
                             <View style={styles.iconBox}>
                                 <MaterialCommunityIcons name="web" size={30} color="#FFF" />
@@ -85,23 +88,25 @@ const ContactInfo = (organization) => {
 
 
 
-        </View>
+        </LinearGradient>
     );
 }
 export default ContactInfo;
 const styles = StyleSheet.create({
     container:{
+        borderTopColor:"#7f6c893",
+        borderTopWidth:2,
+        height:50
     },
     list:{
         flexDirection:'row',
         justifyContent:"space-around",
-        backgroundColor:"#730874"
     },
 
     listItem:{
-        backgroundColor:"#730874",
         flexDirection:'column',
         padding:10,
+        height:48
     },
 
 

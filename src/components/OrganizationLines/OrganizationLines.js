@@ -16,20 +16,9 @@ const {width, height} = Dimensions.get('screen');
 const OrganizationLines = (organizationLines) => {
 
 
+
 	const count = useSelector((store) => store.count.count);
-    const getSchedule = (_line) => {
-        let schedule = {};
-        if(_line.opening != undefined){
-            schedule.opening = _line.opening;
-        }
-        if(_line.opening != undefined){
-            schedule.lessons = _line.lessons;
-        }
-        if(_line.opening != undefined){
-            schedule.party = _line.party;
-        }
-        return schedule;
-    }
+
     return(
         <View style={styles.listBox}>
             <View style={{
@@ -46,7 +35,7 @@ const OrganizationLines = (organizationLines) => {
                         marginRight:  I18nManager.isRTL ? 0 : 0,
                         paddingBottom:3,
                     }}>
-                        <Text style={styles.dayText}>{prop.days_of_week[prop.week_day]}</Text>
+                        <Text style={styles.dayText}>{count.lines.global_metadata.days_of_week[count.lng][prop.week_day]}</Text>
                     </View>
                 </TouchableOpacity>
             );
@@ -55,15 +44,28 @@ const OrganizationLines = (organizationLines) => {
             {organizationLines.organizationLines.organizationLines.filter(item => item.nid == organizationLines._selectedLine).length > 0 && 
             <View style={styles.contentBox}>
                 <View style={styles.dance_floors}>
-                    <Text style={styles.danceFloorsText}>{nice_list_text(organizationLines.organizationLines.organizationLines.filter(item => item.nid == organizationLines._selectedLine)[0].dance_floors)}</Text>
+                    <Text style={styles.danceFloorsText}>
+                        {nice_list_text(
+                            organizationLines.organizationLines.organizationLines.filter(item => item.nid == organizationLines._selectedLine)[0].dance_floors != null ? 
+                            organizationLines.organizationLines.organizationLines.filter(item => item.nid == organizationLines._selectedLine)[0].dance_floors :
+                            count.lines.organizations[organizationLines.organizationLines.organizationLines.filter(item => item.nid == organizationLines._selectedLine)[0].org_nid].dance_floors,
+                            count.lines.taxonomy_terms.dance_floors,
+                            count.lng)}
+                        </Text>
                 </View>
                 <Schedule
-                    schedule={{labels:organizationLines.organizationLines.labels,
-                    schedule:setArray(organizationLines.organizationLines.organizationLines).filter(item => item.nid == organizationLines._selectedLine)[0].time_part,
-                    schedule:getSchedule(setArray(organizationLines.organizationLines.organizationLines).filter(item => item.nid == organizationLines._selectedLine)[0])
-                    }}></Schedule>
-                <Prices prices={{labels:organizationLines.organizationLines.labels, prices:setArray(organizationLines.organizationLines.organizationLines).filter(item => item.nid == organizationLines._selectedLine)[0].tickets}}></Prices>
-            </View>
+                    opening={organizationLines.organizationLines.organizationLines.filter(item => item.nid == organizationLines._selectedLine)[0].opening}
+                    lessons={organizationLines.organizationLines.organizationLines.filter(item => item.nid == organizationLines._selectedLine)[0].lessons}
+                    party={organizationLines.organizationLines.organizationLines.filter(item => item.nid == organizationLines._selectedLine)[0].party}
+
+                    ></Schedule>
+                    
+                    {count.lines.organizations[organizationLines.organizationLines.organizationLines.filter(item => item.nid == organizationLines._selectedLine)[0].org_nid].prices != undefined && 
+                        <Prices
+                            prices={count.lines.organizations[organizationLines.organizationLines.organizationLines.filter(item => item.nid == organizationLines._selectedLine)[0].org_nid].prices}
+                        ></Prices>
+                    }
+                </View>
             }
         </View>
     );
@@ -80,10 +82,12 @@ const styles = StyleSheet.create({
         flex:1
     },
     listBox:{
-        padding:10
+        padding:10,
+        height:height-110-100-30-50-70-2
+        
     },
     fullInfoBox:{
-        flex:1,
+        
 
     },
     dance_floors:{
@@ -91,7 +95,8 @@ const styles = StyleSheet.create({
         
     },
     danceFloorsText:{
-        fontSize:30
+        fontSize:30,
+        lineHeight:32,
     },
     list:{
         

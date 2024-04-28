@@ -12,6 +12,7 @@ import React, {useRef, useState, useEffect} from 'react';
 import {setArray} from "../../tools/tools.js";
 import { Icon } from 'react-native-elements';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useSelector, useDispatch } from 'react-redux';
 const {width, height} = Dimensions.get('screen');
 const logoWidth = width/5;
 const textWidth = width - logoWidth;
@@ -19,6 +20,9 @@ const textWidth = width - logoWidth;
 
 
 const Services = (services) => {
+
+
+    const count = useSelector((store) => store.count.count);
 
     let iconsInfo = [
         "air-conditioner",
@@ -36,24 +40,27 @@ const Services = (services) => {
     return(
         <View style={styles.listBox}>
             <View style={styles.list}>
-        {setArray(services.services).map((prop, key) => {
+        {services.services.split(",").map((prop, key) => {
             return (
-                <View style={styles.listItem} key={key}>
+                    <View style={[styles.listItem, {
+                        flexDirection: count.lng == "en" ? "row" :"row-reverse"
+                    }]} key={key}>
+
                     <View style={styles.iconBox}>
-                            <MaterialCommunityIcons name={iconsInfo[key]} size={30} color={prop.active ? "#9b9b9b" : "#FFF"} />
+                            <MaterialCommunityIcons name={iconsInfo[key]} size={14} color={"#730874"} />
                     </View>
                     <View style={styles.textBox}>
                         <Text style={{
                             paddingTop:4,
                                 alignItems:"center",
-                                paddingRight: I18nManager.isRTL ? 4 : 0,
-                                paddingLeft: I18nManager.isRTL ? 0 : 4,
-                                fontSize:11,
-                                color: prop.active ? "#9b9b9b" : "#fff",
+                                paddingRight: 5,
+                                paddingLeft: 5,
+                                fontSize:14,
+                                color: "#000",
                                 textAlign: 'center',
                                 lineHeight:11
                                 }}
-                        >{prop.name}</Text>
+                        >{count.lines.taxonomy_terms.services[prop][count.lng]}</Text>
                     </View>
                 </View>
             );
@@ -68,21 +75,11 @@ const styles = StyleSheet.create({
         padding:10
     },
     list:{
-        flexDirection:"row",
         flexWrap:"wrap"
         
     },
-    listItem:{
-        paddingTop:10,
-        flexDirection:"column",
-        width:(width-20)/5,
-        backgroundColor:"#6d6969",
-    },
-    iconBox:{
-        alignItems:"center"
-    },
     textBox:{
-        flexDirection:"column",
+        alignSelf:"center"
     },
     text:{
         // alignItems:"center",

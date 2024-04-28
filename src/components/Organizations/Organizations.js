@@ -1,14 +1,36 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text} from 'react-native';
-import Header from '../Header/Header';
+import {Image,StyleSheet,Text,View,Dimensions,Animated,Easing,ImageBackground,TouchableOpacity,I18nManager,ScrollView, SafeAreaView, StatusBar, Pressable} from 'react-native';
+import OrganizationBoxLink from '../OrganizationBoxLink/OrganizationBoxLink';
 
 
-const Organizations = () => (
-  <View>
-   <Text> Organizations Component</Text>
-  </View>
-);
+
+
+import { useSelector, useDispatch } from 'react-redux';
+import { setArray } from '../../tools/tools';
+
+const Organizations = (info) => {
+	const count = useSelector((store) => store.count.count);
+	return(
+		<ScrollView>
+			{count.lines != undefined &&
+				<View>
+
+				{count.lines.organizations != undefined &&
+					<View>
+						        
+						{setArray(count.lines.organizations).map((item, key) => {
+							return (
+								<OrganizationBoxLink _setOrganizationScreen={info._setOrganizationScreen} _setSelectedScreen={info._setSelectedScreen} _setOrganizationNid={info._setOrganizationNid} organization={item} key={"org-"+key}></OrganizationBoxLink>
+							);
+						})}
+					</View>
+				}
+				</View>
+			}
+		</ScrollView>
+	);
+}
 
 Organizations.propTypes = {};
 

@@ -1,5 +1,5 @@
 import React, {useRef, useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Image, Button, ScrollView, Animated, Dimensions, TouchableOpacity, AppRegistry, I18nManager} from 'react-native';
+import {StyleSheet, View, Text, Image, Button, ScrollView, Animated, Dimensions, TouchableOpacity, AppRegistry, I18nManager, StatusBar} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Header from "./src/components/Header/Header";
 import { NavigationContainer } from "@react-navigation/native";
@@ -8,6 +8,9 @@ import Event from "./src/components/Event/Event";
 import EventsCalender from "./src/components/EventsCalender/EventsCalender";
 import Redux from "./src/components/Redux/Redux";
 import Organization from "./src/components/Organization/organization";
+import Organizations from "./src/components/Organizations/Organizations";
+
+
 import Lines from './src/components/Lines/Lines';
 import { navigationRef } from './RootNavigation';
 import Configuration from "./src/components/Configuration/Configuration";
@@ -25,7 +28,7 @@ import Footer from './src/components/Footer/Footer';
 
 const Stack = createNativeStackNavigator();
 const {width, height} = Dimensions.get('screen');
-
+StatusBar.setHidden(false);
 const appBox = () => {
 	return(
 		<Provider store={store}>
@@ -41,8 +44,9 @@ const Flex = () => {
 	const [fadeAnimVal, setFadeAnimVal] = useState(-width);
 	const [panBoxVal, setPanBoxVal] = useState(0);
 	const [organizationNid, setOrganizationNid] = useState(1);
+	const [organizationScreen, setOrganizationScreen] = useState("lines");
 	const boxPan = useRef(new Animated.Value(0)).current;
-	const [selectedScreen, setSelectedScreen] = useState("Lines");
+	const [selectedScreen, setSelectedScreen] = useState("Organizations");
 	const count = useSelector((store) => store.count.count);
 	let [globalData, setGlobalData] = useState({});
 	const [isLinesReady, setIsLinesReady] = useState(false);
@@ -63,18 +67,11 @@ const Flex = () => {
 					.then((data) => {
 						dispatch(setEvents(data.data));
 						setEventsReady(true);
-						
 					});
 				}
-
-
-
 			});
 		}
 	}, [count.lng, isLinesReady]);
-
-
-
 
 	const handleIncrement = (value) => {
 		dispatch(increment(value));
@@ -85,10 +82,7 @@ const Flex = () => {
 
 	const changeScrinPan = () => {
 		let v = panBoxVal == 0 ? -width : 0;
-
-
 		setPanBoxVal(v);
-		
 		Animated.timing(boxPan, {
 			toValue: v,
 			duration: 280,
@@ -96,9 +90,6 @@ const Flex = () => {
 		}).start();	
 
 	};
-
-
-
 
 	return (
 		<View style={styles.app}>
@@ -109,11 +100,8 @@ const Flex = () => {
 					_setSelectedScreen={setSelectedScreen}
 					_changeScrinPan={changeScrinPan}
 				>
-
 				</Header>
-				
-				
-				
+
 				{ (selectedScreen == "Lines" &&  isLinesReady) &&
 					<Lines
 						_setOrganizationNid={setOrganizationNid}
@@ -121,20 +109,29 @@ const Flex = () => {
 						_setSelectedScreen={setSelectedScreen}
 					></Lines>
 				}
+
 				{ (selectedScreen == "Events" &&  isEventsReady) &&
 					<EventsCalender></EventsCalender>
 				}
 
-
-				{ (selectedScreen == "Organization") &&
-					<Organization _organizationNid={organizationNid}></Organization>
+				{ (selectedScreen == "Organizations" &&  isEventsReady) &&
+					<Organizations
+						_setOrganizationNid={setOrganizationNid}
+						_organizationNid={organizationNid}
+						_setSelectedScreen={setSelectedScreen}
+						_setOrganizationScreen={setOrganizationScreen}
+					
+					></Organizations>
 				}
 
-					
 
-
-
-				
+				{ (selectedScreen == "Organization") &&
+					<Organization
+						_organizationNid={organizationNid}
+						_organizationScreen={organizationScreen}
+						_setOrganizationScreen={setOrganizationScreen}
+					></Organization>
+				}
 
 				{/* <NavigationContainer ref={navigationRef}>
 					<Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -148,52 +145,7 @@ const Flex = () => {
 					</Stack.Navigator>
 				</NavigationContainer> */}
 
-				
 			</View>
-			
-			
-
-			{/* <Animated.View style={[styles.mainMenuBox, { marginLeft: fadeAnim}]}>
-				<LinearGradient
-					style={styles.LinearGradient}
-					colors={['#27042c','#27042c','#9b0ea5','#9b0ea5','#390641','#390641']}
-				>
-					<View style={styles.mainMenuList}>
-						<View style={styles.mainMenuListBox}>
-							<TouchableOpacity  style={styles.mainMenuListItem} onPress={() => {
-								navigate("Lines", {});
-								fadeIn();
-								}}
-							>
-								<View style={styles.mainMenuListItemBox}>
-									<View style={styles.mainMenuListItemIconBox}>
-										<Icon style={styles.mainMenuListItemIcon} name='facebook' color='#ed60d6' size={40}/>
-									</View>
-									<View style={styles.mainMenuListItemtextBox}>
-										<Text style={styles.mainMenuListItemtext}>Lines</Text>
-									</View>
-								</View>
-							</TouchableOpacity>
-
-							<TouchableOpacity  style={styles.mainMenuListItem} onPress={() => {
-								navigate("Configuration", {});
-								fadeIn();
-								}}
-							>
-								<View style={styles.mainMenuListItemBox}>
-									<View style={styles.mainMenuListItemIconBox}>
-										<Icon style={styles.mainMenuListItemIcon} name='settings' color='#ed60d6' size={40}/>
-									</View>
-									<View style={styles.mainMenuListItemtextBox}>
-										<Text style={styles.mainMenuListItemtext}>Configuration</Text>
-									</View>
-								</View>
-							</TouchableOpacity>
-						</View>
-					</View>
-				</LinearGradient>
-			</Animated.View> */}
-
 		</View>
 	);
 };
@@ -272,7 +224,6 @@ logoImage: {
 	height: 40
 },
 header:{
-	backgroundColor:"#000",
 	flexDirection:'row',
 	padding:10,
 },

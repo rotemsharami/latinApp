@@ -10,7 +10,6 @@ const Line = (item) => {
 	const count = useSelector((store) => store.count.count);
 
 
-	console.log(item);
 
 
 	const goToOrganizationLine = useCallback((nid) => {
@@ -26,7 +25,7 @@ const Line = (item) => {
 				style={[styles.itemBox]}
 				key={"today-line-"+item.item.nid}
 			>
-				<TouchableOpacity style={styles.logoAndTextBox} onPress={() => goToOrganizationLine(item.item.organization.nid)}>
+				<TouchableOpacity style={styles.logoAndTextBox} onPress={() => goToOrganizationLine(item.item.org_nid)}>
 				<View style={{
 					width: "100%",
 					padding:10,
@@ -48,8 +47,8 @@ const Line = (item) => {
 									fontSize:20,
 									paddingLeft: 10,
 									paddingRight: 10,
-									fontWeight:"bold",
-								}}>{nice_list_text(item.item.dance_floors)}</Text>
+									fontWeight:"bold",                                 
+								}}>{nice_list_text(item.item.dance_floors != null ? item.item.dance_floors : count.lines.organizations[item.item.org_nid].dance_floors, count.lines.taxonomy_terms.dance_floors, count.lng)}</Text>
 							</View>
 						</View>
 						<View style={styles.subTitle}><Text style={{

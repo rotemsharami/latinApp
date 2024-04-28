@@ -18,6 +18,9 @@ const {width, height} = Dimensions.get('screen');
 const logoWidth = width/5;
 const textWidth = width - logoWidth;
 const Schedule = (schedule) => {
+
+    
+
 	const count = useSelector((store) => store.count.count);
 	const dir = setTextDirection(count.lng);
     const setText = (text) => {
@@ -25,7 +28,6 @@ const Schedule = (schedule) => {
     }
 
     const NumberToStringTime = (number) => {
-        console.log(number);
         let intNumber = (parseInt(number) / 60) / 60;
         let hower = Math.floor(intNumber);
         let minuts =  Math.round((intNumber - hower) * 60);
@@ -36,10 +38,11 @@ const Schedule = (schedule) => {
     return(
         <View style={styles.section}>
             <View style={styles.sectionTitle}>
-                <Text style={styles.sectionTitleText}> {schedule.schedule.labels[4]}:</Text>
+                <Text style={styles.sectionTitleText}> {count.lines.global_metadata.labels[count.lng][1]}:</Text>
             </View>
             <View style={styles.scheduleList}>
-                {schedule.schedule.schedule.opening != undefined &&
+                
+                {schedule.opening != undefined &&
                         <View style={[styles.scheduleListItemIconAndLabel, {
                             flexDirection: count.lng == "en" ? "row" : "row-reverse",
                         }]}>
@@ -48,14 +51,14 @@ const Schedule = (schedule) => {
                         </View>
                         
                         <View style={styles.scheduleListItemLabel}>
-                            <Text>{schedule.schedule.labels[7]}:</Text>
+                            <Text>{count.lines.global_metadata.labels[count.lng][6]}:</Text>
                         </View>
                         <View style={styles.scheduleListItemHour}>
-                            <Text>{NumberToStringTime(schedule.schedule.schedule.opening)}</Text>
+                            <Text>{NumberToStringTime(schedule.opening)}</Text>
                         </View>
                     </View>
                 }
-                {schedule.schedule.schedule.lessons != undefined &&
+                {schedule.lessons != undefined &&
                         <View style={[styles.scheduleListItemIconAndLabel, {
                             flexDirection: count.lng == "en" ? "row" : "row-reverse",
                         }]}>
@@ -63,14 +66,14 @@ const Schedule = (schedule) => {
                             <MaterialCommunityIcons name="school" size={14} color="#000" />
                         </View>
                         <View style={styles.scheduleListItemLabel}>
-                            <Text>{schedule.schedule.labels[8]}:</Text>
+                            <Text>{count.lines.global_metadata.labels[count.lng][7]}:</Text>
                         </View>
                         <View style={styles.scheduleListItemHour}>
-                            <Text>{NumberToStringTime(schedule.schedule.schedule.lessons)}</Text>
+                            <Text>{NumberToStringTime(schedule.lessons)}</Text>
                         </View>
                     </View>
                 }
-                {schedule.schedule.schedule.party != undefined &&
+                {schedule.party != undefined &&
 
                         <View style={[styles.scheduleListItemIconAndLabel, {
                             flexDirection: count.lng == "en" ? "row" : "row-reverse",
@@ -79,10 +82,10 @@ const Schedule = (schedule) => {
                             <MaterialCommunityIcons name="music" size={14} color="#000" />
                         </View>
                         <View style={styles.scheduleListItemLabel}>
-                            <Text>{schedule.schedule.labels[9]}:</Text>
+                            <Text>{count.lines.global_metadata.labels[count.lng][8]}:</Text>
                         </View>
                         <View style={styles.scheduleListItemHour}>
-                            <Text>{NumberToStringTime(schedule.schedule.schedule.party)}</Text>
+                            <Text>{NumberToStringTime(schedule.party)}</Text>
                         </View>
                     </View>
                 }

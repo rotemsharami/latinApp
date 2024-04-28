@@ -14,7 +14,6 @@ const textWidth = width - logoWidth;
 
 
 const Footer = () => {
-	//console.log(navigationRef?.getRootState()?.routes[0]);
 	const dispatch = useDispatch();
 	const changeLng = (lng) => {
 		dispatch(changeLanguage(lng));

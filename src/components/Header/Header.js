@@ -16,7 +16,6 @@ const textWidth = width - logoWidth;
 const Header = (info) => {
 
 
-	//console.log(navigationRef?.getRootState()?.routes[0]);
 	const dispatch = useDispatch();
 	const changeScreen = (screen) => {
 		dispatch(changeSelectedScreen(screen));
@@ -39,36 +38,44 @@ const Header = (info) => {
 	const dir = setTextDirection(count.lng);
 
 
-	
-	useEffect(() => {
+	const setTitle = () => {
+		if(count.lines != undefined){
+			let title = "Bug!";
+			if(info._selectedScreen == "Lines"){
+				title = count.lines.global_metadata.labels[count.lng][2];
+			}
+			if(info._selectedScreen == "Organizations" || info._selectedScreen == "Organization"){
+				title = count.lines.global_metadata.labels[count.lng][10];
+			}
 
-		
-	}, []);
+			if(info._selectedScreen == "Events"){
+				title = count.lines.global_metadata.labels[count.lng][3];
+			}
+			return title;
+		}
+	}
+	
+
 
 	return(
 		<View style={styles.headerContainer}>
 			<View style={styles.header}>
-				<TouchableOpacity onPress={()=>{
-					navigate("Lines", {});
-					setSelectedRouth("Lines");
-					}}>
-					<View style={styles.logoAndAppName}>
-						<View style={styles.logo}>
-							<Image style={styles.logoImage} source={require('../../../assets/logo.png')} />
-						</View>
-						<View style={styles.appName}>
-							<Text style={{
-							paddingRight: I18nManager.isRTL ? 5 : 0,
-							paddingLeft: I18nManager.isRTL ? 0 : 5,
-							fontWeight:"bold",
-							color:"#FFF",
-							fontSize:40,
-							alignSelf:'center',
-
-						}}>LatinApp</Text>
-						</View>
+				<View style={styles.logoAndAppName}>
+					<View style={styles.logo}>
+						<Image style={styles.logoImage} source={require('../../../assets/logo.png')} />
 					</View>
-				</TouchableOpacity>
+					<View style={styles.appName}>
+						<Text style={{
+						paddingRight: I18nManager.isRTL ? 5 : 0,
+						paddingLeft: I18nManager.isRTL ? 0 : 5,
+						fontWeight:"bold",
+						color:"#FFF",
+						fontSize:40,
+						alignSelf:'center',
+
+					}}>LatinApp</Text>
+					</View>
+				</View>
 				<View style={styles.mainMenu}>
 					<TouchableOpacity onPress={()=>changeLng(count.lng == "en" ? "he" : "en")}>
 						<View style={styles.lang}>
@@ -81,12 +88,12 @@ const Header = (info) => {
 				flexDirection: count.lng == "en" ? "row" : "row-reverse",
 			}]}>
 				<View style={styles.headerMenuTitle}>
-					<Text style={styles.headerMenuTitleText}>{info._selectedScreen == "Lines" ? getTranslationString("Lines", count.lng) : getTranslationString("Events", count.lng)}</Text>
+					<Text style={styles.headerMenuTitleText}>{setTitle()}</Text>
 				</View>
 				<View style={[styles.headerMenu, {
 					flexDirection: count.lng == "en" ? "row" : "row-reverse",
 				}]}>
-					<TouchableOpacity onPress={()=>{
+					<TouchableOpacity onPress={() => {
 						//navigate("EventsCalender", {});
 						changeTheScreen("Events");
 						info._changeScrinPan();
@@ -117,13 +124,34 @@ const Header = (info) => {
                             <MaterialCommunityIcons name="clock-time-four-outline" size={30} color={info._selectedScreen == "Lines" ? "#f640b2" : "#d3d3d3"} />
                         </View>
 					</TouchableOpacity>
+
+					<TouchableOpacity onPress={()=>{
+						//navigate("Lines", {});
+						changeTheScreen("Organizations");
+						info._changeScrinPan();
+						//changeScreen("Lines");
+						}}>
+						<View style={[styles.headerMenuItem, {
+							borderRightWidth:1,
+							borderEndColor:"#1e1e1e",
+							height:50,
+							backgroundColor:"#545454"
+						}]}>
+                            <MaterialCommunityIcons name="view-grid" size={30} color={info._selectedScreen == "Organizations" || info._selectedScreen == "Organization" ? "#f640b2" : "#d3d3d3"} />
+                        </View>
+					</TouchableOpacity>
+
+
 				</View>
 			</View>
 		</View>
 	)
 };
 const styles = StyleSheet.create({
-
+	headerContainer:{
+		height:110,
+		backgroundColor:"red"
+	},
 	lang:{
 	},
 	langText:{
@@ -152,7 +180,7 @@ const styles = StyleSheet.create({
 		
 	},
 	headerMenuTitle:{
-		width:width - (2 * 42),
+		width:width - (3 * 42),
 	},
 	headerMenu:{
 		

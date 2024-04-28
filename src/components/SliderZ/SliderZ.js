@@ -74,7 +74,6 @@ const viewabilityConfig = useRef({
 }).current;
 
 
-//console.log(organizationsCarusel);
 
   return (
     <FlatList

@@ -7,7 +7,7 @@ import {
 	TouchableOpacity,
 	I18nManager
 	} from 'react-native';
-import { setRowType, setTextDirection, setArray} from '../../tools/tools';
+import { setRowType, setTextDirection, setArray, getImageUrl} from '../../tools/tools';
 import {navigate} from "../../../RootNavigation";
 
 import React, {useRef, useState, useEffect, useCallback} from 'react';
@@ -24,6 +24,8 @@ const OrganizationBoxLink = (item) => {
 
 	const changeNid = useCallback((nid) => {
 		item._setOrganizationNid(nid);
+        item._setSelectedScreen("Organization");
+        item._setOrganizationScreen("info");
 	}, [item._setOrganizationNid]);
 
     return(
@@ -33,27 +35,27 @@ const OrganizationBoxLink = (item) => {
                     flexDirection: setRowType(count.lng),
                 }}>
                     <View style={styles.logo}>
-                        <ImageBackground source={{uri:"https://latinet.co.il/"+item.organization.general_image}} resizeMode="cover" style={styles.logoImage}></ImageBackground>
+                        <ImageBackground source={{uri:getImageUrl(item.organization.general_image)}} resizeMode="cover" style={styles.logoImage}></ImageBackground>
                     </View>
                     <View style={styles.text}>
                         <Text style={{
                             paddingRight: count.lng =="he" ? 10 : 0,
                             paddingLeft: count.lng =="he" ? 0 : 10,
                             textAlign: dir,
-                            color: '#000',
+                            color: '#595959',
                             fontSize: 20,
                             fontWeight: 'bold',
-                        }}>{item.organization.title}</Text>
+                        }}>{item.organization[count.lng].title}</Text>
                         <Text style={{
                             paddingRight: count.lng =="he" ? 10 : 0,
                             paddingLeft: count.lng =="he" ? 0 : 10,
-                            color: '#000',
+                            color: '#595959',
                             textAlign: dir,
                             fontSize: 16,
                             lineHeight:20,
                             marginTop:5,
                             marginBottom:5,
-                        }}>{item.organization.slogen}</Text>
+                        }}>{item.organization[count.lng].slogen}</Text>
                         
 
                     </View>

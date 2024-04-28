@@ -95,12 +95,13 @@ const Lines = (info) => {
                 "dayObject": dayObject,
                 "date_short": dayObject.format('DD/MM'),
                 "active": dayObject.format('YYYY-MM-DD') == moment().format('YYYY-MM-DD') ? true : false,
-                "day_of_week": count.lines.global_metadata.days_of_week[dayObject.day()],
+                "day_of_week": count.lines.global_metadata.days_of_week[count.lng][dayObject.day()],
                 "day_index": dayObject.day(),
                 "events":[]
             };
             weekly.push(object);
         }
+		
         return weekly;
     };
 
@@ -110,7 +111,8 @@ const Lines = (info) => {
         newWeeklyData.forEach((day, index) => {
             if(day.events != undefined){
 				filterdEvents = count.lines.lines.filter((event) => {
-                    let in_day = parseInt(event.week_day) == parseInt(day.day_index);
+					let wd = event.week_day == "7" ? "0" : event.week_day;
+                    let in_day = parseInt(wd) == parseInt(day.day_index);
 					
 					
                     if(event.changed_type != undefined && event.event_type[Object.keys(event.event_type)[0]].tid == "49"){
@@ -126,20 +128,19 @@ const Lines = (info) => {
                     let in_event_types = true;
                     if(selectedDanceFloors.length > 0){
                         in_type = false;
-                        if(event.dance_floors != undefined){
-                            Object.keys(event.dance_floors).forEach(function(key) {
-                                if(selectedDanceFloors.indexOf(event.dance_floors[key].tid) != -1)
-                                    in_type = true;
+                        if(event.dance_floors != null){
+                            event.dance_floors.split(",").forEach(function(key) {
+                                if(selectedDanceFloors.indexOf(key) != -1)
+                                     in_type = true;
                             });
                         }
                     }
                     if(selectedAreas.length > 0){
                         in_area = false;
-                        let areas = event.area != undefined ? event.area : event.organization.area;
-                        if(areas[Object.keys(areas)[0]] != undefined){ 
-                            if(selectedAreas.indexOf(areas[Object.keys(areas)[0]].tid) != -1)
-                                in_area = true;
-                        }
+                        let area = count.lines.organizations[event.org_nid].area ;
+						if(selectedAreas.indexOf(area) != -1)
+							in_area = true;
+                        
                     }
                     let result = in_day == true && in_type == true && in_area == true;
 					
@@ -165,8 +166,6 @@ const Lines = (info) => {
 			// .then((data) => {
 				//setLines(pre => data.data);
 				setLines(count.lines);
-				//console.log(count.lines);
-
 
 
 				  
@@ -176,6 +175,8 @@ const Lines = (info) => {
 		if(lines != undefined){
 			filterDayEvents().then(function(filterd) {
 				setWeeklyData(pre => filterd);
+
+				
 
 				//animationValues.current = setArray(weeklyData[selectedDay].events).map(() => new Animated.Value(-60));
 
@@ -328,7 +329,7 @@ const Lines = (info) => {
 				<View style={[styles.daysControls, {
 					flexDirection: count.lng == "en" ? "row" : "row-reverse",
 				}]}>
-					{Object.keys(count.lines.global_metadata.days_of_week_short[count.lng]).map((index) => {
+					{Object.keys(weeklyData).map((index) => {
 						return(
 							<View key={"day-"+index} style={{
 								backgroundColor: selectedDay == index ? "#730874" : "#e7e7e7",
@@ -365,14 +366,13 @@ const Lines = (info) => {
 											style={{
 												color: "#000",
 											}}
-										>{count.lines.global_metadata.days_of_week_short[count.lng][index]}</Text>
-
+										>{count.lines.global_metadata.days_of_week_short[count.lng][weeklyData[index].day_index == "7" ? "1" : parseInt(weeklyData[index].day_index)]}</Text>
 								</View>
-								<Text
+									<Text
 										style={{
 											color: selectedDay == index ? "#FFF" : "#000",
 										}}
-									>{count.lines.global_metadata.days_of_week_short[count.lng][index]}</Text>
+									>{weeklyData[index].date_short}</Text>
 								</TouchableOpacity>
 							</View>
 						);
@@ -419,7 +419,6 @@ const styles = StyleSheet.create({
 		color:"#FFF"
 	},
 	filterIcon:{
-		backgroundColor:"#000",
 		alignItems: 'center',
 		justifyContent: 'center',
 		

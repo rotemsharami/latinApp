@@ -38,10 +38,6 @@ const SliderX = (gallery) => {
 				renderItem={({item}) => <SlideItem item={item} />}
 				horizontal
 				pagingEnabled
-				snapToAlignment="start"
-				showsHorizontalScrollIndicator={false}
-				onScroll={handleOnScroll}
-				viewabilityConfig={viewabilityConfig}
 			/>
 		</View>
 	);
@@ -50,6 +46,6 @@ const SliderX = (gallery) => {
 export default SliderX;
 const styles = StyleSheet.create({
 	container:{
-		height:height/3,
+		height:Math.round(height/3),
 	}
 });

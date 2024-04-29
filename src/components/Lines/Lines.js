@@ -1,15 +1,19 @@
 import {Image,StyleSheet,Text,View,Dimensions,Animated, PanResponder, Easing,ImageBackground,TouchableOpacity,I18nManager,ScrollView, SafeAreaView, StatusBar} from 'react-native';
 import React, {useRef, useState, useEffect} from 'react';
 import moment from 'moment';
-import { setRowType, getSelectedLang, setTextDirection, setArray, nice_list_text} from '../../tools/tools';
+import { setRowType, getSelectedLang, setTextDirection, setArray, nice_list_text, getPlayingHeight} from '../../tools/tools';
 import { useSelector, useDispatch } from 'react-redux';
 import OrganizationStudies from '../OrganizationStudies/OrganizationStudies.js';
 import Line from '../Line/Line';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-
+import {LinearGradient} from 'expo-linear-gradient';
 const {width, height} = Dimensions.get('screen');
+let windowH = Dimensions.get('window').height;
+
 const logoWidth = width/5;
 const textWidth = width - logoWidth;
+const STATUS_BAR_HEIGHT = StatusBar.currentHeight || 24; 
+
 const setText = (text) => {
 	return {html:text}
 }
@@ -218,54 +222,75 @@ const Lines = (info) => {
 			style={[styles.box]}
 			>
 			{lines != undefined &&
-			<View style={styles.containerValues}>
-				<View style={[styles.filterItems, {
-					flexDirection: count.lng == "en" ? "row" : "row-reverse",
+
+			<View style={styles.filters}>
+
+				{info._showFilters && 
+
+				<View style={[styles.filtersBox, {
+					height:height-110-(height-windowH-STATUS_BAR_HEIGHT)-STATUS_BAR_HEIGHT-80
 				}]}>
-					<View style={styles.filterIcon}><MaterialCommunityIcons name="music" size={14} color="#fff" /></View>
-					{Object.keys(lines.used_dance_floors).map((index) => {
-						return(
-							<View key={"dnacFloor-"+index} style={{
-								backgroundColor: selectedDanceFloors.includes(index) ? "#730874" : "#FFF",
-								borderWidth:1,
-								alignContent:"center",
-								padding:3
-							}}>
-								<TouchableOpacity onPress={() => changeDanceFloor(index)}>
-									<Text
-										style={{
-											color: selectedDanceFloors.includes(index) ? "#FFF" : "#000",
-										}}
-									>{getTagInfo(index, lines.dance_floors[count.lng])}</Text>
-								</TouchableOpacity>
-							</View>
-						);
-					})}
+					<View style={styles.containerValues}>
+						<View style={[styles.filterItems, {
+							flexDirection: count.lng == "en" ? "row" : "row-reverse",
+						}]}>
+							<View style={styles.filterIcon}><MaterialCommunityIcons name="music" size={14} color="#fff" /></View>
+							{Object.keys(lines.used_dance_floors).map((index) => {
+								return(
+									<View key={"dnacFloor-"+index} style={{
+										backgroundColor: selectedDanceFloors.includes(index) ? "#730874" : "#FFF",
+										borderWidth:1,
+										alignContent:"center",
+										padding:3
+									}}>
+										<TouchableOpacity onPress={() => changeDanceFloor(index)}>
+											<Text
+												style={{
+													color: selectedDanceFloors.includes(index) ? "#FFF" : "#000",
+												}}
+											>{getTagInfo(index, lines.dance_floors[count.lng])}</Text>
+										</TouchableOpacity>
+									</View>
+								);
+							})}
+						</View>
+						<View style={[styles.filterItems, {
+							flexDirection: count.lng == "en" ? "row" : "row-reverse",
+						}]}>
+							<View style={styles.filterIcon}><MaterialCommunityIcons name="map-marker" size={14} color="#fff" /></View>
+							{Object.keys(lines.used_area).map((index) => {
+								return(
+									<View key={"area-"+index} style={{
+										backgroundColor: selectedAreas.includes(index) ? "#730874" : "#FFF",
+										borderWidth:1,
+										alignContent:"center",
+										padding:3
+									}}>
+										<TouchableOpacity onPress={() => changeAreas(index)}>
+										<Text
+												style={{
+													color: selectedAreas.includes(index) ? "#FFF" : "#000",
+												}}
+											>{getTagInfo(index, lines.areas[count.lng])}</Text>
+										</TouchableOpacity>
+									</View>
+								);
+							})}
+						</View>
+					</View>
 				</View>
-				<View style={[styles.filterItems, {
-					flexDirection: count.lng == "en" ? "row" : "row-reverse",
-				}]}>
-					<View style={styles.filterIcon}><MaterialCommunityIcons name="map-marker" size={14} color="#fff" /></View>
-					{Object.keys(lines.used_area).map((index) => {
-						return(
-							<View key={"area-"+index} style={{
-								backgroundColor: selectedAreas.includes(index) ? "#730874" : "#FFF",
-								borderWidth:1,
-								alignContent:"center",
-								padding:3
-							}}>
-								<TouchableOpacity onPress={() => changeAreas(index)}>
-								<Text
-										style={{
-											color: selectedAreas.includes(index) ? "#FFF" : "#000",
-										}}
-									>{getTagInfo(index, lines.areas[count.lng])}</Text>
-								</TouchableOpacity>
-							</View>
-						);
-					})}
-				</View>
-				
+
+				}
+
+				{!info._showFilters && 
+				<LinearGradient style={[styles.linesBox, {
+					height: height-110-(height-windowH-STATUS_BAR_HEIGHT)-STATUS_BAR_HEIGHT-80
+				}]}
+					colors={['#efdbf7','#FFF']}
+					
+				>
+
+
 				{weeklyData[selectedDay] !== undefined && 
 					<View style={styles.day}>
 						{weeklyData[selectedDay].events !== undefined && 
@@ -276,11 +301,16 @@ const Lines = (info) => {
 												<View>
 													{weeklyData[selectedDay].events[0] !== undefined && 
 														<SafeAreaView style={{
-															height:height-332,
-															backgroundColor:"#b7b7b7"
+															
+															
 
 															}}>
-															<ScrollView style={{flex:1}}>
+
+
+																
+
+
+															<ScrollView style={{}}>
 																
 
 
@@ -294,14 +324,29 @@ const Lines = (info) => {
 																				// 	key={key}
 																				// 	style={[styles.item, { transform: [{ translateX: animationValues[key] }] }]}
 																				// >
-																					<Line
-																						key={"line-"+item.nid}
-																						item={item}
-																						_organizationNid={info._organizationNid}
-																						_setOrganizationNid={info._setOrganizationNid}
-																						_setSelectedScreen={info._setSelectedScreen}
-																						>
-																					</Line>
+																					<View style={{
+																						flexDirection: count.lng == "en" ? "row" : "row-reverse",
+																						paddingRight:20,
+																						paddingLeft:20,
+																						borderBottomWidth:2,
+																						borderBottomColor:"#FFF"
+
+																					}}>
+																						<View style={{
+																							justifyContent:'center',
+																							
+																						}}>
+																							<Text style={{backgroundColor:"#474747", color:"#FFF", width:19, textAlign: 'center', borderRadius:30}}>{key+1}</Text>
+																						</View>
+																						<Line
+																							key={"line-"+item.nid}
+																							item={item}
+																							_organizationNid={info._organizationNid}
+																							_setOrganizationNid={info._setOrganizationNid}
+																							_setSelectedScreen={info._setSelectedScreen}
+																							>
+																						</Line>
+																					</View>
 																			// </Animated.View>
 																			);
 																			})}
@@ -323,8 +368,8 @@ const Lines = (info) => {
 					</View>
 				}
 
-
-
+				</LinearGradient>
+				}
 
 				<View style={[styles.daysControls, {
 					flexDirection: count.lng == "en" ? "row" : "row-reverse",
@@ -393,6 +438,12 @@ const Lines = (info) => {
 }
 export default Lines;
 const styles = StyleSheet.create({
+	filters:{
+
+	},
+	filtersBox:{
+		backgroundColor:"#d3d3d3"
+	},
 	linesAmount:{
 		backgroundColor:"#f640b2",
 		alignItems: 'center',
@@ -442,6 +493,7 @@ const styles = StyleSheet.create({
 	},
 	daysControls:{
 		flexDirection:"row",
+		height:80
 	},
 	dayFilterItem:{
 		flex:1,

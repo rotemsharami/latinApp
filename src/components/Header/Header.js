@@ -66,8 +66,7 @@ const Header = (info) => {
 					</View>
 					<View style={styles.appName}>
 						<Text style={{
-						paddingRight: I18nManager.isRTL ? 5 : 0,
-						paddingLeft: I18nManager.isRTL ? 0 : 5,
+
 						fontWeight:"bold",
 						color:"#FFF",
 						fontSize:40,
@@ -87,16 +86,48 @@ const Header = (info) => {
 			<View style={[styles.headerMenuAndTitle, {
 				flexDirection: count.lng == "en" ? "row" : "row-reverse",
 			}]}>
-				<View style={styles.headerMenuTitle}>
-					<Text style={styles.headerMenuTitleText}>{setTitle()}</Text>
-				</View>
+				{info._selectedScreen != "Lines" && 
+					<View style={styles.headerMenuTitle}>
+						<Text style={styles.headerMenuTitleText}>{setTitle()}</Text>
+					</View>
+				}
+				{info._selectedScreen == "Lines" && 
+					<View style={[styles.headerMenuTitle, {
+						flexDirection: count.lng == "en" ? "row" : "row-reverse",
+					}]}>
+						<View>
+							<Text style={styles.headerMenuTitleText}>{setTitle()}</Text>
+						</View>
+
+						<TouchableOpacity
+							onPress={() => info._setShowFilters(info._showFilters ? false : true)}
+							
+							style={[styles.filterButton, {
+								flexDirection: count.lng == "en" ? "row" : "row-reverse",
+								borderWidth:2,
+								borderColor:"#d3d3d3",
+								height:28,
+								padding:2,
+								paddingRight:4,
+								paddingLeft:4,
+								marginTop:12
+						}]}>
+							<MaterialCommunityIcons name="filter" size={16} color={"#d3d3d3"} />
+							<View  style={styles.filterButtonText}>
+								<Text style={styles.headerMenuTitleTextFilter}>{"Filter"}</Text>
+							</View>
+						</TouchableOpacity>
+					</View>
+				}	
+
+
+
 				<View style={[styles.headerMenu, {
 					flexDirection: count.lng == "en" ? "row" : "row-reverse",
 				}]}>
 					<TouchableOpacity onPress={() => {
 						//navigate("EventsCalender", {});
 						changeTheScreen("Events");
-						info._changeScrinPan();
 						//changeScreen("Events");
 
 						}}>
@@ -112,7 +143,6 @@ const Header = (info) => {
 					<TouchableOpacity onPress={()=>{
 						//navigate("Lines", {});
 						changeTheScreen("Lines");
-						info._changeScrinPan();
 						//changeScreen("Lines");
 						}}>
 						<View style={[styles.headerMenuItem, {
@@ -128,7 +158,6 @@ const Header = (info) => {
 					<TouchableOpacity onPress={()=>{
 						//navigate("Lines", {});
 						changeTheScreen("Organizations");
-						info._changeScrinPan();
 						//changeScreen("Lines");
 						}}>
 						<View style={[styles.headerMenuItem, {
@@ -148,6 +177,18 @@ const Header = (info) => {
 	)
 };
 const styles = StyleSheet.create({
+	headerMenuTitleTextFilter:{
+		color:"#FFF"
+	},
+	filterButtonText:{
+
+	},
+	headerMenuTitleText:{
+
+	},
+	headerMenuTitleWithFilter:{
+		flexDirection:"row"
+	},
 	headerContainer:{
 		height:110,
 		backgroundColor:"red"
@@ -163,12 +204,11 @@ const styles = StyleSheet.create({
 	},
 
 	headerMenuTitleText:{
-		color:"#FFF",
+		color:"#d3d3d3",
 		fontSize:28,
 		paddingRight:15,
 		paddingLeft:15,
-		height:50,
-		paddingTop:5
+		paddingTop:5,
 
 	},
 	headerMenuItem:{

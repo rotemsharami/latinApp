@@ -18,18 +18,23 @@ const Line = (item) => {
 	}, [item._setOrganizationNid, item._setSelectedScreen]);
 
 	return(
-		<View>
+		<View style={{
+
+		}}>
 			{item != undefined && 
 
 			<View
 				style={[styles.itemBox]}
 				key={"today-line-"+item.item.nid}
 			>
+
+
+				
 				<TouchableOpacity style={styles.logoAndTextBox} onPress={() => goToOrganizationLine(item.item.org_nid)}>
 				<View style={{
-					width: "100%",
 					padding:10,
 					flexDirection: count.lng == "en" ? "row" : "row-reverse",
+					
 				}}>
 					<View style={styles.generalImageBox}>
 						<View style={styles.generalImage}>
@@ -80,7 +85,7 @@ const styles = StyleSheet.create({
 		color:"#FFF",
 	},
 	itemBox:{
-		backgroundColor:"#dbdbdb",
+		
 		marginTop:3,
 		width: "100%",
 	},

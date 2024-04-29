@@ -1,7 +1,7 @@
 import moment from "moment";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import storage from "../storage/storage";
-import { I18nManager } from "react-native";
+import { I18nManager, StatusBar, Dimensions} from "react-native";
 import { useSelector } from 'react-redux';
 
 
@@ -42,6 +42,13 @@ export const setTextDirection = (appLng) => {
 
 export const getImageUrl = (uri) => {
     return uri.replace("public://", "https://latinet.co.il/sites/default/files/");
+}
+
+
+export const getPlayingHeight = () => {
+    const STATUS_BAR_HEIGHT = StatusBar.currentHeight || 24; 
+    let windowH = Dimensions.get('window').height;
+    return windowH-110-(height-windowH-STATUS_BAR_HEIGHT)-STATUS_BAR_HEIGHT;
 }
 
 

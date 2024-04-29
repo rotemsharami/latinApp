@@ -89,7 +89,9 @@ const Organization = (info) => {
 			let menu = [
 				{name: "info", title: count.lines.global_metadata.labels[count.lng][1], active: info._organizationScreen == "info"}
 			];
-			if(count.lines.organizations[info._organizationNid].lines != undefined){
+
+
+			if(count.lines.organizations[info._organizationNid].lines.length > 0){
 				menu.push({name: "lines", title: count.lines.global_metadata.labels[count.lng][2], active: info._organizationScreen == "lines"});
 			}
 			if(count.lines.organizations[info._organizationNid].events != undefined){

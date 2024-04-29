@@ -9,7 +9,7 @@ import {
 	} from 'react-native';
 import { setRowType, setTextDirection, setArray, getImageUrl} from '../../tools/tools';
 import {navigate} from "../../../RootNavigation";
-
+import {LinearGradient} from 'expo-linear-gradient';
 import React, {useRef, useState, useEffect, useCallback} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 const {width, height} = Dimensions.get('screen');
@@ -29,11 +29,18 @@ const OrganizationBoxLink = (item) => {
 	}, [item._setOrganizationNid]);
 
     return(
-        <View style={styles.logoAndTextBox}>
+
+        <LinearGradient style={styles.logoAndTextBox}
+            colors={["#FFF", "#FFF", '#fbefff',]}
+        >
+            
             <TouchableOpacity onPress={() => changeNid(item.organization.nid)}>
                 <View style={{
                     flexDirection: setRowType(count.lng),
                 }}>
+
+
+                    
                     <View style={styles.logo}>
                         <ImageBackground source={{uri:getImageUrl(item.organization.general_image)}} resizeMode="cover" style={styles.logoImage}></ImageBackground>
                     </View>
@@ -53,7 +60,6 @@ const OrganizationBoxLink = (item) => {
                             textAlign: dir,
                             fontSize: 16,
                             lineHeight:20,
-                            marginTop:5,
                             marginBottom:5,
                         }}>{item.organization[count.lng].slogen}</Text>
                         
@@ -61,7 +67,7 @@ const OrganizationBoxLink = (item) => {
                     </View>
                 </View>
             </TouchableOpacity>
-        </View>
+        </LinearGradient>
     );
 
 }
@@ -72,8 +78,8 @@ logoAndTextBox:{
     width:width,
     padding:10,
     flexDirection:"column",
-    borderBottomWidth:2,
-    borderBottomColor:"#730874",
+    borderBottomWidth:1,
+    borderBottomColor:"#dcc5e3"
     
 },
 logoAndText:{
@@ -95,20 +101,14 @@ text: {
   width:textWidth-30,
 },
 title: {
-    paddingRight: I18nManager.isRTL ? 10 : 0,
-    paddingLeft: I18nManager.isRTL ? 0 : 10,
       color: '#000',
       fontSize: 20,
       fontWeight: 'bold',
 },
 description: {
-    paddingRight: I18nManager.isRTL ? 10 : 0,
-    paddingLeft: I18nManager.isRTL ? 0 : 10,
     color: '#000',
     fontSize: 18,
     lineHeight:20,
-    marginTop:5,
-    marginBottom:5,
 },
 
 

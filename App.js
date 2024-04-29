@@ -2,29 +2,16 @@ import React, {useRef, useState, useEffect} from 'react';
 import {StyleSheet, View, Text, Image, Button, ScrollView, Animated, Dimensions, TouchableOpacity, AppRegistry, I18nManager, StatusBar} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Header from "./src/components/Header/Header";
-import { NavigationContainer } from "@react-navigation/native";
-import HomePage from "./src/components/homePage/homePage";
-import Event from "./src/components/Event/Event";
 import EventsCalender from "./src/components/EventsCalender/EventsCalender";
-import Redux from "./src/components/Redux/Redux";
 import Organization from "./src/components/Organization/organization";
 import Organizations from "./src/components/Organizations/Organizations";
-
-
 import Lines from './src/components/Lines/Lines';
-import { navigationRef } from './RootNavigation';
-import Configuration from "./src/components/Configuration/Configuration";
-import {LinearGradient} from 'expo-linear-gradient';
-import { Icon } from 'react-native-elements';
-import {navigate} from "./RootNavigation";
 import {getData, storeData, setArray} from "./src/tools/tools";
 import { Provider } from 'react-redux';
 import { store } from './store/store';
 import { useSelector, useDispatch } from 'react-redux';
 import {increment, decrement, setLines, setEvents} from './src/actions/counterActions';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import Main from './src/components/Main/Main';
-import Footer from './src/components/Footer/Footer';
 
 const Stack = createNativeStackNavigator();
 const {width, height} = Dimensions.get('screen');
@@ -41,14 +28,11 @@ const appBox = () => {
 
 const Flex = () => {
 	const dispatch = useDispatch();
-	const [fadeAnimVal, setFadeAnimVal] = useState(-width);
-	const [panBoxVal, setPanBoxVal] = useState(0);
+	const [showFilters, setShowFilters] = useState(false);
 	const [organizationNid, setOrganizationNid] = useState(1);
 	const [organizationScreen, setOrganizationScreen] = useState("lines");
-	const boxPan = useRef(new Animated.Value(0)).current;
 	const [selectedScreen, setSelectedScreen] = useState("Organizations");
 	const count = useSelector((store) => store.count.count);
-	let [globalData, setGlobalData] = useState({});
 	const [isLinesReady, setIsLinesReady] = useState(false);
 	const [isEventsReady, setEventsReady] = useState(false);
 
@@ -72,59 +56,38 @@ const Flex = () => {
 			});
 		}
 	}, [count.lng, isLinesReady]);
-
-	const handleIncrement = (value) => {
-		dispatch(increment(value));
-	};
-
-	I18nManager.forceRTL(false);
-	I18nManager.allowRTL(false);
-
-	const changeScrinPan = () => {
-		let v = panBoxVal == 0 ? -width : 0;
-		setPanBoxVal(v);
-		Animated.timing(boxPan, {
-			toValue: v,
-			duration: 280,
-			useNativeDriver: false,
-		}).start();	
-
-	};
-
 	return (
 		<View style={styles.app}>
+			
+			<StatusBar barStyle="light-content" backgroundColor={"#4a0a55"}/>
 			<View style={styles.appBox}>
 				<Header
 					style={styles.header}
 					_selectedScreen={selectedScreen}
 					_setSelectedScreen={setSelectedScreen}
-					_changeScrinPan={changeScrinPan}
+					_setShowFilters={setShowFilters}
+					_showFilters={showFilters}
 				>
 				</Header>
-
 				{ (selectedScreen == "Lines" &&  isLinesReady) &&
 					<Lines
 						_setOrganizationNid={setOrganizationNid}
 						_organizationNid={organizationNid}
 						_setSelectedScreen={setSelectedScreen}
+						_showFilters={showFilters}
 					></Lines>
 				}
-
 				{ (selectedScreen == "Events" &&  isEventsReady) &&
 					<EventsCalender></EventsCalender>
 				}
-
 				{ (selectedScreen == "Organizations" &&  isEventsReady) &&
 					<Organizations
 						_setOrganizationNid={setOrganizationNid}
 						_organizationNid={organizationNid}
 						_setSelectedScreen={setSelectedScreen}
 						_setOrganizationScreen={setOrganizationScreen}
-					
 					></Organizations>
 				}
-
-
 				{ (selectedScreen == "Organization") &&
 					<Organization
 						_organizationNid={organizationNid}
@@ -132,136 +95,9 @@ const Flex = () => {
 						_setOrganizationScreen={setOrganizationScreen}
 					></Organization>
 				}
-
-				{/* <NavigationContainer ref={navigationRef}>
-					<Stack.Navigator screenOptions={{ headerShown: false }}>
-						<Stack.Screen name="Lines" component={Lines}/>
-						<Stack.Screen name="HomePage" component={HomePage} />
-						<Stack.Screen name="Configuration" component={Configuration}/>
-						<Stack.Screen name="EventsCalender" component={EventsCalender}/>
-						<Stack.Screen name="DayEvents" component={DayEvents}/>
-						<Stack.Screen name="Event" component={Event}/>
-						<Stack.Screen name="Organization" component={Organization}/>
-					</Stack.Navigator>
-				</NavigationContainer> */}
-
 			</View>
 		</View>
 	);
 };
-
-const styles = StyleSheet.create({
-app: {
-	paddingTop: 0,
-	justifyContent: 'flex-start',
-	marginTop:24,
-},
-appBox:{
-zIndex:1,
-height:height-26,
-},
-header: {
-	flex: 1,
-},
-footer:{
-	flex:1
-},
-LinearGradient:{
-	height:"100%",
-	width:"100%",
-},
-mainMenuList:{
-height:100,
-flexDirection:"row"
-},
-mainMenuListBox:{
-width:width
-},
-mainMenuListItem:{
-	backgroundColor:"#300330",
-	height:100,
-	borderBottomWidth:1,
-	borderBottomColor:"#ffdaff",
-	justifyContent: 'center'
-},
-mainMenuListItemBox:{
-flexDirection:"row",
-},
-mainMenuListItemIconBox:{
-	flexDirection:"column"
-	},
-
-mainMenuListItemIcon:{
-width:80,
-},
-mainMenuListItemtextBox:{
-	flexDirection:"column",
-	justifyContent: 'center'
-},
-mainMenuListItemtext:{
-color:"#FFF",
-fontSize:20
-},
-
-
-
-
-
-
-TodaysLines: {
-	flex: 2,
-},
-
-icon:{
-	color: "#FFF"
-},
-logo: {
-	padding: 0,
-	flexDirection:'column'
-},
-logoImage: {
-	width: 40,
-	height: 40
-},
-header:{
-	flexDirection:'row',
-	padding:10,
-},
-
-mainMenu:{
-	justifyContent:'center',
-	flexDirection:'column',
-	flex: 1,
-	alignItems: "center",
-},
-logoAndAppName: {
-	flexDirection:'row',
-	flex: 4,
-	justifyContent:'center',
-    alignItems: "center",
-
-},
-logoAndAppNameBox:{
-	flexDirection:'row',
-},
-
-logo: {
-	flexDirection:'column'
-},
-appName: {
-	flexDirection:'column'
-},
-appNameText:{
-	color:"#FFF",
-	fontSize:20,
-	alignSelf:'center'
-},
-language:{
-	justifyContent:'center',
-	flexDirection:'column',
-	flex: 1
-}
-
-});
-
+const styles = StyleSheet.create({});
 export default appBox;

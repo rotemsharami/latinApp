@@ -22,11 +22,11 @@ const OrganizationBoxLink = (item) => {
 
 
 
-	const changeNid = useCallback((nid) => {
-		item._setOrganizationNid(nid);
-        item._setSelectedScreen("Organization");
-        item._setOrganizationScreen("info");
-	}, [item._setOrganizationNid]);
+	// const changeNid = useCallback((nid) => {
+	// 	item._setOrganizationNid(nid);
+    //     item._setSelectedScreen("Organization");
+    //     item._setOrganizationScreen("info");
+	// }, [item._setOrganizationNid]);
 
     return(
 
@@ -34,7 +34,9 @@ const OrganizationBoxLink = (item) => {
             colors={["#FFF", "#FFF", '#fbefff',]}
         >
             
-            <TouchableOpacity onPress={() => changeNid(item.organization.nid)}>
+            <TouchableOpacity onPress={() => {
+                //changeNid(item.organization.nid)
+                }}>
                 <View style={{
                     flexDirection: setRowType(count.lng),
                 }}>

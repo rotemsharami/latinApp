@@ -1,12 +1,24 @@
 import React, {useRef, useState, useEffect} from 'react';
 import {StyleSheet, View, Text, Image, Button, ScrollView, Animated, Dimensions, TouchableOpacity, AppRegistry, I18nManager, StatusBar} from 'react-native';
+import { NavigationContainer } from "@react-navigation/native";
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Header from "./src/components/Header/Header";
+
 import EventsCalender from "./src/components/EventsCalender/EventsCalender";
+
+import DayEvents from "./src/components/DayEvents/DayEvents";
+
+import Event from "./src/components/Event/Event";
+
+import HomePage from "./src/components/HomePage/HomePage";
+
+
+
 import Organization from "./src/components/Organization/organization";
 import Organizations from "./src/components/Organizations/Organizations";
 import Lines from './src/components/Lines/Lines';
 import {getData, storeData, setArray} from "./src/tools/tools";
+import {navigate, navigationRef} from "./RootNavigation";
 import { Provider } from 'react-redux';
 import { store } from './store/store';
 import { useSelector, useDispatch } from 'react-redux';
@@ -16,6 +28,12 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 const Stack = createNativeStackNavigator();
 const {width, height} = Dimensions.get('screen');
 StatusBar.setHidden(false);
+
+const STATUS_BAR_HEIGHT = StatusBar.currentHeight || 24; 
+const WINDOW_HEIGHT = Dimensions.get('window').height;
+
+
+
 const appBox = () => {
 	return(
 		<Provider store={store}>
@@ -26,7 +44,7 @@ const appBox = () => {
 	);
 }
 
-const Flex = () => {
+const Flex = (navigation) => {
 	const dispatch = useDispatch();
 	const [showFilters, setShowFilters] = useState(false);
 	const [organizationNid, setOrganizationNid] = useState(1);
@@ -58,7 +76,6 @@ const Flex = () => {
 	}, [count.lng, isLinesReady]);
 	return (
 		<View style={styles.app}>
-			
 			<StatusBar barStyle="light-content" backgroundColor={"#4a0a55"}/>
 			<View style={styles.appBox}>
 				<Header
@@ -69,7 +86,23 @@ const Flex = () => {
 					_showFilters={showFilters}
 				>
 				</Header>
-				{ (selectedScreen == "Lines" &&  isLinesReady) &&
+
+				
+				<NavigationContainer ref={navigationRef}>
+					<Stack.Navigator screenOptions={{ headerShown: false }}>
+						<Stack.Screen name="HomePage" component={HomePage} />
+						<Stack.Screen name="Configuration" component={Configuration}/>
+
+						<Stack.Screen name="DayEvents" component={DayEvents}/>
+						<Stack.Screen name="Event" component={Event}/>
+						
+						<Stack.Screen name="Organization" component={Organization}/>
+						<Stack.Screen name="Lines" component={Lines}/>
+					</Stack.Navigator>
+				</NavigationContainer>
+				
+
+				{/* { (selectedScreen == "Lines" &&  isLinesReady) &&
 					<Lines
 						_setOrganizationNid={setOrganizationNid}
 						_organizationNid={organizationNid}
@@ -94,7 +127,10 @@ const Flex = () => {
 						_organizationScreen={organizationScreen}
 						_setOrganizationScreen={setOrganizationScreen}
 					></Organization>
-				}
+				} */}
+
+
+
 			</View>
 		</View>
 	);

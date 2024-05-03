@@ -46,9 +46,10 @@ export const getImageUrl = (uri) => {
 
 
 export const getPlayingHeight = () => {
+    const {width, height} = Dimensions.get('screen');
     const STATUS_BAR_HEIGHT = StatusBar.currentHeight || 24; 
     let windowH = Dimensions.get('window').height;
-    return windowH-110-(height-windowH-STATUS_BAR_HEIGHT)-STATUS_BAR_HEIGHT;
+    return height-110-(height-windowH-STATUS_BAR_HEIGHT)-STATUS_BAR_HEIGHT;
 }
 
 

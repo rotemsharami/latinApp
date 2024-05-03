@@ -9,11 +9,13 @@ import OrganizationBoxLink from '../OrganizationBoxLink/OrganizationBoxLink';
 import { useSelector, useDispatch } from 'react-redux';
 import { setArray } from '../../tools/tools';
 
-const Organizations = () => {
+const Organizations = (info) => {
+
+	
+
 	const count = useSelector((store) => store.count.count);
 	return(
 		<ScrollView>
-			<Text>ddd</Text>
 
 			{count.lines != undefined &&
 				<View>
@@ -23,8 +25,8 @@ const Organizations = () => {
 						        
 						{setArray(count.lines.organizations).map((item, key) => {
 							return (
-								// <OrganizationBoxLink _setOrganizationScreen={info._setOrganizationScreen} _setSelectedScreen={info._setSelectedScreen} _setOrganizationNid={info._setOrganizationNid} organization={item} key={"org-"+key}></OrganizationBoxLink>
-								<OrganizationBoxLink organization={item} key={"org-"+key}></OrganizationBoxLink>
+								<OrganizationBoxLink _setOrganizationScreen={info._setOrganizationScreen} _setSelectedScreen={info._setSelectedScreen} _setOrganizationNid={info._setOrganizationNid} organization={item} key={"org-"+key}></OrganizationBoxLink>
+								//<OrganizationBoxLink organization={item} key={"org-"+key}></OrganizationBoxLink>
 								
 								);
 						})}

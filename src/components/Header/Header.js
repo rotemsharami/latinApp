@@ -5,7 +5,7 @@ import {nice_list_text, setArray, getSelectedLang, setRowType, setTextDirection,
 import { useSelector, useDispatch } from 'react-redux';
 import { Flex } from "@react-native-material/core";
 const {width, height} = Dimensions.get('screen');
-import {navigate, navigationRef} from "../../../RootNavigation";
+import {navigate, navigationRef, getRouteName} from "../../../RootNavigation";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {increment, decrement, changeLanguage, changeSelectedScreen} from '../../actions/counterActions';
 const logoWidth = 40;
@@ -42,6 +42,7 @@ const Header = (info) => {
 		if(count.lines != undefined){
 			let title = "Bug!";
 			if(info._selectedScreen == "Lines"){
+				
 				title = count.lines.global_metadata.labels[count.lng][2];
 			}
 			if(info._selectedScreen == "Organizations" || info._selectedScreen == "Organization"){
@@ -55,6 +56,16 @@ const Header = (info) => {
 		}
 	}
 	
+
+	useEffect(() => {
+		const unsubscribe = navigationRef.addListener('state', () => {
+			info._setSelectedScreen(navigationRef.getCurrentRoute().name);
+		});
+	
+		return unsubscribe;
+	}, []);
+
+
 
 
 	return(
@@ -141,8 +152,9 @@ const Header = (info) => {
                         </View>
 					</TouchableOpacity>
 					<TouchableOpacity onPress={()=>{
+						navigate("Lines", {});
 						//navigate("Lines", {});
-						changeTheScreen("Lines");
+						//changeTheScreen("Lines");
 						//changeScreen("Lines");
 						}}>
 						<View style={[styles.headerMenuItem, {
@@ -157,7 +169,8 @@ const Header = (info) => {
 
 					<TouchableOpacity onPress={()=>{
 						//navigate("Lines", {});
-						changeTheScreen("Organizations");
+						//changeTheScreen("Organizations");
+						navigate("Organizations", {});
 						//changeScreen("Lines");
 						}}>
 						<View style={[styles.headerMenuItem, {

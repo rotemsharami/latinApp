@@ -1,5 +1,5 @@
 import React, {useRef, useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Image, Button, ScrollView, Animated, Dimensions, TouchableOpacity, AppRegistry, I18nManager, StatusBar} from 'react-native';
+import {StyleSheet, View, Text, Image, Button, ScrollView, Animated, Dimensions, TouchableOpacity, AppRegistry, I18nManager, StatusBar, SafeAreaView} from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Header from "./src/components/Header/Header";
@@ -8,16 +8,17 @@ import EventsCalender from "./src/components/EventsCalender/EventsCalender";
 
 import DayEvents from "./src/components/DayEvents/DayEvents";
 
-import Event from "./src/components/Event/Event";
+import Configuration from "./src/components/Configuration/Configuration";
 
-import HomePage from "./src/components/HomePage/HomePage";
+
+import Event from "./src/components/Event/Event";
 
 
 
 import Organization from "./src/components/Organization/organization";
 import Organizations from "./src/components/Organizations/Organizations";
 import Lines from './src/components/Lines/Lines';
-import {getData, storeData, setArray} from "./src/tools/tools";
+import {getData, storeData, setArray, getPlayingHeight} from "./src/tools/tools";
 import {navigate, navigationRef} from "./RootNavigation";
 import { Provider } from 'react-redux';
 import { store } from './store/store';
@@ -78,6 +79,7 @@ const Flex = (navigation) => {
 		<View style={styles.app}>
 			<StatusBar barStyle="light-content" backgroundColor={"#4a0a55"}/>
 			<View style={styles.appBox}>
+				
 				<Header
 					style={styles.header}
 					_selectedScreen={selectedScreen}
@@ -86,21 +88,26 @@ const Flex = (navigation) => {
 					_showFilters={showFilters}
 				>
 				</Header>
-
 				
-				<NavigationContainer ref={navigationRef}>
-					<Stack.Navigator screenOptions={{ headerShown: false }}>
-						<Stack.Screen name="HomePage" component={HomePage} />
-						<Stack.Screen name="Configuration" component={Configuration}/>
+				{isLinesReady && 
+				<SafeAreaView style={{
+					height:getPlayingHeight()
+				}}>
+					
 
-						<Stack.Screen name="DayEvents" component={DayEvents}/>
-						<Stack.Screen name="Event" component={Event}/>
-						
-						<Stack.Screen name="Organization" component={Organization}/>
-						<Stack.Screen name="Lines" component={Lines}/>
-					</Stack.Navigator>
-				</NavigationContainer>
-				
+					<NavigationContainer ref={navigationRef}>
+						<Stack.Navigator screenOptions={{ headerShown: false }}>
+							<Stack.Screen name="Organizations" component={Organizations}/>
+
+							<Stack.Screen name="DayEvents" component={DayEvents}/>
+							<Stack.Screen name="Event" component={Event}/>
+							
+							<Stack.Screen name="Organization" component={Organization}/>
+							<Stack.Screen name="Lines" component={Lines}/>
+						</Stack.Navigator>
+					</NavigationContainer>
+				</SafeAreaView>
+				}
 
 				{/* { (selectedScreen == "Lines" &&  isLinesReady) &&
 					<Lines

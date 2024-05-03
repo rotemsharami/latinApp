@@ -30,7 +30,10 @@ const Line = (item) => {
 
 
 				
-				<TouchableOpacity style={styles.logoAndTextBox} onPress={() => goToOrganizationLine(item.item.org_nid)}>
+				<TouchableOpacity style={styles.logoAndTextBox} onPress={() => {
+					//goToOrganizationLine(item.item.org_nid)
+					navigate("Organization", {"orgNid": item.item.org_nid, "screenType": "lines", "selectedLine": item.item.nid})
+				}}>
 				<View style={{
 					padding:10,
 					flexDirection: count.lng == "en" ? "row" : "row-reverse",

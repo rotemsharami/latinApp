@@ -24,12 +24,13 @@ const setText = (text) => {
 
 const Organization = (info) => {
 
+	//console.log(info.route.params.selectedLine);
 
 	const changeOrganizationScreen = useCallback((screenType) => {
 		info._setOrganizationScreen(screenType);
-	}, [info._organizationScreen]);
+	}, [info.route.params.screenType]);
     const scrollRef = useRef();
-	const [organizationNid, setOrganizationNid] = useState(info._organizationNid);
+	const [organizationNid, setOrganizationNid] = useState(info.route.params.orgNid);
 	const count = useSelector((store) => store.count.count);
 	const [sdata, setSdata] = useState({});
 	// useEffect(() => {
@@ -61,7 +62,7 @@ const Organization = (info) => {
 	const [organization, setOrganization] = useState({});
 	const [menu, setMenu] = useState([]);
 	const [organizationLinesData, setOrganizationLinesData] = useState([]);
-    const [selectedLine, setSelectedLine] = useState(null);    
+    const [selectedLine, setSelectedLine] = useState(info.route.params.selectedLine);    
 
 	const setSelectedMenuItem = (name) => {
 		setMenu(menu.map(artwork => {
@@ -79,26 +80,30 @@ const Organization = (info) => {
 	useEffect(() => {
 
 		
-			setOrganization(count.lines.organizations[info._organizationNid]);
-			setOrganizationLinesData(count.lines.organizations[info._organizationNid]);
+			setOrganization(count.lines.organizations[info.route.params.orgNid]);
+			setOrganizationLinesData(count.lines.organizations[info.route.params.orgNid]);
 
-			//console.log(count.lines.organizations[info._organizationNid].lines);
+			//console.log(count.lines.organizations[info.route.params.orgNid].lines);
 
-			setSelectedLine(count.lines.organizations[info._organizationNid].lines.length > 0 ? count.lines.organizations[info._organizationNid].lines[0].nid : null);
-			
+			if(info.route.params.selectedLine == undefined)
+				setSelectedLine(count.lines.organizations[info.route.params.orgNid].lines.length > 0 ? count.lines.organizations[info.route.params.orgNid].lines[0].nid : null);
+			else
+				setSelectedLine(count.lines.organizations[info.route.params.orgNid].lines.length > 0 ? info.route.params.selectedLine : null);
+
+
 			let menu = [
-				{name: "info", title: count.lines.global_metadata.labels[count.lng][1], active: info._organizationScreen == "info"}
+				{name: "info", title: count.lines.global_metadata.labels[count.lng][1], active: info.route.params.screenType == "info"}
 			];
 
 
-			if(count.lines.organizations[info._organizationNid].lines.length > 0){
-				menu.push({name: "lines", title: count.lines.global_metadata.labels[count.lng][2], active: info._organizationScreen == "lines"});
+			if(count.lines.organizations[info.route.params.orgNid].lines.length > 0){
+				menu.push({name: "lines", title: count.lines.global_metadata.labels[count.lng][2], active: info.route.params.screenType == "lines"});
 			}
-			if(count.lines.organizations[info._organizationNid].events != undefined){
-				menu.push({name: "events", title:count.lines.global_metadata.labels[count.lng][2], active: info._organizationScreen == "events"});
+			if(count.lines.organizations[info.route.params.orgNid].events != undefined){
+				menu.push({name: "events", title:count.lines.global_metadata.labels[count.lng][2], active: info.route.params.screenType == "events"});
 			}
-			if(count.lines.organizations[info._organizationNid].studies != undefined){
-				menu.push({name: "studies", title: count.lines.global_metadata.labels[count.lng][2], active: info._organizationScreen == "studies"});
+			if(count.lines.organizations[info.route.params.orgNid].studies != undefined){
+				menu.push({name: "studies", title: count.lines.global_metadata.labels[count.lng][2], active: info.route.params.screenType == "studies"});
 			}
 			setMenu(menu);
 			scrollRef.current?.scrollTo({
@@ -106,7 +111,7 @@ const Organization = (info) => {
 				animated: true,
 			});
 		
-	}, [organizationNid, count.lng]);
+	}, [count.lng]);
 
 	return(
 		
@@ -115,7 +120,7 @@ const Organization = (info) => {
             colors={['#FFF', '#FFF', '#efdbf7']}
         >
 
-			<OrganizationBox organization={count.lines.organizations[info._organizationNid]}></OrganizationBox>
+			<OrganizationBox organization={count.lines.organizations[info.route.params.orgNid]}></OrganizationBox>
 			<View style={styles.organizationMenu}>
 			{menu.map((prop, key) => {
 			return (
@@ -162,7 +167,7 @@ const Organization = (info) => {
 								>
 
 									<View style={styles.centerBox}>
-										<DanceServices danceServices={count.lines.organizations[info._organizationNid].dance_services}></DanceServices>
+										<DanceServices danceServices={count.lines.organizations[info.route.params.orgNid].dance_services}></DanceServices>
 									</View>
 								</LinearGradient>
 
@@ -170,7 +175,7 @@ const Organization = (info) => {
 									colors={['#FFF','#efdbf7']}
 								>
 									<View style={styles.centerBox}>
-										<DanceFloors danceServices={count.lines.organizations[info._organizationNid].dance_floors}></DanceFloors>
+										<DanceFloors danceServices={count.lines.organizations[info.route.params.orgNid].dance_floors}></DanceFloors>
 									</View>
 								</LinearGradient>
 
@@ -180,7 +185,7 @@ const Organization = (info) => {
 								>
 									
 									<View style={styles.centerBox}>
-										<ServicesX services={count.lines.organizations[info._organizationNid].global_services}></ServicesX>
+										<ServicesX services={count.lines.organizations[info.route.params.orgNid].global_services}></ServicesX>
 									</View>
 								</LinearGradient>
 							</View>
@@ -190,19 +195,19 @@ const Organization = (info) => {
 						<OrganizationLines
 							_selectedLine={selectedLine}
 							_setSelectedLine={setSelectedLine}
-							organizationLines={{organizationLines:count.lines.organizations[info._organizationNid].lines,
-							selectedNid: info._organizationScreen == "line" ? info.route.params.selectedNid : 0}}
+							organizationLines={{organizationLines:count.lines.organizations[info.route.params.orgNid].lines,
+							selectedNid: info.route.params.screenType == "line" ? info.route.params.selectedNid : 0}}
 						></OrganizationLines>
 					}
 					{/* {menuOn("events") &&
-						<OrganizationEvents organizationEvents={{organizationEvents:organization.events, selectedNid: info._organizationScreen == "event" ? info.route.params.selectedNid : 0}}></OrganizationEvents>
+						<OrganizationEvents organizationEvents={{organizationEvents:organization.events, selectedNid: info.route.params.screenType == "event" ? info.route.params.selectedNid : 0}}></OrganizationEvents>
 					} */}
 					{/* {menuOn("studies") &&
-						<OrganizationStudies organizationStudies={{organizationStudies: organization.org_courses, selectedNid: info._organizationScreen == "studie" ? info.route.params.selectedNid : 0}}></OrganizationStudies>
+						<OrganizationStudies organizationStudies={{organizationStudies: organization.org_courses, selectedNid: info.route.params.screenType == "studie" ? info.route.params.selectedNid : 0}}></OrganizationStudies>
 					} */}
 				</View>
 			</View>
-			<ContactInfo organization={count.lines.organizations[info._organizationNid]}></ContactInfo>
+			<ContactInfo organization={count.lines.organizations[info.route.params.orgNid]}></ContactInfo>
 		</LinearGradient>
 	);
 }

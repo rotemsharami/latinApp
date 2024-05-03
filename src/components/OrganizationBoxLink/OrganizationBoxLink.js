@@ -22,11 +22,11 @@ const OrganizationBoxLink = (item) => {
 
 
 
-	// const changeNid = useCallback((nid) => {
-	// 	item._setOrganizationNid(nid);
-    //     item._setSelectedScreen("Organization");
-    //     item._setOrganizationScreen("info");
-	// }, [item._setOrganizationNid]);
+	const changeNid = useCallback((nid) => {
+		item._setOrganizationNid(nid);
+        item._setSelectedScreen("Organization");
+        item._setOrganizationScreen("info");
+	}, [item._setOrganizationNid]);
 
     return(
 
@@ -36,6 +36,7 @@ const OrganizationBoxLink = (item) => {
             
             <TouchableOpacity onPress={() => {
                 //changeNid(item.organization.nid)
+                navigate("Organization", {"orgNid": item.organization.nid, "screenType": "info"});
                 }}>
                 <View style={{
                     flexDirection: setRowType(count.lng),

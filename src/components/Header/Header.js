@@ -42,14 +42,15 @@ const Header = (info) => {
 		if(count.lines != undefined){
 			let title = "Bug!";
 			if(info._selectedScreen == "Lines"){
-				
 				title = count.lines.global_metadata.labels[count.lng][2];
 			}
 			if(info._selectedScreen == "Organizations" || info._selectedScreen == "Organization"){
 				title = count.lines.global_metadata.labels[count.lng][10];
 			}
-
-			if(info._selectedScreen == "Events"){
+			if(info._selectedScreen == "Learns"){
+				title = count.lines.global_metadata.labels[count.lng][11];
+			}
+			if(info._selectedScreen == "EventsCalender" || info._selectedScreen == "EventsList" || info._selectedScreen == "Event" || info._selectedScreen == "DayEvents"){
 				title = count.lines.global_metadata.labels[count.lng][3];
 			}
 			return title;
@@ -132,15 +133,13 @@ const Header = (info) => {
 				}	
 
 
-
 				<View style={[styles.headerMenu, {
 					flexDirection: count.lng == "en" ? "row" : "row-reverse",
 				}]}>
-					<TouchableOpacity onPress={() => {
-						//navigate("EventsCalender", {});
-						changeTheScreen("Events");
-						//changeScreen("Events");
 
+
+					<TouchableOpacity onPress={() => {
+						navigate("Learns", {});
 						}}>
 						<View style={[styles.headerMenuItem, {
 							borderRightWidth:1,
@@ -148,14 +147,24 @@ const Header = (info) => {
 							height:50,
 							backgroundColor:"#545454"
 						}]}>
-                            <MaterialCommunityIcons name="calendar-star" size={30} color={info._selectedScreen == "Events" ? "#f640b2" : "#d3d3d3"} />
+                            <MaterialCommunityIcons name="school" size={30} color={info._selectedScreen == "Learns" ? "#f640b2" : "#d3d3d3"} />
+                        </View>
+					</TouchableOpacity>
+
+					<TouchableOpacity onPress={() => {
+						navigate("EventsCalender", {});
+						}}>
+						<View style={[styles.headerMenuItem, {
+							borderRightWidth:1,
+							borderEndColor:"#1e1e1e",
+							height:50,
+							backgroundColor:"#545454"
+						}]}>
+                            <MaterialCommunityIcons name="calendar-star" size={30} color={info._selectedScreen == "EventsCalender" || info._selectedScreen == "Event" || info._selectedScreen == "DayEvents" ? "#f640b2" : "#d3d3d3"} />
                         </View>
 					</TouchableOpacity>
 					<TouchableOpacity onPress={()=>{
 						navigate("Lines", {});
-						//navigate("Lines", {});
-						//changeTheScreen("Lines");
-						//changeScreen("Lines");
 						}}>
 						<View style={[styles.headerMenuItem, {
 							borderRightWidth:1,
@@ -168,10 +177,7 @@ const Header = (info) => {
 					</TouchableOpacity>
 
 					<TouchableOpacity onPress={()=>{
-						//navigate("Lines", {});
-						//changeTheScreen("Organizations");
 						navigate("Organizations", {});
-						//changeScreen("Lines");
 						}}>
 						<View style={[styles.headerMenuItem, {
 							borderRightWidth:1,
@@ -233,7 +239,7 @@ const styles = StyleSheet.create({
 		
 	},
 	headerMenuTitle:{
-		width:width - (3 * 42),
+		width:width - (4 * 42),
 	},
 	headerMenu:{
 		

@@ -22,6 +22,7 @@ const textWidth = width - logoWidth;
 const Services = (services) => {
 
 
+
     const count = useSelector((store) => store.count.count);
 
     let iconsInfo = [
@@ -42,12 +43,16 @@ const Services = (services) => {
             <View style={styles.list}>
         {services.services.split(",").map((prop, key) => {
             return (
+
+                    <View key={"Services-"+key}>
+                        {count.lines.taxonomy_terms.services[prop] != undefined &&
+
                     <View style={[styles.listItem, {
                         flexDirection: count.lng == "en" ? "row" :"row-reverse"
                     }]} key={key}>
 
                     <View style={styles.iconBox}>
-                            <MaterialCommunityIcons name={iconsInfo[key]} size={14} color={"#730874"} />
+                            <MaterialCommunityIcons name={iconsInfo[key]} size={16} color={"#730874"} />
                     </View>
                     <View style={styles.textBox}>
                         <Text style={{
@@ -62,6 +67,11 @@ const Services = (services) => {
                                 }}
                         >{count.lines.taxonomy_terms.services[prop][count.lng]}</Text>
                     </View>
+
+                    </View>
+
+                    }
+
                 </View>
             );
         })}
@@ -72,21 +82,16 @@ const Services = (services) => {
 export default Services;
 const styles = StyleSheet.create({
     listBox:{
-        padding:10
+        
     },
     list:{
-        flexWrap:"wrap"
+        
         
     },
     textBox:{
         alignSelf:"center"
     },
     text:{
-        // alignItems:"center",
-        // paddingRight: I18nManager.isRTL ? 4 : 0,
-        // paddingLeft: I18nManager.isRTL ? 0 : 4,
-        // fontSize:11,
-        // color:"#fff",
-        // textAlign: 'center',
+        fontSize:16
     },
 });

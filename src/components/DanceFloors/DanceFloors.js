@@ -32,7 +32,7 @@ const DanceFloors = (danceServices) => {
 
 
                     <View style={styles.iconBox}>
-                        <MaterialCommunityIcons name="music" size={20} color="#730874" />
+                        <MaterialCommunityIcons name="music" size={16} color="#730874" />
                     </View>
                     <View style={styles.textBox}>
                         <Text style={styles.text}>{count.lines.taxonomy_terms.dance_floors[prop][count.lng]}</Text>
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
         
     },
     iconBox:{
-        paddingTop:5,
+        paddingTop:3,
         flexDirection:"column",
     },
     textBox:{
@@ -61,6 +61,6 @@ const styles = StyleSheet.create({
     },
     text:{
 
-        fontSize:20
+        fontSize:16
     },
 });

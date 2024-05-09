@@ -1,60 +1,34 @@
 import React, {useRef, Component, useState, useEffect } from 'react';
-import { Animated, Easing, View, Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity, I18nManager} from 'react-native';
+import { Animated, Easing, View, Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity, I18nManager, ScrollView} from 'react-native';
 import { Icon } from 'react-native-elements';
-import {nice_list_text, setArray, getSelectedLang, setRowType, setTextDirection} from "../../tools/tools.js";
+import {nice_list_text, setArray, getSelectedLang, setRowType, setTextDirection, getImageUrl, getPlayingHeight} from "../../tools/tools.js";
 import {navigate} from "../../../RootNavigation";
 import moment from 'moment';
 import { useSelector } from 'react-redux';
 const {width, height} = Dimensions.get('screen');
 const logoWidth = 100;
 const textWidth = width - logoWidth;
-const AllEventsList = (events) => {
+const AllEventsList = () => {
 	const count = useSelector((store) => store.count.count);
 	const scaleAnim = useRef(new Animated.Value(0)).current;
 
-	useEffect(() => {
-		// Scale in animation
-		Animated.timing(
-		  scaleAnim,
-		  {
-			toValue: 1,
-			duration: 150,
-			easing: Easing.linear,
-			useNativeDriver: true
-		  }
-		).start();
-	
-		// Scale out animation on component unmount
-		return () => {
-		  Animated.timing(
-			scaleAnim,
-			{
-			  toValue: 0,
-			  duration: 500,
-			  easing: Easing.linear,
-			  useNativeDriver: true
-			}
-		  ).start();
-		};
-	  }, [scaleAnim]);
 
 
 	return(
-
-<Animated.View
-      style={[styles.container,{
-        transform: [{ scale: scaleAnim }],
-        alignItems: 'center',
-        justifyContent: 'center'
-      }]}
-    >
-
-			{events != undefined &&
-				<View style={styles.containerBox}>
+		<ScrollView
+			style={[styles.container,{
+				height:getPlayingHeight()-37,
+			}]}
+		>
+			{count != undefined &&
+				<View style={[styles.containerBox, {
+					
+				}]}>
 					<View style={styles.eventsList}>
-						{events.events != undefined &&
+						{count.lines != undefined &&
 							<View style={styles.eventsListBox}>
-								{events.events.map((event) => {
+								{count.lines.events.map((event) => {
+									console.log(event.nid);
 									return(
 										<TouchableOpacity kay={"calenderEventItem"+event.nid} onPress={() => navigate("Event", {event: event})}>
 										<View style={[styles.eventItem, {
@@ -64,7 +38,7 @@ const AllEventsList = (events) => {
 											<View style={styles.image}>
 												<Image
 													style={{width: '100%', height: '100%'}}
-													source={{uri:'https://latinet.co.il/'+event.general_image[0]}}
+													source={{uri:getImageUrl(event.general_image)}}
 													/>
 											</View>
 											<View style={[styles.titleAndText, {
@@ -97,12 +71,15 @@ const AllEventsList = (events) => {
 					</View>
 				</View>
 			}
-		</Animated.View>
+		</ScrollView>
 	);
 }
 const styles = StyleSheet.create({
+	containerBox:{
+		padding:5
+	},
 	eventItem:{
-		padding:10
+		marginBottom:10
 	},
 	image:{
 		width:logoWidth,

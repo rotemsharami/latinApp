@@ -41,7 +41,8 @@ export const setTextDirection = (appLng) => {
 
 
 export const getImageUrl = (uri) => {
-    return uri.replace("public://", "https://latinet.co.il/sites/default/files/");
+    let result = uri.includes("/sites/default/files/tools/") ? "https://latinet.co.il/"+uri : uri.replace("public://", "https://latinet.co.il/sites/default/files/");
+    return result;
 }
 
 

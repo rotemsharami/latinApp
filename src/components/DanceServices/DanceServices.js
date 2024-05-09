@@ -31,7 +31,7 @@ const DanceServices = (danceServices) => {
                     flexDirection: count.lng == "en" ? "row" :"row-reverse"
                 }]} key={key}>
                     <View style={styles.iconBox}>
-                        <Icon style={styles.mainMenuListItemIcon} name='check-circle' color='#730874' size={17}/>
+                        <Icon style={styles.mainMenuListItemIcon} name='check-circle' color='#730874' size={16}/>
                     </View>
                     <View style={styles.textBox}>
                         <Text style={styles.text}>{count.lines.taxonomy_terms.dance_services[prop][count.lng]}</Text>
@@ -60,6 +60,6 @@ const styles = StyleSheet.create({
 
     },
     text:{
-        fontSize:19
+        fontSize:16
     },
 });

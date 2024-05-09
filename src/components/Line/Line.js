@@ -19,12 +19,14 @@ const Line = (item) => {
 
 	return(
 		<View style={{
-
+			flexDirection: count.lng == "en" ? "row" : "row-reverse",
 		}}>
 			{item != undefined && 
 
 			<View
-				style={[styles.itemBox]}
+				style={[styles.itemBox,{
+					
+				}]}
 				key={"today-line-"+item.item.nid}
 			>
 
@@ -32,7 +34,7 @@ const Line = (item) => {
 				
 				<TouchableOpacity style={styles.logoAndTextBox} onPress={() => {
 					//goToOrganizationLine(item.item.org_nid)
-					navigate("Organization", {"orgNid": item.item.org_nid, "screenType": "lines", "selectedLine": item.item.nid})
+					navigate("Organization", {"orgNid": item.item.org_nid, "screenType": "lines", "selectedLine": item.item.nid, "source": "Lines"})
 				}}>
 				<View style={{
 					padding:10,

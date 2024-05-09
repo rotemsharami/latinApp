@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Image,StyleSheet,Text,View,Dimensions,Animated,Easing,ImageBackground,TouchableOpacity,I18nManager,ScrollView, SafeAreaView, StatusBar, Pressable} from 'react-native';
 import OrganizationBoxLink from '../OrganizationBoxLink/OrganizationBoxLink';
-
+import LearnBoxLink from '../LearnBoxLink/LearnBoxLink';
 
 
 
 import { useSelector, useDispatch } from 'react-redux';
 import { setArray } from '../../tools/tools';
 
-const Organizations = (info) => {
+const Learns = (info) => {
 
 	
 
@@ -20,12 +20,12 @@ const Organizations = (info) => {
 			{count.lines != undefined &&
 				<View>
 
-				{count.lines.organizations != undefined &&
+				{count.lines.learn != undefined &&
 					<View>
 						        
-						{setArray(count.lines.organizations).map((item, key) => {
+						{setArray(count.lines.learn).map((item, key) => {
 							return (
-								<OrganizationBoxLink _setOrganizationScreen={info._setOrganizationScreen} _setSelectedScreen={info._setSelectedScreen} _setOrganizationNid={info._setOrganizationNid} organization={item} key={"org-"+key}></OrganizationBoxLink>
+								<LearnBoxLink _setOrganizationScreen={info._setOrganizationScreen} _setSelectedScreen={info._setSelectedScreen} _setOrganizationNid={info._setOrganizationNid} organization={item} key={"org-"+key}></LearnBoxLink>
 								//<OrganizationBoxLink organization={item} key={"org-"+key}></OrganizationBoxLink>
 								
 								);
@@ -38,4 +38,5 @@ const Organizations = (info) => {
 	);
 }
 
-export default Organizations;
+
+export default Learns;

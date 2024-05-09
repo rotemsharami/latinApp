@@ -6,7 +6,9 @@ import {
     ImageBackground,
 	TouchableOpacity,
 	I18nManager,
-    useWindowDimensions
+    useWindowDimensions,
+    ScrollView,
+    Linking
 	} from 'react-native';
 import React, {useRef, useState, useEffect} from 'react';
 import { setRowType, setTextDirection, setArray, nice_list_text} from '../../tools/tools';
@@ -16,6 +18,7 @@ import RenderHtml from 'react-native-render-html';
 import Schedule from '../Schedule/Schedule.js';
 import Prices from '../Prices/Prices.js';
 import { useSelector, useDispatch } from 'react-redux';
+import moment from 'moment';
 const {width, height} = Dimensions.get('screen');
 const logoWidth = width/5;
 const textWidth = width - logoWidth;
@@ -24,134 +27,106 @@ const renderersProps = {
       enableExperimentalRtl: true
     }
   };
-const OrganizationStudies = (organizationStudies) => {
+const OrganizationStudies = (info) => {
+
+    console.log(info);
 
 
 	const count = useSelector((store) => store.count.count);
 	const dir = setTextDirection(count.lng);
-    const { widthA } = useWindowDimensions();
-    const [selectedLine, setSelectedLine] = useState(organizationStudies.organizationStudies.selectedNid != 0 ? organizationStudies.organizationStudies.selectedNid : setArray(organizationStudies.organizationStudies.organizationStudies)[0].nid);
+
+    
+    
+    
     const setText = (text) => {
         return {html:text}
     }
     return(
         <View style={styles.listBox}>
-            <View style={{
-					flexDirection: setRowType(count.lng),
-				}}>
-        {setArray(organizationStudies.organizationStudies.organizationStudies).map((prop, key) => {
-            return (
-                <TouchableOpacity key={prop.nid} style={styles.menuListItem} onPress={() => setSelectedLine(prop.nid)}>
-                    <View style={{
-                        borderBottomWidth:prop.nid == selectedLine ? 3 : 0,
-                        paddingRight:10,
-                        paddingLeft:10,
-                        marginLeft:  I18nManager.isRTL ? 0 : 0,
-                        marginRight:  I18nManager.isRTL ? 0 : 0,
-                        paddingBottom:3,
-                    }}>
+
+            <ScrollView>
+
+
+                {setArray(info._organizationLearn).map((prop, key) => {
+                return (
+                    <TouchableOpacity key={prop.nid} style={styles.menuListItem} onPress={() => info._setSelectedLearn(prop.nid)}>
+                        <View style={{
+                            alignItems:"center",
+                            backgroundColor: prop.nid == info._selectedLearn ? "#545454" : "#FFF",
+                            padding:prop.nid == info._selectedLearn ? 10 : 5,
+                            
+                            
+                        }}>
+                            <Text style={{
+                                fontSize:prop.nid == info._selectedLearn ? 20 : 15,
+                                textAlign:"center",
+                                color:prop.nid == info._selectedLearn ? "#FFF" : "#000",
+                            }}>{count.lines.taxonomy_terms.cours_type[prop.course_type][count.lng]+" "+count.lines.taxonomy_terms.dance_floors[prop.dance_style][count.lng]+" "+nice_list_text(prop.danse_level, count.lines.taxonomy_terms.dance_level, count.lng)}</Text>
                         
-                        <Text style={styles.studyTitle}>{prop.course_type[0].name} {nice_list_text(prop.course_dance_style)}</Text>
-                    </View>
-                </TouchableOpacity>
-            );
-        })}
-            </View>
-            <View style={styles.contentBox}>
+                        {prop.nid == info._selectedLearn && 
+                        <View style={{
+                            paddingBottom:5
+                        }}>
+                            <View style={{
+                                paddingBottom:10,
+                                paddingTop:5
+                            }}>
+                                <View style={styles.value}>
+                                    <Text style={{
+                                        textAlign:"center",
+                                        color:"#FFF"
+                                    }}>{moment(info._organizationLearn.filter(item => item.nid == info._selectedLearn)[0].starting_from, 'YYYY-MM-DD').format("DD/MM/YYYY")}</Text>
+                                </View>
+                            </View>
 
-                <View style={styles.starting_from}>
-                    <View style={styles.label}>
-                        <Text>Starting From:</Text>
-                    </View>
-                    <View style={styles.value}>
-                        <Text style={styles.dayText}>{organizationStudies.organizationStudies.organizationStudies.filter(item => item.nid == selectedLine)[0].starting_from}</Text>
-                    </View>
-                </View>
+                            <View style={{
+                                paddingBottom:10,
+                            }}>
+                                <View style={styles.value}>
+                                    <Text style={{
+                                        textAlign:"center",
+                                        color:"#FFF"
+                                    }}>{count.lines.global_metadata.labels[count.lng][13]+(count.lng == "he" ? "" : " ")+nice_list_text(prop.gender, count.lines.taxonomy_terms.gender, count.lng)}</Text>
+                                </View>
+                            </View>
+                            
 
-                <View style={styles.danse_level}>
-                    <View style={styles.label}>
-                        <Text>Level:</Text>
-                    </View>
-                    <View style={styles.value}>
-                        <Text style={styles.danceFloorsText}>{nice_list_text(organizationStudies.organizationStudies.organizationStudies.filter(item => item.nid == selectedLine)[0].danse_level)}</Text>
-                    </View>
-                </View>
-
-
-
-                <View style={styles.gender}>
-                    <View style={styles.label}>
-                        <Text>Gender:</Text>
-                    </View>
-                    <View style={styles.value}>
-                        <Text style={styles.danceFloorsText}>{nice_list_text(organizationStudies.organizationStudies.organizationStudies.filter(item => item.nid == selectedLine)[0].gender)}</Text>
-                    </View>
-                </View>
-
-
-                <View style={styles.fullInfoBox}>
-                    <RenderHtml
-                        contentWidth={width}
-                        source={setText(setArray(organizationStudies.organizationStudies.organizationStudies).filter(item => item.nid == selectedLine)[0].text)}
-                        enableExperimentalMarginCollapsing={true}
-                        tagsStyles={{
-                            li:{
-                                paddingLeft:5,
-                                textAlign:dir,
-                                direction:"ltr",
-                            },
-                            ul:{
-                                direction:"ltr",
-                                alignContent:"flex-end"
-                            }
-                        }}
-                        renderersProps={renderersProps}
-                        style={{backgroundColor:"none"}}
-                    />
-                </View>
-
-
+                            {info._organizationLearn.filter(item => item.nid == info._selectedLearn)[0].info_link != undefined &&
+                                <TouchableOpacity
+                                    style={{
+                                        borderWidth:2,
+                                        padding:3,
+                                        paddingRight:10,
+                                        paddingLeft:10,
+                                        borderRadius:4,
+                                        borderColor:"#f640b2",
+                                        backgroundColor:"#000"
+                                    }}
+                                    onPress={() => { Linking.openURL(info._organizationLearn.filter(item => item.nid == info._selectedLearn)[0].info_link); }}
+                                >
                 
+                                    <Text style={{fontSize:16, color:"#f640b2"}}>{count.lines.global_metadata.labels[count.lng][12]}</Text>
 
-                {setArray(organizationStudies.organizationStudies.organizationStudies).filter(item => item.nid == selectedLine)[0].syllabus.map((prop, key) => {
-            return (
-                <View style={styles.listItem} key={key}>
-                    <View style={styles.iconBox}>
-                        <Icon style={styles.mainMenuListItemIcon}
-                            name='check-circle'
-                            color={prop.active ? "#ed60d6" : "#000"}
-                            size={17}/>
-                    </View>
-                    <View style={styles.textBox}>
-                        <Text style={{
-                                alignItems:"center",
-                                paddingRight: I18nManager.isRTL ? 4 : 0,
-                                paddingLeft: I18nManager.isRTL ? 0 : 4,
-                                fontSize:11,
-                                color: prop.active ? "#fff" : "#000",
-                                textAlign: 'center',
-                                }}
-                        >{prop.title}</Text>
-                    </View>
-                </View>
-            );
-        })}
+                                </TouchableOpacity>
+                            }
 
 
+                        </View>
+                        }
 
-
-
-
-
-                <Prices prices={{labels:organizationStudies.organizationStudies.labels, prices:setArray(organizationStudies.organizationStudies.organizationStudies).filter(item => item.nid == selectedLine)[0].tickets}}></Prices>
-            </View>
+                        </View>
+                    </TouchableOpacity>
+                );
+                })}
+            </ScrollView>
         </View>
     );
 }
 export default OrganizationStudies;
 const styles = StyleSheet.create({
     studyTitle:{
-        fontSize:16
+        fontSize:16,
+        textAlign:"center"
     },
     menuList:{
         flexDirection:"row"

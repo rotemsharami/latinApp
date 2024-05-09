@@ -1,7 +1,7 @@
 import React, {Component, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity, I18nManager} from 'react-native';
 import { Icon } from 'react-native-elements';
-import {nice_list_text, setArray, getSelectedLang, setRowType, setTextDirection} from "../../tools/tools.js";
+import {nice_list_text, setArray, getSelectedLang, setRowType, setTextDirection, getImageUrl} from "../../tools/tools.js";
 import {navigate} from "../../../RootNavigation";
 import moment from 'moment';
 import { useSelector } from 'react-redux';
@@ -16,12 +16,12 @@ const count = useSelector((store) => store.count.count);
 				<View style={styles.containerBox}>
 					<View
 						style={[styles.title, {
-							paddingTop:10,
 							justifyContent:"center",
-							alignItems:"center"
 						}]}
 					>
-						<Text style={styles.pageTitleText}>{info.route.params.date.format('DD/MM/YYYY')}</Text>
+						<Text style={[styles.pageTitleText, {
+							textAlign: count.lng == "en" ? "left" : "right",
+						}]}>{info.route.params.date.format('DD/MM/YYYY')}</Text>
 					</View>
 					<View style={styles.eventsList}>
 						{info.route.params.events != undefined &&
@@ -36,7 +36,7 @@ const count = useSelector((store) => store.count.count);
 											<View style={styles.image}>
 												<Image
 													style={{width: '100%', height: '100%'}}
-													source={{uri:'https://latinet.co.il/'+event.general_image[0]}}
+													source={{uri:getImageUrl(event.general_image)}}
 													/>
 											</View>
 											<View style={[styles.titleAndText, {
@@ -73,6 +73,9 @@ const count = useSelector((store) => store.count.count);
 	);
 }
 const styles = StyleSheet.create({
+	pageTitleText:{
+		fontSize:20
+	},
 	eventItem:{
 		padding:10
 	},

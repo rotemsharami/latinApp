@@ -228,7 +228,7 @@ const Lines = (info) => {
 				{info._showFilters && 
 
 				<View style={[styles.filtersBox, {
-					height:height-110-(height-windowH-STATUS_BAR_HEIGHT)-STATUS_BAR_HEIGHT-80
+					height:getPlayingHeight()-80
 				}]}>
 					<View style={styles.containerValues}>
 						<View style={[styles.filterItems, {
@@ -324,8 +324,11 @@ const Lines = (info) => {
 																				// 	key={key}
 																				// 	style={[styles.item, { transform: [{ translateX: animationValues[key] }] }]}
 																				// >
-																					<View style={{
-																						flexDirection: count.lng == "en" ? "row" : "row-reverse",
+																					<View
+																						key={"day-"+key}
+
+																						style={{
+																						flexDirection: count.lng == "en" ? "row-reverse" : "row-reverse",
 																						paddingRight:20,
 																						paddingLeft:20,
 																						borderBottomWidth:2,
@@ -377,7 +380,7 @@ const Lines = (info) => {
 					{Object.keys(weeklyData).map((index) => {
 						return(
 							<View key={"day-"+index} style={{
-								backgroundColor: selectedDay == index ? "#730874" : "#e7e7e7",
+								backgroundColor: selectedDay == index ? "#730874" : "#474747",
 								flex:1,
 								alignItems:"center",
 								borderWidth:1,
@@ -394,8 +397,12 @@ const Lines = (info) => {
 															{weeklyData[index].events !== undefined && 
 																<View>
 																	{weeklyData[index].events[0] !== undefined &&
-																		<View style={styles.linesAmount}>
-																			<Text style={styles.linesAmountText}>{weeklyData[index].events.length}</Text>
+																		<View style={[styles.linesAmount, {
+																			backgroundColor: selectedDay == index ? "#f640b2" : "#d3d3d3", 
+																		}]}>
+																			<Text style={[styles.linesAmountText, {
+																				color: selectedDay == index ? "#d3d3d3" : "#000",
+																			}]}>{weeklyData[index].events.length}</Text>
 																		</View>
 																	}
 																</View>
@@ -410,12 +417,13 @@ const Lines = (info) => {
 									<Text
 											style={{
 												color: "#000",
+												fontWeight:"bold"
 											}}
 										>{count.lines.global_metadata.days_of_week_short[count.lng][weeklyData[index].day_index == "7" ? "1" : parseInt(weeklyData[index].day_index)]}</Text>
 								</View>
 									<Text
 										style={{
-											color: selectedDay == index ? "#FFF" : "#000",
+											color: "#FFF",
 										}}
 									>{weeklyData[index].date_short}</Text>
 								</TouchableOpacity>
@@ -445,7 +453,6 @@ const styles = StyleSheet.create({
 		backgroundColor:"#d3d3d3"
 	},
 	linesAmount:{
-		backgroundColor:"#f640b2",
 		alignItems: 'center',
 		justifyContent: 'center',
 		width: 20,  // Adjust width and height as needed
@@ -467,7 +474,7 @@ const styles = StyleSheet.create({
 
 	},
 	linesAmountText:{
-		color:"#FFF"
+		
 	},
 	filterIcon:{
 		alignItems: 'center',

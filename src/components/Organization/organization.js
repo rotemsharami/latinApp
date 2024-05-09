@@ -24,13 +24,11 @@ const setText = (text) => {
 
 const Organization = (info) => {
 
-	//console.log(info.route.params.selectedLine);
+	console.log(info);
 
 	const changeOrganizationScreen = useCallback((screenType) => {
 		info._setOrganizationScreen(screenType);
 	}, [info.route.params.screenType]);
-    const scrollRef = useRef();
-	const [organizationNid, setOrganizationNid] = useState(info.route.params.orgNid);
 	const count = useSelector((store) => store.count.count);
 	const [sdata, setSdata] = useState({});
 	// useEffect(() => {
@@ -58,11 +56,29 @@ const Organization = (info) => {
 	// 	  }
 	// 	});
 	// }, [sdata]);
+
+
+	const getSelectedLine = () => {
+		let result = undefined;
+		if((info.route.params.source == "Organizations" || info.route.params.source == "Learns") && (count.lines.organizations[info.route.params.orgNid].lines.length > 0))
+			result = count.lines.organizations[info.route.params.orgNid].lines[0].nid;
+		if(info.route.params.source == "Lines" && info.route.params.selectedLine != undefined)
+			result = info.route.params.selectedLine;
+		return result;
+	}
+
+	const getSelectedLearn = () => {
+		let result = undefined;
+		if(info.route.params.source == "Organizations" && count.lines.organizations[info.route.params.orgNid].learn.length > 0)
+			result = count.lines.organizations[info.route.params.orgNid].learn[0].nid;
+		if(info.route.params.source == "Learns" && info.route.params.selectedLearn != undefined)
+			result = info.route.params.selectedLearn;
+		return result;
+	}
+
 	
-	const [organization, setOrganization] = useState({});
-	const [menu, setMenu] = useState([]);
-	const [organizationLinesData, setOrganizationLinesData] = useState([]);
-    const [selectedLine, setSelectedLine] = useState(info.route.params.selectedLine);    
+    const [selectedLine, setSelectedLine] = useState(getSelectedLine());    
+	const [selectedLearn, setSelectedLearn] = useState(getSelectedLearn());  
 
 	const setSelectedMenuItem = (name) => {
 		setMenu(menu.map(artwork => {
@@ -77,50 +93,28 @@ const Organization = (info) => {
 		return menu.filter(item => item.name == type && item.active).length > 0;
 	}
 
-	useEffect(() => {
-
-		
-			setOrganization(count.lines.organizations[info.route.params.orgNid]);
-			setOrganizationLinesData(count.lines.organizations[info.route.params.orgNid]);
-
-			//console.log(count.lines.organizations[info.route.params.orgNid].lines);
-
-			if(info.route.params.selectedLine == undefined)
-				setSelectedLine(count.lines.organizations[info.route.params.orgNid].lines.length > 0 ? count.lines.organizations[info.route.params.orgNid].lines[0].nid : null);
-			else
-				setSelectedLine(count.lines.organizations[info.route.params.orgNid].lines.length > 0 ? info.route.params.selectedLine : null);
-
-
-			let menu = [
-				{name: "info", title: count.lines.global_metadata.labels[count.lng][1], active: info.route.params.screenType == "info"}
-			];
-
-
-			if(count.lines.organizations[info.route.params.orgNid].lines.length > 0){
-				menu.push({name: "lines", title: count.lines.global_metadata.labels[count.lng][2], active: info.route.params.screenType == "lines"});
-			}
-			if(count.lines.organizations[info.route.params.orgNid].events != undefined){
-				menu.push({name: "events", title:count.lines.global_metadata.labels[count.lng][2], active: info.route.params.screenType == "events"});
-			}
-			if(count.lines.organizations[info.route.params.orgNid].studies != undefined){
-				menu.push({name: "studies", title: count.lines.global_metadata.labels[count.lng][2], active: info.route.params.screenType == "studies"});
-			}
-			setMenu(menu);
-			scrollRef.current?.scrollTo({
-				y: 0,
-				animated: true,
-			});
-		
-	}, [count.lng]);
+	let setMenuItems = () => {
+		let menu = [
+			{name: "info", title: count.lines.global_metadata.labels[count.lng][1], active: info.route.params.screenType == "info"}
+		];
+		if(count.lines.organizations[info.route.params.orgNid].lines.length > 0){
+			menu.push({name: "lines", title: count.lines.global_metadata.labels[count.lng][2], active: info.route.params.screenType == "lines"});
+		}
+		if(count.lines.organizations[info.route.params.orgNid].events != undefined){
+			menu.push({name: "events", title:count.lines.global_metadata.labels[count.lng][2], active: info.route.params.screenType == "events"});
+		}
+		if(count.lines.organizations[info.route.params.orgNid].learn.length > 0){
+			menu.push({name: "learns", title: count.lines.global_metadata.labels[count.lng][11], active: info.route.params.screenType == "learns"});
+		}
+		return menu;
+	}
+	const [menu, setMenu] = useState(setMenuItems());
 
 	return(
-		
-
 		<LinearGradient style={styles.container}
             colors={['#FFF', '#FFF', '#efdbf7']}
         >
-
-			<OrganizationBox organization={count.lines.organizations[info.route.params.orgNid]}></OrganizationBox>
+			<OrganizationBox style={{flex:1}} organization={count.lines.organizations[info.route.params.orgNid]}></OrganizationBox>
 			<View style={styles.organizationMenu}>
 			{menu.map((prop, key) => {
 			return (
@@ -135,13 +129,7 @@ const Organization = (info) => {
 							height:30
 						}
 					}
-					onPress={() => {
-						scrollRef.current?.scrollTo({
-							y: 0,
-							animated: true,
-						});
-						setSelectedMenuItem(prop.name)
-						}}>
+					onPress={() => { setSelectedMenuItem(prop.name)}}>
 						<Text style={{
 								color:prop.active ? "#ff99d9" : "#000",
 								textAlign:"center"
@@ -151,21 +139,19 @@ const Organization = (info) => {
 			);
 			})}
 			</View>
-			<View style={styles.subContainer}>
+			<View style={[styles.subContainer, {flex:1}]}>
 				<View>
 					{menuOn("info") &&
 						<View>
-							<SliderX gallery={organization.gallery}></SliderX>
+							<SliderX gallery={count.lines.organizations[info.route.params.orgNid].gallery}></SliderX>
 
 							<View style={[styles.danceFloorsAndServices, {
 								flexDirection: count.lng == "en" ? "row" :"row-reverse",
 								
 							}]}>
-
 								<LinearGradient style={styles.danceServices}
 									colors={['#FFF','#efdbf7']}
 								>
-
 									<View style={styles.centerBox}>
 										<DanceServices danceServices={count.lines.organizations[info.route.params.orgNid].dance_services}></DanceServices>
 									</View>
@@ -178,8 +164,6 @@ const Organization = (info) => {
 										<DanceFloors danceServices={count.lines.organizations[info.route.params.orgNid].dance_floors}></DanceFloors>
 									</View>
 								</LinearGradient>
-
-
 								<LinearGradient style={styles.globalServices}
 									colors={['#FFF','#efdbf7']}
 								>
@@ -191,7 +175,7 @@ const Organization = (info) => {
 							</View>
 						</View>
 					}
-					{(menuOn("lines") && selectedLine != null) && 
+					{(menuOn("lines")) && 
 						<OrganizationLines
 							_selectedLine={selectedLine}
 							_setSelectedLine={setSelectedLine}
@@ -202,9 +186,16 @@ const Organization = (info) => {
 					{/* {menuOn("events") &&
 						<OrganizationEvents organizationEvents={{organizationEvents:organization.events, selectedNid: info.route.params.screenType == "event" ? info.route.params.selectedNid : 0}}></OrganizationEvents>
 					} */}
-					{/* {menuOn("studies") &&
-						<OrganizationStudies organizationStudies={{organizationStudies: organization.org_courses, selectedNid: info.route.params.screenType == "studie" ? info.route.params.selectedNid : 0}}></OrganizationStudies>
-					} */}
+
+					{menuOn("learns") &&
+					<OrganizationStudies
+						_selectedLearn={selectedLearn}
+						_setSelectedLearn={setSelectedLearn}
+						_organizationLearn={count.lines.organizations[info.route.params.orgNid].learn}
+						>
+						</OrganizationStudies>
+					}
+
 				</View>
 			</View>
 			<ContactInfo organization={count.lines.organizations[info.route.params.orgNid]}></ContactInfo>
@@ -214,7 +205,7 @@ const Organization = (info) => {
 export default Organization;
 const styles = StyleSheet.create({
 	container:{
-		
+		flex:1
 	},
 	centerBox:{
 		alignSelf: "baseline"
@@ -222,9 +213,7 @@ const styles = StyleSheet.create({
 	danceServices:{
 		width:100,
 		justifyContent:"center",
-		
 		height:height-110-100-30-(Math.round(height/3))-50-72,
-		
 	},
 	danceFloors:{
 		width:120,

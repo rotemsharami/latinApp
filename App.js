@@ -3,18 +3,10 @@ import {StyleSheet, View, Text, Image, Button, ScrollView, Animated, Dimensions,
 import { NavigationContainer } from "@react-navigation/native";
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Header from "./src/components/Header/Header";
-
 import EventsCalender from "./src/components/EventsCalender/EventsCalender";
-
 import DayEvents from "./src/components/DayEvents/DayEvents";
-
-import Configuration from "./src/components/Configuration/Configuration";
-
-
+import Learns from "./src/components/Learns/Learns";
 import Event from "./src/components/Event/Event";
-
-
-
 import Organization from "./src/components/Organization/organization";
 import Organizations from "./src/components/Organizations/Organizations";
 import Lines from './src/components/Lines/Lines';
@@ -25,16 +17,11 @@ import { store } from './store/store';
 import { useSelector, useDispatch } from 'react-redux';
 import {increment, decrement, setLines, setEvents} from './src/actions/counterActions';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-
 const Stack = createNativeStackNavigator();
 const {width, height} = Dimensions.get('screen');
 StatusBar.setHidden(false);
-
 const STATUS_BAR_HEIGHT = StatusBar.currentHeight || 24; 
 const WINDOW_HEIGHT = Dimensions.get('window').height;
-
-
-
 const appBox = () => {
 	return(
 		<Provider store={store}>
@@ -44,7 +31,6 @@ const appBox = () => {
 		</Provider>
 	);
 }
-
 const Flex = (navigation) => {
 	const dispatch = useDispatch();
 	const [showFilters, setShowFilters] = useState(false);
@@ -54,7 +40,6 @@ const Flex = (navigation) => {
 	const count = useSelector((store) => store.count.count);
 	const [isLinesReady, setIsLinesReady] = useState(false);
 	const [isEventsReady, setEventsReady] = useState(false);
-
 	useEffect(() => {
 		let linesUrl = 'https://latinet.co.il/'+count.lng+'/super_lines/';
 		if(isLinesReady === false){
@@ -63,15 +48,6 @@ const Flex = (navigation) => {
 			.then((data) => {
 				dispatch(setLines(data.data));
 				setIsLinesReady(true);
-				let EventsUrl = 'https://latinet.co.il/'+count.lng+'/events_data/';
-				if(isEventsReady === false){
-					fetch(EventsUrl)
-					.then((res) => res.json())
-					.then((data) => {
-						dispatch(setEvents(data.data));
-						setEventsReady(true);
-					});
-				}
 			});
 		}
 	}, [count.lng, isLinesReady]);
@@ -79,7 +55,6 @@ const Flex = (navigation) => {
 		<View style={styles.app}>
 			<StatusBar barStyle="light-content" backgroundColor={"#4a0a55"}/>
 			<View style={styles.appBox}>
-				
 				<Header
 					style={styles.header}
 					_selectedScreen={selectedScreen}
@@ -88,56 +63,23 @@ const Flex = (navigation) => {
 					_showFilters={showFilters}
 				>
 				</Header>
-				
 				{isLinesReady && 
 				<SafeAreaView style={{
 					height:getPlayingHeight()
 				}}>
-					
-
 					<NavigationContainer ref={navigationRef}>
 						<Stack.Navigator screenOptions={{ headerShown: false }}>
 							<Stack.Screen name="Organizations" component={Organizations}/>
-
-							<Stack.Screen name="DayEvents" component={DayEvents}/>
+							<Stack.Screen name="EventsCalender" component={EventsCalender}/>
 							<Stack.Screen name="Event" component={Event}/>
-							
+							<Stack.Screen name="DayEvents" component={DayEvents}/>
+							<Stack.Screen name="Learns" component={Learns}/>
 							<Stack.Screen name="Organization" component={Organization}/>
 							<Stack.Screen name="Lines" component={Lines}/>
 						</Stack.Navigator>
 					</NavigationContainer>
 				</SafeAreaView>
 				}
-
-				{/* { (selectedScreen == "Lines" &&  isLinesReady) &&
-					<Lines
-						_setOrganizationNid={setOrganizationNid}
-						_organizationNid={organizationNid}
-						_setSelectedScreen={setSelectedScreen}
-						_showFilters={showFilters}
-					></Lines>
-				}
-				{ (selectedScreen == "Events" &&  isEventsReady) &&
-					<EventsCalender></EventsCalender>
-				}
-				{ (selectedScreen == "Organizations" &&  isEventsReady) &&
-					<Organizations
-						_setOrganizationNid={setOrganizationNid}
-						_organizationNid={organizationNid}
-						_setSelectedScreen={setSelectedScreen}
-						_setOrganizationScreen={setOrganizationScreen}
-					></Organizations>
-				}
-				{ (selectedScreen == "Organization") &&
-					<Organization
-						_organizationNid={organizationNid}
-						_organizationScreen={organizationScreen}
-						_setOrganizationScreen={setOrganizationScreen}
-					></Organization>
-				} */}
-
-
-
 			</View>
 		</View>
 	);

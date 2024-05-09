@@ -16,7 +16,6 @@ const {width, height} = Dimensions.get('screen');
 const OrganizationLines = (organizationLines) => {
 
 
-
 	const count = useSelector((store) => store.count.count);
 
     return(
@@ -25,6 +24,7 @@ const OrganizationLines = (organizationLines) => {
 					flexDirection: setRowType(count.lng),
 				}}>
         {setArray(organizationLines.organizationLines.organizationLines).map((prop, key) => {
+            let week_day = prop.week_day == "7" ? 0 : prop.week_day;
             return (
                 <TouchableOpacity key={prop.nid} style={styles.menuListItem} onPress={() => {organizationLines._setSelectedLine(prop.nid)}}>
                     <View style={{
@@ -35,7 +35,7 @@ const OrganizationLines = (organizationLines) => {
                         marginRight:  I18nManager.isRTL ? 0 : 0,
                         paddingBottom:3,
                     }}>
-                        <Text style={styles.dayText}>{count.lines.global_metadata.days_of_week[count.lng][prop.week_day]}</Text>
+                        <Text style={styles.dayText}>{count.lines.global_metadata.days_of_week[count.lng][week_day]}</Text>
                     </View>
                 </TouchableOpacity>
             );

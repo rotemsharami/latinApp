@@ -72,6 +72,21 @@ const ContactInfo = (organization) => {
                     </TouchableOpacity>
                 }
 
+
+                {organization.organization.info_link != undefined &&
+                    <TouchableOpacity onPress={() => { Linking.openURL(organization.organization.info_link); }}>
+                        <View style={styles.listItem}>
+                            <View style={styles.iconBox}>
+                                <MaterialCommunityIcons name="credit-card-outline" size={30} color="#FFF" />
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                }
+
+
+
+
+
                 {organization.organization.waze != undefined &&
                     <TouchableOpacity onPress={() => { Linking.openURL(organization.organization.waze); }}>
                         <View style={styles.listItem}>

@@ -16,7 +16,8 @@ const {width, height} = Dimensions.get('screen');
 const logoWidth = 60;
 const textWidth = width - logoWidth;
 
-const OrganizationBoxLink = (item) => {
+const LearnBoxLink = (item) => {
+
 	const count = useSelector((store) => store.count.count);
 	const dir = setTextDirection(count.lng);
 
@@ -36,7 +37,7 @@ const OrganizationBoxLink = (item) => {
             
             <TouchableOpacity onPress={() => {
                 //changeNid(item.organization.nid)
-                navigate("Organization", {"orgNid": item.organization.nid, "screenType": "info", "source": "Organizations"});
+                navigate("Organization", {"orgNid": item.organization.org_nid, "screenType": "learns", "selectedLearn": item.organization.nid, "source":"Learns"});
                 }}>
                 <View style={{
                     flexDirection: setRowType(count.lng),
@@ -45,7 +46,7 @@ const OrganizationBoxLink = (item) => {
 
                     
                     <View style={styles.logo}>
-                        <ImageBackground source={{uri:getImageUrl(item.organization.general_image)}} resizeMode="cover" style={styles.logoImage}></ImageBackground>
+                        <ImageBackground source={{uri:getImageUrl(count.lines.organizations[item.organization.org_nid].general_image)}} resizeMode="cover" style={styles.logoImage}></ImageBackground>
                     </View>
                     <View style={styles.text}>
                         <Text style={{
@@ -55,7 +56,7 @@ const OrganizationBoxLink = (item) => {
                             color: '#595959',
                             fontSize: 20,
                             fontWeight: 'bold',
-                        }}>{item.organization[count.lng].title}</Text>
+                        }}>{count.lines.taxonomy_terms.cours_type[item.organization.course_type][count.lng]+" "+count.lines.taxonomy_terms.dance_floors[item.organization.dance_style][count.lng]}</Text>
                         <Text style={{
                             paddingRight: count.lng =="he" ? 10 : 0,
                             paddingLeft: count.lng =="he" ? 0 : 10,
@@ -64,7 +65,7 @@ const OrganizationBoxLink = (item) => {
                             fontSize: 16,
                             lineHeight:20,
                             marginBottom:5,
-                        }}>{item.organization[count.lng].slogen}</Text>
+                        }}>{count.lines.organizations[item.organization.org_nid][count.lng].title}</Text>
                         
 
                     </View>
@@ -75,7 +76,7 @@ const OrganizationBoxLink = (item) => {
 
 }
 
-export default OrganizationBoxLink;
+export default LearnBoxLink;
 const styles = StyleSheet.create({
 logoAndTextBox:{
     width:width,

@@ -5,6 +5,7 @@ import {nice_list_text, setArray, getSelectedLang, setRowType, setTextDirection,
 import {navigate} from "../../../RootNavigation";
 import moment from 'moment';
 import { useSelector } from 'react-redux';
+import {LinearGradient} from 'expo-linear-gradient';
 const {width, height} = Dimensions.get('screen');
 const logoWidth = 100;
 const textWidth = width - logoWidth;
@@ -28,16 +29,21 @@ const AllEventsList = () => {
 						{count.lines != undefined &&
 							<View style={styles.eventsListBox}>
 								{count.lines.events.map((event) => {
-									console.log(event.nid);
 									return(
-										<TouchableOpacity kay={"calenderEventItem"+event.nid} onPress={() => navigate("Event", {event: event})}>
-										<View style={[styles.eventItem, {
+										<TouchableOpacity kay={"calenderEventItem"+event.nid} onPress={() => navigate("Event", {event: event})} key={"calenderEventItem-"+event.nid}>
+						
+						
+
+										<LinearGradient style={[styles.eventItem, {
 											flexDirection: count.lng == "en" ? "row" : "row-reverse",
-											
-										}]}>
+										}]}
+													colors={["#FFF", "#FFF", '#fbefff',]}
+												>
+
+
 											<View style={styles.image}>
 												<Image
-													style={{width: '100%', height: '100%'}}
+													style={{width: '80%', height: '80%'}}
 													source={{uri:getImageUrl(event.general_image)}}
 													/>
 											</View>
@@ -62,7 +68,7 @@ const AllEventsList = () => {
 												</View>
 											</View>
 
-										</View>
+										</LinearGradient>
 										</TouchableOpacity>
 									);
 								})}
@@ -76,14 +82,16 @@ const AllEventsList = () => {
 }
 const styles = StyleSheet.create({
 	containerBox:{
-		padding:5
 	},
 	eventItem:{
-		marginBottom:10
+		
 	},
 	image:{
 		width:logoWidth,
 		height:logoWidth,
+		alignItems:"center",
+		justifyContent:"center",
+		alignContent:"center"
 	},
 	titleAndText:{
 		color: '#000',

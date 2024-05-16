@@ -75,7 +75,7 @@ const Flex = (navigation) => {
 							<Stack.Screen name="DayEvents" component={DayEvents}/>
 							<Stack.Screen name="Learns" component={Learns}/>
 							<Stack.Screen name="Organization" component={Organization}/>
-							<Stack.Screen name="Lines" component={Lines}/>
+							<Stack.Screen name="Lines" component={Lines} initialParams={{"_showFilters": showFilters }}/>
 						</Stack.Navigator>
 					</NavigationContainer>
 				</SafeAreaView>

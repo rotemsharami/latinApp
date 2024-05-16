@@ -5,6 +5,7 @@ import { setRowType, getSelectedLang, setTextDirection, setArray, nice_list_text
 import { useSelector, useDispatch } from 'react-redux';
 import OrganizationStudies from '../OrganizationStudies/OrganizationStudies';
 import AllEventsList from '../AllEventsList/AllEventsList';
+import Filters from '../Filters/Filters';
 import DayEvents from '../DayEvents/DayEvents';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {navigate} from "../../../RootNavigation";
@@ -24,6 +25,8 @@ const EventsCalender = () => {
 	const [selectedDay, setSelectedDay] = useState("0");
 	const [selectedMonth, setSelectedMonth] = useState(moment().format("MM"));
 	const [selectedDisplay, setSelectedDisplay] = useState("Calender");
+
+	const [showFilter, setShowFilter] = useState(false);
 
 	const scaleAnim = useRef(new Animated.Value(0)).current;
 
@@ -242,18 +245,34 @@ const EventsCalender = () => {
 			}]}
 			>
 					<View style={{
-						
-						padding:5,
-						height:37,
-						
+						paddingRight:10,
+						paddingLeft:10,
+						justifyContent:"space-between",
+						alignItems:"center",
+						height:40,
+						backgroundColor:"#d3d3d3",
+						borderTopColor:"#000",
+						borderTopWidth:1,
+						flexDirection: count.lng == "en" ? "row" : "row-reverse",
 					}}>
 						<View style={[styles.calenderListSwitch, {
 								flexDirection: count.lng == "en" ? "row" : "row-reverse",
-								alignSelf: count.lng == "en" ? "flex-start" : "flex-end",
+								
 								
 						}]}>
 
-							<View style={[styles.calenderListSwitchButton,{backgroundColor: selectedDisplay == "Calender" ? "#730874" :"#FFF"}]}>
+							<View style={[styles.calenderListSwitchButton,{
+								backgroundColor: selectedDisplay == "Calender" ? "#730874" :"#d3d3d3",
+								borderWidth:1,
+								borderRightWidth: count.lng == "en" ? 0 : 1,
+								bordeLeftWidth: count.lng == "en" ? 1 : 0,
+								borderTopRightRadius: count.lng == "en" ? 0 : 3,
+								borderBottomRightRadius: count.lng == "en" ? 0 : 3,
+								borderTopLeftRadius: count.lng == "en" ? 3 : 0,
+								borderBottomLeftRadius: count.lng == "en" ? 3 : 0,
+								flexDirection: count.lng == "en" ? "row" : "row-reverse",
+
+								}]}>
 								<TouchableOpacity style={[styles.calenderListSwitchButtonTouch, {
 									flexDirection: count.lng == "en" ? "row" : "row-reverse",
 								}]} onPress={()=>{
@@ -269,7 +288,18 @@ const EventsCalender = () => {
 									</View>
 								</TouchableOpacity>
 							</View>
-							<View style={[styles.calenderListSwitchButton,{backgroundColor: selectedDisplay == "List" ? "#730874" :"#FFF"}]}>
+							<View style={[styles.calenderListSwitchButton,{
+								backgroundColor: selectedDisplay == "List" ? "#730874" :"#d3d3d3",
+								borderWidth:1,
+								borderRightWidth: count.lng == "en" ? 1 : 0,
+								bordeLeftWidth: count.lng == "en" ? 0 : 1,
+								borderTopRightRadius: count.lng == "en" ? 3 : 0,
+								borderBottomRightRadius: count.lng == "en" ? 3 : 0,
+								borderTopLeftRadius: count.lng == "en" ? 0 : 3,
+								borderBottomLeftRadius: count.lng == "en" ? 0 : 3,
+
+
+								}]}>
 								<TouchableOpacity style={[styles.calenderListSwitchButtonTouch, {
 									flexDirection: count.lng == "en" ? "row" : "row-reverse",
 									
@@ -284,8 +314,50 @@ const EventsCalender = () => {
 									</View>
 								</TouchableOpacity>
 							</View>
+							
 						</View>
+
+
+						<View style={{
+							flexDirection: count.lng == "en" ? "row" : "row-reverse",
+						}}>
+							<TouchableOpacity
+								onPress={() => {setShowFilter(showFilter ? false :true)}}
+								style={{
+									flexDirection: count.lng == "en" ? "row" : "row-reverse",
+									borderWidth:1,
+									borderRadius:3,
+									borderColor:"#000",
+									height:28,
+									padding:2,
+									paddingRight:4,
+									paddingLeft:4,
+							}}>
+								<View  style={{
+									paddingTop:3
+								}}>
+									<MaterialCommunityIcons name="filter" size={16} color={"#000"} />
+								</View>
+								<View  style={{
+									
+								}}>
+									<Text style={{
+										
+									}}>{"Filter"}</Text>
+								</View>
+							</TouchableOpacity>
+						</View>
+
+
+
+
 					</View>
+
+
+					{showFilter &&
+						<Filters type={"events"}></Filters>
+					}
+					
 
 					{selectedDisplay == "List" &&
 						
@@ -478,10 +550,13 @@ const styles = StyleSheet.create({
 	},
 
 	calenderListSwitchButton:{
-		
+		paddingRight:4,
+		paddingLeft:4,
+		paddingBottom:2
 	},
 	calenderListSwitch:{
-		borderWidth:1,
+		borderWidth:0,
+		borderColor:"#d3d3d3"
 		
 	},
 	calenderButtonsAndMonth:{

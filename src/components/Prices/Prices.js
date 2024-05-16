@@ -5,7 +5,8 @@ import {
     Dimensions,
     ImageBackground,
 	TouchableOpacity,
-	I18nManager
+	I18nManager,
+    ScrollView
 	} from 'react-native';
 
 import React, {useRef, useState, useEffect} from 'react';
@@ -35,7 +36,7 @@ const Prices = (prices) => {
                     <Text style={styles.DisplayTitle}> {count.lines.global_metadata.labels[count.lng][9]}</Text>
                 </View>
             </View>
-            <View style={styles.list}>
+            <ScrollView style={styles.list}>
         {setArray(prices.prices).map((prop, key) => {
             return (
                 <View
@@ -60,7 +61,7 @@ const Prices = (prices) => {
                 </View>
             );
         })}
-            </View>
+            </ScrollView>
         </View>
     );
 }

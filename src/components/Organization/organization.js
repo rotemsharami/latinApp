@@ -24,13 +24,11 @@ const setText = (text) => {
 
 const Organization = (info) => {
 
-	console.log(info);
 
 	const changeOrganizationScreen = useCallback((screenType) => {
 		info._setOrganizationScreen(screenType);
 	}, [info.route.params.screenType]);
 	const count = useSelector((store) => store.count.count);
-	const [sdata, setSdata] = useState({});
 	// useEffect(() => {
 	// 	storage
 	// 	.load({
@@ -60,7 +58,7 @@ const Organization = (info) => {
 
 	const getSelectedLine = () => {
 		let result = undefined;
-		if((info.route.params.source == "Organizations" || info.route.params.source == "Learns") && (count.lines.organizations[info.route.params.orgNid].lines.length > 0))
+		if((info.route.params.source == "Organizations" || info.route.params.source == "Learns" || info.route.params.source == "Lines") && (count.lines.organizations[info.route.params.orgNid].lines.length > 0))
 			result = count.lines.organizations[info.route.params.orgNid].lines[0].nid;
 		if(info.route.params.source == "Lines" && info.route.params.selectedLine != undefined)
 			result = info.route.params.selectedLine;
@@ -69,7 +67,7 @@ const Organization = (info) => {
 
 	const getSelectedLearn = () => {
 		let result = undefined;
-		if(info.route.params.source == "Organizations" && count.lines.organizations[info.route.params.orgNid].learn.length > 0)
+		if((info.route.params.source == "Organizations" || info.route.params.source == "Lines") && count.lines.organizations[info.route.params.orgNid].learn.length > 0)
 			result = count.lines.organizations[info.route.params.orgNid].learn[0].nid;
 		if(info.route.params.source == "Learns" && info.route.params.selectedLearn != undefined)
 			result = info.route.params.selectedLearn;
@@ -109,6 +107,16 @@ const Organization = (info) => {
 		return menu;
 	}
 	const [menu, setMenu] = useState(setMenuItems());
+
+
+
+	useEffect(() => {
+		setMenu(setMenuItems());
+		setSelectedLine(getSelectedLine());    
+		setSelectedLearn(getSelectedLearn());  
+	}, [info.route.params]);
+
+
 
 	return(
 		<LinearGradient style={styles.container}

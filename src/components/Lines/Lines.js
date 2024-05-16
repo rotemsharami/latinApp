@@ -19,6 +19,9 @@ const setText = (text) => {
 }
 
 const Lines = (info) => {
+
+	console.log(info.route.params._showFilters);
+
 	const count = useSelector((store) => store.count.count);
 	const dir = setTextDirection(count.lng);
 	const [lines, setLines] = useState(count.lines);
@@ -27,6 +30,12 @@ const Lines = (info) => {
 	const [selectedAreas, setSelectedAreas] = useState([]);
 	const [selectedDay, setSelectedDay] = useState("0");
 	const animationValues = useRef([]).current;
+
+	const [showFilters, setShowFilters] = useState(info.route.params._showFilters);
+
+
+	console.log(count.showFilter);
+
 	
 	let getTagInfo = (tid, data) => {
 		let result = "no";
@@ -212,40 +221,83 @@ const Lines = (info) => {
 
 	}, [selectedAreas, selectedDanceFloors, selectedDay]);
 
+	const [slideAnim] = useState(new Animated.Value(0));
+
+	const slideDown = () => {
+		if(count.showFilter){
+			Animated.timing(
+				slideAnim,
+				{
+				  toValue: 1,
+				  duration: 500,
+				  useNativeDriver: true, // Add this line for better performance
+				}
+			  ).start();
+		}else{
+			Animated.timing(
+				slideAnim,
+				{
+				  toValue: 0,
+				  duration: 500,
+				  useNativeDriver: true, // Add this line for better performance
+				}
+			  ).start();
+		}
+
+	};
 
 
+	useEffect(() => {
+		slideDown();
+	}, [count.showFilter]);
 
 
 
 	return(
-		<View
-			style={[styles.box]}
-			>
+		<View style={[styles.box, {}]}>
 			{lines != undefined &&
+			<View style={[styles.boxContainer, {}]}>
+				
 
-			<View style={styles.filters}>
 
-				{info._showFilters && 
 
-				<View style={[styles.filtersBox, {
-					height:getPlayingHeight()-80
-				}]}>
-					<View style={styles.containerValues}>
-						<View style={[styles.filterItems, {
-							flexDirection: count.lng == "en" ? "row" : "row-reverse",
-						}]}>
+				<Animated.View
+					style={[styles.filtersBox, {
+						height:getPlayingHeight()-80,
+						position: 'absolute',
+						top: 0,
+						left: 0,
+						right: 0,
+						zIndex: 1,
+
+
+						transform: [{
+							translateY: slideAnim.interpolate({
+								inputRange: [0, 1],
+								outputRange: [-1000, 0],
+							}),
+						},
+					]}]}
+				>
+
+
+
+					<View style={[styles.filtersBox, {
+						flexDirection: count.lng == "en" ? "row" : "row-reverse",
+					}]}>
+						<View style={[styles.filterItems, {}]}>
 							<View style={styles.filterIcon}><MaterialCommunityIcons name="music" size={14} color="#fff" /></View>
 							{Object.keys(lines.used_dance_floors).map((index) => {
 								return(
 									<View key={"dnacFloor-"+index} style={{
 										backgroundColor: selectedDanceFloors.includes(index) ? "#730874" : "#FFF",
 										borderWidth:1,
-										alignContent:"center",
-										padding:3
+										padding:3,
 									}}>
 										<TouchableOpacity onPress={() => changeDanceFloor(index)}>
 											<Text
 												style={{
+													textAlign: count.lng == "en" ? "left" : "right",
 													color: selectedDanceFloors.includes(index) ? "#FFF" : "#000",
 												}}
 											>{getTagInfo(index, lines.dance_floors[count.lng])}</Text>
@@ -255,7 +307,7 @@ const Lines = (info) => {
 							})}
 						</View>
 						<View style={[styles.filterItems, {
-							flexDirection: count.lng == "en" ? "row" : "row-reverse",
+							//flexDirection: count.lng == "en" ? "row" : "row-reverse",
 						}]}>
 							<View style={styles.filterIcon}><MaterialCommunityIcons name="map-marker" size={14} color="#fff" /></View>
 							{Object.keys(lines.used_area).map((index) => {
@@ -263,8 +315,8 @@ const Lines = (info) => {
 									<View key={"area-"+index} style={{
 										backgroundColor: selectedAreas.includes(index) ? "#730874" : "#FFF",
 										borderWidth:1,
-										alignContent:"center",
-										padding:3
+										padding:3,
+										
 									}}>
 										<TouchableOpacity onPress={() => changeAreas(index)}>
 										<Text
@@ -278,167 +330,125 @@ const Lines = (info) => {
 							})}
 						</View>
 					</View>
-				</View>
+				</Animated.View>
 
-				}
-
-				{!info._showFilters && 
-				<LinearGradient style={[styles.linesBox, {
-					height: height-110-(height-windowH-STATUS_BAR_HEIGHT)-STATUS_BAR_HEIGHT-80
-				}]}
+				<LinearGradient
+					style={[styles.linesBox, {
+						height: height-110-(height-windowH-STATUS_BAR_HEIGHT)-STATUS_BAR_HEIGHT-80,
+						
+					}]}
 					colors={['#efdbf7','#FFF']}
-					
 				>
-
-
-				{weeklyData[selectedDay] !== undefined && 
+					{weeklyData[selectedDay] !== undefined && 
 					<View style={styles.day}>
 						{weeklyData[selectedDay].events !== undefined && 
-							<View style={styles.linesList}>
-									{weeklyData[selectedDay] !== undefined && 
-										<View>
-											{weeklyData[selectedDay].events !== undefined && 
-												<View>
-													{weeklyData[selectedDay].events[0] !== undefined && 
-														<SafeAreaView style={{
-															
-															
-
-															}}>
-
-
-																
-
-
-															<ScrollView style={{}}>
-																
-
-
-
-																<View style={styles.displayBox}>
-																	<View style={styles.display}>
-																		<View style={styles.listBox}>
-																			{setArray(weeklyData[selectedDay].events).map((item, key) => {
-																			return (
-																				// <Animated.View
-																				// 	key={key}
-																				// 	style={[styles.item, { transform: [{ translateX: animationValues[key] }] }]}
-																				// >
-																					<View
-																						key={"day-"+key}
-
-																						style={{
-																						flexDirection: count.lng == "en" ? "row-reverse" : "row-reverse",
-																						paddingRight:20,
-																						paddingLeft:20,
-																						borderBottomWidth:2,
-																						borderBottomColor:"#FFF"
-
-																					}}>
-																						<View style={{
-																							justifyContent:'center',
-																							
-																						}}>
-																							<Text style={{backgroundColor:"#474747", color:"#FFF", width:19, textAlign: 'center', borderRadius:30}}>{key+1}</Text>
-																						</View>
-																						<Line
-																							key={"line-"+item.nid}
-																							item={item}
-																							_organizationNid={info._organizationNid}
-																							_setOrganizationNid={info._setOrganizationNid}
-																							_setSelectedScreen={info._setSelectedScreen}
-																							>
-																						</Line>
-																					</View>
-																			// </Animated.View>
-																			);
-																			})}
-																		</View>
-																	</View>
-																</View>
-
-
-
-															</ScrollView>
-														</SafeAreaView>
-													}
+						<View style={styles.linesList}>
+							{weeklyData[selectedDay] !== undefined && 
+							<View>
+								{weeklyData[selectedDay].events !== undefined && 
+								<View>
+									{weeklyData[selectedDay].events[0] !== undefined && 
+									<SafeAreaView style={{}}>
+										<ScrollView style={{}}>
+											<View style={styles.displayBox}>
+												<View style={styles.display}>
+													<View style={styles.listBox}>
+														{setArray(weeklyData[selectedDay].events).map((item, key) => {
+														return (
+														<View
+															key={"day-"+key}
+															style={{
+															flexDirection: count.lng == "en" ? "row-reverse" : "row-reverse",
+															paddingRight:20,
+															paddingLeft:20,
+															borderBottomWidth:2,
+															borderBottomColor:"#FFF"
+														}}>
+															<View style={{justifyContent:'center'}}>
+																<Text style={{backgroundColor:"#474747", color:"#FFF", width:19, textAlign: 'center', borderRadius:30}}>{key+1}</Text>
+															</View>
+															<Line
+																key={"line-"+item.nid}
+																item={item}
+																_organizationNid={info._organizationNid}
+																_setOrganizationNid={info._setOrganizationNid}
+																_setSelectedScreen={info._setSelectedScreen}
+																>
+															</Line>
+														</View>
+														);
+														})}
+													</View>
 												</View>
-											}
-										</View>
+											</View>
+										</ScrollView>
+									</SafeAreaView>
 									}
+								</View>
+								}
 							</View>
+							}
+						</View>
 						}
 					</View>
-				}
-
+					}
 				</LinearGradient>
-				}
 
 				<View style={[styles.daysControls, {
 					flexDirection: count.lng == "en" ? "row" : "row-reverse",
 				}]}>
 					{Object.keys(weeklyData).map((index) => {
-						return(
-							<View key={"day-"+index} style={{
-								backgroundColor: selectedDay == index ? "#730874" : "#474747",
-								flex:1,
-								alignItems:"center",
-								borderWidth:1,
-								borderRightWidth:0,
-								paddingTop:15
-							}}>
-								<TouchableOpacity onPress={() => changeDay(index)}>
-								{weeklyData[index] !== undefined && 
-									<View style={styles.day}>
+					return(
+					<View key={"day-"+index} style={{
+						backgroundColor: selectedDay == index ? "#730874" : "#474747",
+						flex:1,
+						alignItems:"center",
+						borderWidth:1,
+						borderRightWidth:0,
+						paddingTop:15
+					}}>
+						<TouchableOpacity onPress={() => changeDay(index)}>
+							{weeklyData[index] !== undefined && 
+							<View style={styles.day}>
+								{weeklyData[index].events !== undefined && 
+								<View style={styles.linesList}>
+									{weeklyData[index] !== undefined && 
+									<View>
 										{weeklyData[index].events !== undefined && 
-											<View style={styles.linesList}>
-													{weeklyData[index] !== undefined && 
-														<View>
-															{weeklyData[index].events !== undefined && 
-																<View>
-																	{weeklyData[index].events[0] !== undefined &&
-																		<View style={[styles.linesAmount, {
-																			backgroundColor: selectedDay == index ? "#f640b2" : "#d3d3d3", 
-																		}]}>
-																			<Text style={[styles.linesAmountText, {
-																				color: selectedDay == index ? "#d3d3d3" : "#000",
-																			}]}>{weeklyData[index].events.length}</Text>
-																		</View>
-																	}
-																</View>
-															}
-														</View>
-													}
+										<View>
+											{weeklyData[index].events[0] !== undefined &&
+											<View style={[styles.linesAmount, {
+												backgroundColor: selectedDay == index ? "#f640b2" : "#d3d3d3", 
+											}]}>
+												<Text style={[styles.linesAmountText, {
+													color: selectedDay == index ? "#d3d3d3" : "#000",
+												}]}>
+													{weeklyData[index].events.length}
+												</Text>
 											</View>
+											}
+										</View>
 										}
 									</View>
-								}
-								<View style={styles.dayShort}>
-									<Text
-											style={{
-												color: "#000",
-												fontWeight:"bold"
-											}}
-										>{count.lines.global_metadata.days_of_week_short[count.lng][weeklyData[index].day_index == "7" ? "1" : parseInt(weeklyData[index].day_index)]}</Text>
+									}
 								</View>
-									<Text
-										style={{
-											color: "#FFF",
-										}}
-									>{weeklyData[index].date_short}</Text>
-								</TouchableOpacity>
+								}
 							</View>
-						);
+							}
+							<View style={styles.dayShort}>
+								<Text style={{
+									color: "#000",
+									fontWeight:"bold"
+								}}>
+									{count.lines.global_metadata.days_of_week_short[count.lng][weeklyData[index].day_index == "7" ? "1" : parseInt(weeklyData[index].day_index)]}
+								</Text>
+							</View>
+							<Text style={{color: "#FFF"}}>{weeklyData[index].date_short}</Text>
+						</TouchableOpacity>
+					</View>
+					);
 					})}
             	</View>
-
-
-
-
-
-
-
-
 			</View>
 			}
 		</View>
@@ -488,9 +498,7 @@ const styles = StyleSheet.create({
 		flex: 1
 	},
 	filterItems:{
-		flexDirection:"row",
 		alignContent:"space-around",
-		alignSelf:"stretch",
 		padding:5
 	},
 	filterItem:{
@@ -499,7 +507,6 @@ const styles = StyleSheet.create({
 		padding:3
 	},
 	daysControls:{
-		flexDirection:"row",
 		height:80
 	},
 	dayFilterItem:{

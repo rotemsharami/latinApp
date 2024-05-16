@@ -7,7 +7,7 @@ import { Flex } from "@react-native-material/core";
 const {width, height} = Dimensions.get('screen');
 import {navigate, navigationRef, getRouteName} from "../../../RootNavigation";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import {increment, decrement, changeLanguage, changeSelectedScreen} from '../../actions/counterActions';
+import {increment, decrement, changeLanguage, changeSelectedScreen, changeShowFilter} from '../../actions/counterActions';
 const logoWidth = 40;
 const textWidth = width - logoWidth;
 
@@ -24,6 +24,11 @@ const Header = (info) => {
 	const changeLng = (lng) => {
 		dispatch(changeLanguage(lng));
 	};
+
+	const _changeShowFilter = (value) => {
+		dispatch(changeShowFilter(value));
+	};
+
 
 	
 	const changeTheScreen = useCallback((screen) => {
@@ -112,7 +117,7 @@ const Header = (info) => {
 						</View>
 
 						<TouchableOpacity
-							onPress={() => info._setShowFilters(info._showFilters ? false : true)}
+							onPress={() => _changeShowFilter(count.showFilter ? false : true)}
 							
 							style={[styles.filterButton, {
 								flexDirection: count.lng == "en" ? "row" : "row-reverse",
@@ -245,7 +250,7 @@ const styles = StyleSheet.create({
 		
 	},
 	headerMenuAndTitle:{
-		backgroundColor:"#474747",
+		backgroundColor:"#545454",
 		
 	},
 	header:{

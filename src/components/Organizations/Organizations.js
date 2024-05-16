@@ -15,7 +15,9 @@ const Organizations = (info) => {
 
 	const count = useSelector((store) => store.count.count);
 	return(
-		<ScrollView>
+		<ScrollView style={{
+			
+		}}>
 
 			{count.lines != undefined &&
 				<View>

@@ -13,6 +13,17 @@ export const increment = (value) => {
     };
   };
 
+  export const changeShowFilter = (value) => {
+    return {
+      type: 'CHANGE_SHOW_FILTER',
+      payload: value
+    };
+  };
+
+
+  
+
+
   export const changeSelectedScreen = (selectedScreen) => {
     return {
       type: 'CHANGE_SELECTED_SCREEN',

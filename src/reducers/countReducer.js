@@ -5,6 +5,7 @@ const initialState = {
 		selectedScreen:"Lines",
 		lines:undefined,
 		events:undefined,
+		showFilter:false,
 	},
 };
 
@@ -32,6 +33,17 @@ export default (state = initialState, action) => {
 			}
 			
 		};
+
+		case 'CHANGE_SHOW_FILTER':
+		return {
+			...state,
+			count:{
+				...state.count,
+				showFilter: action.payload
+			}
+			
+		};
+
 
 		case 'CHANGE_SELECTED_SCREEN':
 		return {

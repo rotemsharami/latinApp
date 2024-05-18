@@ -95,6 +95,27 @@ export const setArray = (values) => {
 }
 
 
+export const filterDataItem = (item, eventsSelectedFilters) => {
+    let filtersAmount = Object.keys(eventsSelectedFilters).length;
+    if(Object.keys(eventsSelectedFilters).length > 0){
+        Object.keys(eventsSelectedFilters).forEach(filterKey => {
+            if(eventsSelectedFilters[filterKey].length > 0){
+                eventsSelectedFilters[filterKey].forEach(filterTagKey => {
+                    if(item[filterKey].split(",").includes(filterTagKey)){
+                        filtersAmount--;
+                        return true;
+                    }
+                });
+            }else{
+                filtersAmount--;
+            }
+        });
+    }
+    return filtersAmount === 0;
+}
+
+
+
 export const getTranslationString = (string, lng) => {
     let translations = {
         "Calender":"חודשי",

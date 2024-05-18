@@ -159,7 +159,7 @@ const Event = (event) => {
 								>
 									
 									<View style={styles.centerBox}>
-										<ServicesX services={event.route.params.event.global_services}></ServicesX>
+										<ServicesX services={event.route.params.event.services}></ServicesX>
 									</View>
 								</LinearGradient>
 							</View>

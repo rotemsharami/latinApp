@@ -6,6 +6,7 @@ const initialState = {
 		lines:undefined,
 		events:undefined,
 		showFilter:false,
+		eventsSelectedFilters:{}
 	},
 };
 
@@ -33,6 +34,17 @@ export default (state = initialState, action) => {
 			}
 			
 		};
+
+		case 'CHANGE_EVENTS_SELECTED_FILTERS':
+		return {
+			...state,
+			count:{
+				...state.count,
+				eventsSelectedFilters:action.payload
+			}
+			
+		};
+
 
 		case 'CHANGE_SHOW_FILTER':
 		return {

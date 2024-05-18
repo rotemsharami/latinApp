@@ -40,6 +40,12 @@ const Flex = (navigation) => {
 	const count = useSelector((store) => store.count.count);
 	const [isLinesReady, setIsLinesReady] = useState(false);
 	const [isEventsReady, setEventsReady] = useState(false);
+
+	const [eventsFilters, setEventsFilters] = useState({});
+
+
+
+
 	useEffect(() => {
 		let linesUrl = 'https://latinet.co.il/'+count.lng+'/super_lines/';
 		if(isLinesReady === false){
@@ -69,8 +75,8 @@ const Flex = (navigation) => {
 				}}>
 					<NavigationContainer ref={navigationRef}>
 						<Stack.Navigator screenOptions={{ headerShown: false }}>
-							<Stack.Screen name="Organizations" component={Organizations}/>
-							<Stack.Screen name="EventsCalender" component={EventsCalender}/>
+							<Stack.Screen name="Organizations" component={Organizations} />
+							<Stack.Screen name="EventsCalender" component={EventsCalender} />
 							<Stack.Screen name="Event" component={Event}/>
 							<Stack.Screen name="DayEvents" component={DayEvents}/>
 							<Stack.Screen name="Learns" component={Learns}/>

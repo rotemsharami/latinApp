@@ -1,7 +1,7 @@
 import {Image,StyleSheet,Text,View,Dimensions,Animated,Easing,ImageBackground,TouchableOpacity,I18nManager,ScrollView, SafeAreaView, StatusBar} from 'react-native';
 import React, {useRef, useState, useEffect} from 'react';
 import moment from 'moment';
-import { setRowType, getSelectedLang, setTextDirection, setArray, nice_list_text, getTranslationString, getTranslationMonth, getPlayingHeight} from '../../tools/tools';
+import { setRowType, getSelectedLang, setTextDirection, setArray, nice_list_text, getTranslationString, getTranslationMonth, getPlayingHeight, filterDataItem} from '../../tools/tools';
 import { useSelector, useDispatch } from 'react-redux';
 import OrganizationStudies from '../OrganizationStudies/OrganizationStudies';
 import AllEventsList from '../AllEventsList/AllEventsList';
@@ -15,7 +15,7 @@ const {width, height} = Dimensions.get('screen');
 const logoWidth = width/5;
 const textWidth = width - logoWidth;
 
-const EventsCalender = () => {
+const EventsCalender = (navigateProps) => {
 	const count = useSelector((store) => store.count.count);
 	const dir = setTextDirection(count.lng);
 	const [lines, setLines] = useState(undefined);
@@ -25,75 +25,8 @@ const EventsCalender = () => {
 	const [selectedDay, setSelectedDay] = useState("0");
 	const [selectedMonth, setSelectedMonth] = useState(moment().format("MM"));
 	const [selectedDisplay, setSelectedDisplay] = useState("Calender");
-
 	const [showFilter, setShowFilter] = useState(false);
-
 	const scaleAnim = useRef(new Animated.Value(0)).current;
-
-	let getTagInfo = (tid, data) => {
-		let result = "no";
-		let filter = data.filter(item => item.tid == tid);
-		if(filter.length > 0)
-			result = filter[0].name;
-		return result;
-	}
-
-	let getSelectedDanceFloor = async (index) => {
-		let oldSelectedDanceFloors = selectedDanceFloors;
-		if (oldSelectedDanceFloors.includes(index))
-			oldSelectedDanceFloors = oldSelectedDanceFloors.filter(a => a !== index);
-		else
-			oldSelectedDanceFloors = [...oldSelectedDanceFloors, index];
-		return oldSelectedDanceFloors;
-	}
-
-	let _getSelectedDanceFloor = async () => {
-		let oldSelectedDanceFloors = selectedDanceFloors;
-		return oldSelectedDanceFloors;
-	}
-
-	let getSelectedAreas = async (index) => {
-		let oldSelectedAreas = selectedAreas;
-		if (oldSelectedAreas.includes(index))
-			oldSelectedAreas = oldSelectedAreas.filter(a => a !== index);
-		else
-			oldSelectedAreas = [...oldSelectedAreas, index];
-		return oldSelectedAreas;
-	}
-
-	let getSelectedDay = async (index) => {
-		return index;
-	}
-
-	let getSelectedMonth = async (index) => {
-		return index;
-	}
-
-	
-
-
-	let setFirstData = async (data) => {
-		setLines(pre => data);
-		return true;
-	}
-
-	function changeDanceFloor(index) {
-		getSelectedDanceFloor(index).then(function(_selectedDanceFloor) {
-			setSelectedDanceFloors(pre => _selectedDanceFloor);
-		});
-	}
-
-	function changeAreas(area) {
-		getSelectedAreas(area).then(function(_selectedAreas) {
-			setSelectedAreas(pre=>_selectedAreas);
-		});
-	}
-
-	function changeDay(day) {
-		getSelectedDay(day).then(function(_selectedDay) {
-			setSelectedDay(pre=>_selectedDay);
-		});
-	}
 
 	function changeMonth(type) {
 		let currentMonth = moment(moment().year()+"-"+selectedMonth+"-02");
@@ -101,24 +34,13 @@ const EventsCalender = () => {
 		setSelectedMonth(_currentMonth);
 	}
 
-
-	
-
     const set_zero = (num)=> {
         return num < 10 ? "0"+num : num;
     }
 
-
     const getWeekly = () => {
-
-
 		let date_obj = moment();
-
-		
-
 		date_obj = moment(date_obj.year()+"-"+selectedMonth+"-01");
-
-
 		const startOfMonth = date_obj.startOf('month').day();
         const endOfMonth = parseInt(date_obj.endOf('month').format('DD'));
         let endOfMonthAddition = 6 - date_obj.endOf('month').day();
@@ -160,8 +82,8 @@ const EventsCalender = () => {
 					filterdEvents = count.lines.events.filter((event) => {
 						let today = moment();
 						let in_day = event.event_date == moment(day.date).format('YYYY-MM-DD');
-						const formattedDate = moment(today).format('YYYY-MM-DD');
-						let result = in_day;
+						let otherFilters = filterDataItem(event, count.eventsSelectedFilters);
+						let result = in_day && otherFilters;
 						return result;
 					});
 					if(newWeeklyData[weekIndex][dayIndex].events != undefined){
@@ -188,18 +110,12 @@ const EventsCalender = () => {
 	}
 
 
-	useEffect(() => {
-		setLines(undefined);
-	}, [count.lng]);
+	// useEffect(() => {
+	// 	setLines(undefined);
+	// }, [count.lng]);
 
 	useEffect(() => {
-		//let url = 'https://latinet.co.il/'+count.lng+'/events_data/';
 		if(lines === undefined){
-			// fetch(url)
-			// .then((res) => res.json())
-			// .then((data) => {
-			// 	setLines(pre => data.data);
-			// });
 			Animated.timing(
 				scaleAnim,
 			  {
@@ -225,7 +141,7 @@ const EventsCalender = () => {
 				setWeeklyData(pre => filterd);
 			});
 		}
-	}, [selectedMonth]);
+	}, [selectedMonth, count.eventsSelectedFilters]);
 
 
 	
@@ -355,25 +271,17 @@ const EventsCalender = () => {
 
 
 					{showFilter &&
-						<Filters type={"events"}></Filters>
+						<Filters type={"events"} info={navigateProps.route.params}></Filters>
 					}
-					
 
 					{selectedDisplay == "List" &&
-						
 						<AllEventsList style={{
-							
 						}}></AllEventsList>
-
 					}
 
-
-					{selectedDisplay == "Calender" && 
-
+					{selectedDisplay == "Calender" &&
 					<View>
-
 					<View style={styles.calenderSection}>
-
 						<View style={styles.containerBox}>
 							<View style={[styles.daysOfWeekContainer, {
 								height:31
@@ -385,7 +293,7 @@ const EventsCalender = () => {
 								>
 									{Object.keys(count.lines.global_metadata.days_of_week[count.lng]).map((index) => {
 										return(
-											<View key={"dnacFloor-"+index} style={{
+											<View key={"calenderDayHeader-"+index} style={{
 												flex:1,
 												alignItems:"center",
 												borderRightWidth:index == 6 ? 0 : 1,
@@ -393,13 +301,11 @@ const EventsCalender = () => {
 												paddingTop:5,
 												borderBottomWidth:1,
 											}}>
-												<TouchableOpacity onPress={() => changeDanceFloor(index)}>
-													<Text
-														style={{
-															color: "#FFF",
-														}}
-													>{count.lines.global_metadata.days_of_week_short[count.lng][index]}</Text>
-												</TouchableOpacity>
+												<Text
+													style={{
+														color: "#FFF",
+													}}
+												>{count.lines.global_metadata.days_of_week_short[count.lng][index]}</Text>
 											</View>
 										);
 									})}

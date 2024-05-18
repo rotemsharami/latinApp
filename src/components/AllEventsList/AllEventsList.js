@@ -1,7 +1,7 @@
 import React, {useRef, Component, useState, useEffect } from 'react';
 import { Animated, Easing, View, Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity, I18nManager, ScrollView} from 'react-native';
 import { Icon } from 'react-native-elements';
-import {nice_list_text, setArray, getSelectedLang, setRowType, setTextDirection, getImageUrl, getPlayingHeight} from "../../tools/tools.js";
+import {nice_list_text, setArray, getSelectedLang, setRowType, setTextDirection, getImageUrl, getPlayingHeight, filterDataItem} from "../../tools/tools.js";
 import {navigate} from "../../../RootNavigation";
 import moment from 'moment';
 import { useSelector } from 'react-redux';
@@ -12,6 +12,33 @@ const textWidth = width - logoWidth;
 const AllEventsList = () => {
 	const count = useSelector((store) => store.count.count);
 	const scaleAnim = useRef(new Animated.Value(0)).current;
+
+	const [events, setEvents] = useState(undefined);
+
+    let filterEvents = async() => {
+		let filterdEvents = count.lines.events.filter((event) => {
+			return filterDataItem(event, count.eventsSelectedFilters);
+		});
+		return filterdEvents;
+    }
+
+	useEffect(() => {
+		if(events == undefined){
+			filterEvents().then(function(filterd) {
+				setEvents(pre => filterd);
+			});
+		}
+	}, []);
+
+	useEffect(() => {
+		if(events != undefined){
+			if(events.length > 0){
+				filterEvents().then(function(filterd) {
+					setEvents(pre => filterd);
+				});
+			}
+		}
+	}, [count.eventsSelectedFilters]);
 
 
 
@@ -26,9 +53,9 @@ const AllEventsList = () => {
 					
 				}]}>
 					<View style={styles.eventsList}>
-						{count.lines != undefined &&
+						{events != undefined &&
 							<View style={styles.eventsListBox}>
-								{count.lines.events.map((event) => {
+								{events.map((event) => {
 									return(
 										<TouchableOpacity kay={"calenderEventItem"+event.nid} onPress={() => navigate("Event", {event: event})} key={"calenderEventItem-"+event.nid}>
 						

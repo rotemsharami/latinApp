@@ -13,6 +13,15 @@ export const increment = (value) => {
     };
   };
 
+
+  export const changeEventsSelectedFilters = (selectedFilters) => {
+    return {
+      type: 'CHANGE_EVENTS_SELECTED_FILTERS',
+      payload: selectedFilters
+    };
+  };
+
+
   export const changeShowFilter = (value) => {
     return {
       type: 'CHANGE_SHOW_FILTER',

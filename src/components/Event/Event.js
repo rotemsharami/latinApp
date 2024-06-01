@@ -137,6 +137,7 @@ const Event = (event) => {
 									<View style={styles.centerBox}>
 										<DanceServices danceServices={event.route.params.event.dance_services}></DanceServices>
 									</View>
+									
 								</LinearGradient>
 
 								<LinearGradient style={{
@@ -163,7 +164,7 @@ const Event = (event) => {
 									</View>
 								</LinearGradient>
 							</View>
-				
+
 							<ContactInfo organization={event.route.params.event}></ContactInfo>
 
 			</View>

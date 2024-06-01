@@ -29,7 +29,6 @@ const renderersProps = {
   };
 const OrganizationStudies = (info) => {
 
-    console.log(info);
 
 
 	const count = useSelector((store) => store.count.count);

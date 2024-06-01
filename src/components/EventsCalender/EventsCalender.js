@@ -10,6 +10,7 @@ import DayEvents from '../DayEvents/DayEvents';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {navigate} from "../../../RootNavigation";
 import {LinearGradient} from 'expo-linear-gradient';
+import {changeEventsSelectedFilters} from '../../actions/counterActions';
 
 const {width, height} = Dimensions.get('screen');
 const logoWidth = width/5;
@@ -19,6 +20,7 @@ const EventsCalender = (navigateProps) => {
 	const count = useSelector((store) => store.count.count);
 	const dir = setTextDirection(count.lng);
 	const [lines, setLines] = useState(undefined);
+	const [events, setEvents] = useState(undefined);
 	const [weeklyData, setWeeklyData] = useState([]);
 	const [selectedDanceFloors, setSelectedDanceFloors] = useState([]);
 	const [selectedAreas, setSelectedAreas] = useState([]);
@@ -27,6 +29,14 @@ const EventsCalender = (navigateProps) => {
 	const [selectedDisplay, setSelectedDisplay] = useState("Calender");
 	const [showFilter, setShowFilter] = useState(false);
 	const scaleAnim = useRef(new Animated.Value(0)).current;
+
+	
+	const dispatch = useDispatch();
+	const _changeEventsSelectedFilters = (eventsSelectedFilters) => {
+		dispatch(changeEventsSelectedFilters(eventsSelectedFilters));
+	};
+
+
 
 	function changeMonth(type) {
 		let currentMonth = moment(moment().year()+"-"+selectedMonth+"-02");
@@ -79,13 +89,19 @@ const EventsCalender = (navigateProps) => {
         newWeeklyData.forEach((week, weekIndex) => {
 			week.forEach((day, dayIndex) => {
 				if(day.events != undefined){
-					filterdEvents = count.lines.events.filter((event) => {
+					//filterdEvents = count.lines.events.filter((event) => {
+					if(events != undefined){
+						filterdEvents = events.filter((event) => {
+						
 						let today = moment();
 						let in_day = event.event_date == moment(day.date).format('YYYY-MM-DD');
-						let otherFilters = filterDataItem(event, count.eventsSelectedFilters);
-						let result = in_day && otherFilters;
+						//let otherFilters = filterDataItem(event, count.eventsSelectedFilters);
+						//let result = in_day && otherFilters;
+						let result = in_day;
+
 						return result;
-					});
+						});
+					}
 					if(newWeeklyData[weekIndex][dayIndex].events != undefined){
 						newWeeklyData[weekIndex][dayIndex].events = filterdEvents;
 					}
@@ -95,6 +111,13 @@ const EventsCalender = (navigateProps) => {
 		return newWeeklyData;
     }
 
+	let filterAll = async () => {
+		let filterdEvents = count.lines.events.filter((event) => {
+			return filterDataItem(event, count.eventsSelectedFilters);
+		});
+		return filterdEvents;
+	}
+	
 	let getDayEventsState = (events) => {
 		let result = false;
 		if(events != undefined){
@@ -109,13 +132,8 @@ const EventsCalender = (navigateProps) => {
 		return result;
 	}
 
-
-	// useEffect(() => {
-	// 	setLines(undefined);
-	// }, [count.lng]);
-
 	useEffect(() => {
-		if(lines === undefined){
+		if(events === undefined){
 			Animated.timing(
 				scaleAnim,
 			  {
@@ -125,15 +143,15 @@ const EventsCalender = (navigateProps) => {
 				useNativeDriver: true
 			  }
 			).start();
-			setLines(pre => count.lines.events);
+			setEvents(pre => count.lines.events);
 
 		}
-		if(lines != undefined){
+		if(events != undefined){
 			filterDayEvents().then(function(filterd) {
 				setWeeklyData(pre => filterd);
 			});
 		}
-	}, [lines]);
+	}, [events]);
 
 	useEffect(() => {
 		if(weeklyData.length > 0){
@@ -141,22 +159,48 @@ const EventsCalender = (navigateProps) => {
 				setWeeklyData(pre => filterd);
 			});
 		}
-	}, [selectedMonth, count.eventsSelectedFilters]);
+	}, [selectedMonth]);
+
+	useEffect(() => {
+		filterAll().then(function(all) {
+			setEvents(pre => all);
+			filterDayEvents().then(function(filterd) {
+				setWeeklyData(pre => filterd);
+			});
+		});
+		
+	}, [count.eventsSelectedFilters]);
+
+
 
 
 	
+	
+	let setFilterColor = () => {
+		let result = false;
+		if(Object.keys(count.eventsSelectedFilters).length > 0){
+			Object.keys(count.eventsSelectedFilters).forEach(key => {
+				if(count.eventsSelectedFilters[key].length > 0){
+					result = true;
+				}
+			});
+		}
+		return result;
+	}
 
 
-
+	let setFiltersResults = () => {
+		return events.length + " Items";
+	}
 
 	  
 
 	return(
 		<View>
-			{lines != undefined &&
+			{events != undefined &&
 			<Animated.View
 			style={[styles.container,{
-				transform: [{ scale: scaleAnim }],
+				transform: [{ scale: scaleAnim}],
 				
 			}]}
 			>
@@ -164,29 +208,48 @@ const EventsCalender = (navigateProps) => {
 						paddingRight:10,
 						paddingLeft:10,
 						justifyContent:"space-between",
-						alignItems:"center",
 						height:40,
 						backgroundColor:"#d3d3d3",
 						borderTopColor:"#000",
 						borderTopWidth:1,
 						flexDirection: count.lng == "en" ? "row" : "row-reverse",
 					}}>
-						<View style={[styles.calenderListSwitch, {
+
+
+						{showFilter &&
+							<TouchableOpacity
+
+								onPress={()=>{
+									setSelectedDisplay("List");
+									setShowFilter(false);
+								}}
+
+								style={[styles.calenderListSwitch, {
+									flexDirection: count.lng == "en" ? "row" : "row-reverse",
+									alignSelf:"center",
+									
+								}]}
+							>
+								<Text 
+									style={{
+										textDecorationLine:'underline'
+									}}
+								>{setFiltersResults()}</Text>
+							</TouchableOpacity>
+						}
+
+						{!showFilter &&
+						<View
+							style={[styles.calenderListSwitch, {
 								flexDirection: count.lng == "en" ? "row" : "row-reverse",
+								alignSelf:"center",
 								
-								
-						}]}>
+							}]}
+						>
 
 							<View style={[styles.calenderListSwitchButton,{
-								backgroundColor: selectedDisplay == "Calender" ? "#730874" :"#d3d3d3",
-								borderWidth:1,
-								borderRightWidth: count.lng == "en" ? 0 : 1,
-								bordeLeftWidth: count.lng == "en" ? 1 : 0,
-								borderTopRightRadius: count.lng == "en" ? 0 : 3,
-								borderBottomRightRadius: count.lng == "en" ? 0 : 3,
-								borderTopLeftRadius: count.lng == "en" ? 3 : 0,
-								borderBottomLeftRadius: count.lng == "en" ? 3 : 0,
-								flexDirection: count.lng == "en" ? "row" : "row-reverse",
+								borderBottomWidth:2,
+								borderColor: selectedDisplay == "Calender" ? "#545454" : "#d3d3d3"
 
 								}]}>
 								<TouchableOpacity style={[styles.calenderListSwitchButtonTouch, {
@@ -195,24 +258,18 @@ const EventsCalender = (navigateProps) => {
 									setSelectedDisplay("Calender")
 									}}>
 									<View style={styles.calenderListSwitchButtonIconBox}>
-										<MaterialCommunityIcons name="calendar-blank" size={15} color={selectedDisplay == "Calender" ? "#FFF" :"#000"} />
+										<MaterialCommunityIcons name="calendar-blank" size={15} color={"#545454"} />
 									</View>
 									<View style={styles.calenderListSwitchButtonText}>
 										<Text style={[styles.calenderListSwitchButtonTextText, {
-											color: selectedDisplay == "Calender" ? "#FFF" :"#000"
+											color: "#545454",
 										}]}>{getTranslationString("Calender", count.lng)}</Text>
 									</View>
 								</TouchableOpacity>
 							</View>
 							<View style={[styles.calenderListSwitchButton,{
-								backgroundColor: selectedDisplay == "List" ? "#730874" :"#d3d3d3",
-								borderWidth:1,
-								borderRightWidth: count.lng == "en" ? 1 : 0,
-								bordeLeftWidth: count.lng == "en" ? 0 : 1,
-								borderTopRightRadius: count.lng == "en" ? 3 : 0,
-								borderBottomRightRadius: count.lng == "en" ? 3 : 0,
-								borderTopLeftRadius: count.lng == "en" ? 0 : 3,
-								borderBottomLeftRadius: count.lng == "en" ? 0 : 3,
+								borderBottomWidth:2,
+								borderBlockColor: selectedDisplay == "List" ? "#545454" : "#d3d3d3"
 
 
 								}]}>
@@ -221,47 +278,74 @@ const EventsCalender = (navigateProps) => {
 									
 								}]} onPress={()=>setSelectedDisplay("List")}>
 									<View style={styles.calenderListSwitchButtonIconBox}>
-										<MaterialCommunityIcons name="view-list" size={15} color={selectedDisplay == "List" ? "#FFF" :"#000"} />
+										<MaterialCommunityIcons name="view-list" size={15} color={"#545454"} />
 									</View>
 									<View style={styles.calenderListSwitchButtonText}>
 									<Text style={[styles.calenderListSwitchButtonTextText, {
-											color: selectedDisplay == "List" ? "#FFF" :"#000"
+											color: "#545454"
 										}]}>{getTranslationString("List", count.lng)}</Text>
 									</View>
 								</TouchableOpacity>
 							</View>
-							
 						</View>
-
+						}
 
 						<View style={{
 							flexDirection: count.lng == "en" ? "row" : "row-reverse",
+							alignSelf:"center",
 						}}>
+
+							{setFilterColor() &&
+							<TouchableOpacity
+								onPress={() => {_changeEventsSelectedFilters({})}}
+								
+
+								style={{
+									borderWidth:2,
+									borderColor:"#730874",
+									backgroundColor:"#730874",
+									borderRadius:3,
+									marginRight:3,
+									marginLeft:3,
+								}}
+							>
+								<MaterialCommunityIcons name="trash-can" size={18} color="#FFF" />
+							</TouchableOpacity>
+							}
+
+
 							<TouchableOpacity
 								onPress={() => {setShowFilter(showFilter ? false :true)}}
 								style={{
 									flexDirection: count.lng == "en" ? "row" : "row-reverse",
-									borderWidth:1,
-									borderRadius:3,
-									borderColor:"#000",
-									height:28,
-									padding:2,
+									height:24,
 									paddingRight:4,
 									paddingLeft:4,
+									borderWidth:2,
+									borderRadius:3,
+									borderColor: showFilter ? (setFilterColor() ? "#730874" : "#545454")  :   (setFilterColor() ? "#730874" : "#545454"),
+									backgroundColor: showFilter ? (setFilterColor() ? "#730874" : "#545454")  : "#d3d3d3"
 							}}>
 								<View  style={{
-									paddingTop:3
+									paddingTop:2,
+									paddingLeft:count.lng == "en" ? 0 : 2,
+									paddingRight:count.lng == "en" ? 2 : 0	,
 								}}>
-									<MaterialCommunityIcons name="filter" size={16} color={"#000"} />
+									<MaterialCommunityIcons name={showFilter ? "chevron-up-circle" : "chevron-down-circle"} size={16} color={showFilter ? "#fff" : (setFilterColor() ? "#730874" : "#545454")} />
 								</View>
 								<View  style={{
 									
 								}}>
 									<Text style={{
-										
+										color: showFilter ? "#fff" : (setFilterColor() ? "#730874" : "#545454")
 									}}>{"Filter"}</Text>
 								</View>
 							</TouchableOpacity>
+
+
+
+
+
 						</View>
 
 
@@ -443,7 +527,7 @@ const styles = StyleSheet.create({
 
 	},
 	calenderListSwitchButtonTouch:{
-		padding:3
+		padding:0
 	},
 	calenderSection:{
 		width:width,

@@ -1,92 +1,97 @@
-import React, { useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
-import { useSelector, useDispatch} from 'react-redux';
-import {changeEventsSelectedFilters} from '../../actions/counterActions';
+import { useSelector, useDispatch } from 'react-redux';
+import { changeEventsSelectedFilters } from '../../actions/counterActions';
+import { getPlayingHeight } from '../../tools/tools';
+
 const { width, height } = Dimensions.get('screen');
 
-const Filters = ({ type, info }) => {
-  	const count = useSelector((store) => store.count.count);
-	const items = count.lines[type];
-	const [filters, setFilters] = useState(undefined);
-	const [selectedFilters, setSelectedFilters] = useState(count.eventsSelectedFilters);
+const Filters = ({ type }) => {
+  const count = useSelector((store) => store.count.count);
+  const items = count.lines[type];
+  const [filters, setFilters] = useState({});
+  const dispatch = useDispatch();
 
-	const dispatch = useDispatch();
-	const _changeEventsSelectedFilters = (eventsSelectedFilters) => {
-		dispatch(changeEventsSelectedFilters(eventsSelectedFilters));
-	};
-
- 	useEffect(() => {
-    if (!filters) {
+  const initializeFilters = useCallback(() => {
+    if (type === "events" && items) {
       let _filters = {};
-      switch (type) {
-        case "events":
-          count.lines[type].forEach(element => {
-            if (element.dance_floors) {
-              if (!_filters.dance_floors) _filters.dance_floors = {};
-              element.dance_floors.split(",").forEach(tag => {
-                _filters.dance_floors[tag] = tag;
-              });
-            }
 
-            if (element.dance_services) {
-              if (!_filters.dance_services) _filters.dance_services = {};
-              element.dance_services.split(",").forEach(tag => {
-                _filters.dance_services[tag] = tag;
-              });
-            }
-
-            if (element.services) {
-              if (!_filters.services) _filters.services = {};
-              element.services.split(",").forEach(tag => {
-                _filters.services[tag] = tag;
-              });
-            }
+      items.forEach(element => {
+        if (element.dance_floors) {
+          _filters.dance_floors = _filters.dance_floors || {};
+          element.dance_floors.split(",").forEach(tag => {
+            _filters.dance_floors[tag] = tag;
           });
-          break;
-        default:
-          break;
-      }
-
-      let _selectedFilters = {};
-      Object.keys(_filters).forEach(key => {
-        _selectedFilters[key] = [];
+        }
+        if (element.dance_services) {
+          _filters.dance_services = _filters.dance_services || {};
+          element.dance_services.split(",").forEach(tag => {
+            _filters.dance_services[tag] = tag;
+          });
+        }
+        if (element.services) {
+          _filters.services = _filters.services || {};
+          element.services.split(",").forEach(tag => {
+            _filters.services[tag] = tag;
+          });
+        }
       });
 
-	  if(Object.keys(count.eventsSelectedFilters) == 0)
-      	setSelectedFilters(_selectedFilters);
       setFilters(_filters);
     }
-  }, [filters, type, count.lines]);
+  }, [items, type]);
 
-  const isActive = (filterType, key) => {
-    return selectedFilters && selectedFilters[filterType]?.includes(key);
-  };
+  useEffect(() => {
+    initializeFilters();
+  }, [initializeFilters]);
 
   const changeFilter = (filterType, index) => {
-    setSelectedFilters((prevFilters) => {
-      const updatedFilters = { ...prevFilters };
-      if (updatedFilters[filterType].includes(index)) {
-        updatedFilters[filterType] = updatedFilters[filterType].filter((item) => item !== index);
-      } else {
-        updatedFilters[filterType] = [...updatedFilters[filterType], index];
-      }
-	  _changeEventsSelectedFilters(updatedFilters);
-	//   info._setEventsFilters(updatedFilters);
-      return updatedFilters;
-    });
+    const updatedFilters = { ...count.eventsSelectedFilters };
+
+    if (updatedFilters[filterType]?.includes(index)) {
+      updatedFilters[filterType] = updatedFilters[filterType].filter(item => item !== index);
+    } else {
+      updatedFilters[filterType] = [...(updatedFilters[filterType] || []), index];
+    }
+
+    dispatch(changeEventsSelectedFilters(updatedFilters));
+  };
+
+  const isActive = (filterType, key) => {
+    return count.eventsSelectedFilters[filterType]?.includes(key);
+  };
+
+  const setFilterTitle = (type) => {
+    switch (type) {
+      case "dance_floors":
+        return count.lines.global_metadata.labels[count.lng][14];
+      case "dance_services":
+        return count.lines.global_metadata.labels[count.lng][15];
+      case "services":
+        return count.lines.global_metadata.labels[count.lng][16];
+      default:
+        return type;
+    }
   };
 
   return (
-    <View>
-      {/* <Text style={styles.text}>
-        {JSON.stringify(count.eventsSelectedFilters, null, 2)}
-      </Text> */}
+    <View style={{
+      backgroundColor: "#545454",
+      paddingTop: 10,
+      paddingBottom: 10,
+      height: getPlayingHeight() - 40
+    }}>
       {filters && (
         <View style={[styles.filtersContainer, { flexDirection: count.lng === "en" ? "row" : "row-reverse" }]}>
           {Object.keys(filters).map((filterKey) => (
             <View key={`filter-${filterKey}`} style={styles.filterBox}>
               <View style={styles.filterTitle}>
-                <Text style={{ textAlign: count.lng === "en" ? "left" : "right" }}>{filterKey}</Text>
+                <Text style={{
+                  textAlign: count.lng === "en" ? "left" : "right",
+                  color: "#d3d3d3"
+                }}>
+                  {setFilterTitle(filterKey)}
+                </Text>
               </View>
               {Object.keys(filters[filterKey]).map((tagKey) => (
                 <TouchableOpacity
@@ -94,7 +99,7 @@ const Filters = ({ type, info }) => {
                   onPress={() => changeFilter(filterKey, tagKey)}
                   style={[
                     styles.filterTag,
-                    { backgroundColor: isActive(filterKey, tagKey) ? "#000" : "#FFF" },
+                    { backgroundColor: isActive(filterKey, tagKey) ? "#730874" : "#d3d3d3" },
                   ]}
                 >
                   {count.lines.taxonomy_terms[filterKey][tagKey] && (
@@ -118,18 +123,14 @@ const Filters = ({ type, info }) => {
 };
 
 const styles = StyleSheet.create({
-  text: {
-    margin: 10,
-    fontSize: 16,
-  },
   filtersContainer: {
     justifyContent: 'space-around',
   },
-  filterBox: {
-    margin: 10,
-  },
+  filterBox: {},
   filterTitle: {
-    marginBottom: 10,
+    paddingRight: 3,
+    paddingLeft: 3,
+    paddingBottom: 1
   },
   filterTag: {
     padding: 5,

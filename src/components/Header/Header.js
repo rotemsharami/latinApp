@@ -152,7 +152,7 @@ const Header = (info) => {
 							height:50,
 							backgroundColor:"#545454"
 						}]}>
-                            <MaterialCommunityIcons name="school" size={30} color={info._selectedScreen == "Learns" ? "#f640b2" : "#d3d3d3"} />
+                            <MaterialCommunityIcons name="school" size={30} color={info._selectedScreen == "Learns" ? "#ff85d1" : "#d3d3d3"} />
                         </View>
 					</TouchableOpacity>
 
@@ -165,7 +165,7 @@ const Header = (info) => {
 							height:50,
 							backgroundColor:"#545454"
 						}]}>
-                            <MaterialCommunityIcons name="calendar-star" size={30} color={info._selectedScreen == "EventsCalender" || info._selectedScreen == "Event" || info._selectedScreen == "DayEvents" ? "#f640b2" : "#d3d3d3"} />
+                            <MaterialCommunityIcons name="calendar-star" size={30} color={info._selectedScreen == "EventsCalender" || info._selectedScreen == "Event" || info._selectedScreen == "DayEvents" ? "#ff85d1" : "#d3d3d3"} />
                         </View>
 					</TouchableOpacity>
 					<TouchableOpacity onPress={()=>{
@@ -177,7 +177,7 @@ const Header = (info) => {
 							height:50,
 							backgroundColor:"#545454"
 						}]}>
-                            <MaterialCommunityIcons name="clock-time-four-outline" size={30} color={info._selectedScreen == "Lines" ? "#f640b2" : "#d3d3d3"} />
+                            <MaterialCommunityIcons name="clock-time-four-outline" size={30} color={info._selectedScreen == "Lines" ? "#ff85d1" : "#d3d3d3"} />
                         </View>
 					</TouchableOpacity>
 
@@ -190,7 +190,7 @@ const Header = (info) => {
 							height:50,
 							backgroundColor:"#545454"
 						}]}>
-                            <MaterialCommunityIcons name="view-grid" size={30} color={info._selectedScreen == "Organizations" || info._selectedScreen == "Organization" ? "#f640b2" : "#d3d3d3"} />
+                            <MaterialCommunityIcons name="view-grid" size={30} color={info._selectedScreen == "Organizations" || info._selectedScreen == "Organization" ? "#ff85d1" : "#d3d3d3"} />
                         </View>
 					</TouchableOpacity>
 

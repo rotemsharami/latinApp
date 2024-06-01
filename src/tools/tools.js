@@ -96,22 +96,27 @@ export const setArray = (values) => {
 
 
 export const filterDataItem = (item, eventsSelectedFilters) => {
-    let filtersAmount = Object.keys(eventsSelectedFilters).length;
+    const deepCopy = JSON.parse(JSON.stringify(eventsSelectedFilters));
     if(Object.keys(eventsSelectedFilters).length > 0){
         Object.keys(eventsSelectedFilters).forEach(filterKey => {
             if(eventsSelectedFilters[filterKey].length > 0){
                 eventsSelectedFilters[filterKey].forEach(filterTagKey => {
                     if(item[filterKey].split(",").includes(filterTagKey)){
-                        filtersAmount--;
+                        deepCopy[filterKey] = [];
                         return true;
                     }
                 });
             }else{
-                filtersAmount--;
+                deepCopy[filterKey] = [];
             }
         });
     }
-    return filtersAmount === 0;
+    let result = true;
+    Object.keys(deepCopy).forEach(filterKey => {
+        if(deepCopy[filterKey].length > 0)
+            result = false;
+    });
+    return result;
 }
 
 

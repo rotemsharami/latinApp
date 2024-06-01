@@ -42,6 +42,16 @@ const AllEventsList = () => {
 
 
 
+	let getEventDates = (event) => {
+		let date = "";
+		// if(event.event_end_date === null)
+		// 	date = event.event_date +" - "+ event.event_end_date;
+		// else
+		// 	date = event.event_date;
+		return event.event_date;
+	}
+
+
 	return(
 		<ScrollView
 			style={[styles.container,{
@@ -83,15 +93,24 @@ const AllEventsList = () => {
 													<Text style={[styles.titleText, {
 														textAlign: count.lng == "en" ? "left" : "right",
 													}]}>
-
 														{event.title}
-												</Text>
+													</Text>
+
 
 													<Text style={[styles.textText, {
 														textAlign: count.lng == "en" ? "left" : "right",
 													}]}>
-														{event.address}
-														</Text>
+														{getEventDates(event)}
+													</Text>
+
+
+													<Text style={[styles.textText, {
+														textAlign: count.lng == "en" ? "left" : "right",
+													}]}>
+														{event.city}
+													</Text>
+
+
 												</View>
 											</View>
 

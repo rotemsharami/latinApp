@@ -177,7 +177,7 @@ const Organization = (info) => {
 								>
 									
 									<View style={styles.centerBox}>
-										<ServicesX services={count.lines.organizations[info.route.params.orgNid].global_services}></ServicesX>
+										<ServicesX services={count.lines.organizations[info.route.params.orgNid].services}></ServicesX>
 									</View>
 								</LinearGradient>
 							</View>

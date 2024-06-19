@@ -6,7 +6,10 @@ const initialState = {
 		lines:undefined,
 		events:undefined,
 		showFilter:false,
-		eventsSelectedFilters:{}
+		eventsSelectedFilters:{},
+		organizationsSelectedFilters:{},
+		linesSelectedFilters:{},
+		learnsSelectedFilters:{}
 	},
 };
 
@@ -42,8 +45,37 @@ export default (state = initialState, action) => {
 				...state.count,
 				eventsSelectedFilters:action.payload
 			}
-			
 		};
+
+
+		case 'CHANGE_ORGANIZATIONS_SELECTED_FILTERS':
+		return {
+			...state,
+			count:{
+				...state.count,
+				organizationsSelectedFilters:action.payload
+			}
+		};
+
+
+		case 'CHANGE_LINES_SELECTED_FILTERS':
+		return {
+			...state,
+			count:{
+				...state.count,
+				linesSelectedFilters:action.payload
+			}
+		};
+
+		case 'CHANGE_LEARNS_SELECTED_FILTERS':
+		return {
+			...state,
+			count:{
+				...state.count,
+				learnsSelectedFilters:action.payload
+			}
+		};
+
 
 
 		case 'CHANGE_SHOW_FILTER':

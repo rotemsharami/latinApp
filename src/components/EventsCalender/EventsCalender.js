@@ -331,7 +331,7 @@ const EventsCalender = (navigateProps) => {
 									paddingLeft:count.lng == "en" ? 0 : 2,
 									paddingRight:count.lng == "en" ? 2 : 0	,
 								}}>
-									<MaterialCommunityIcons name={showFilter ? "chevron-up-circle" : "chevron-down-circle"} size={16} color={showFilter ? "#fff" : (setFilterColor() ? "#730874" : "#545454")} />
+									<MaterialCommunityIcons name={showFilter ? "minus-circle" : "plus-circle"} size={16} color={showFilter ? "#fff" : (setFilterColor() ? "#730874" : "#545454")} />
 								</View>
 								<View  style={{
 									

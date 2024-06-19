@@ -60,7 +60,7 @@ const OrganizationStudies = (info) => {
                                 fontSize:prop.nid == info._selectedLearn ? 20 : 15,
                                 textAlign:"center",
                                 color:prop.nid == info._selectedLearn ? "#FFF" : "#000",
-                            }}>{count.lines.taxonomy_terms.cours_type[prop.course_type][count.lng]+" "+count.lines.taxonomy_terms.dance_floors[prop.dance_style][count.lng]+" "+nice_list_text(prop.danse_level, count.lines.taxonomy_terms.dance_level, count.lng)}</Text>
+                            }}>{count.lines.taxonomy_terms.cours_type[prop.course_type][count.lng]+" "+count.lines.taxonomy_terms.dance_floors[prop.dance_floors][count.lng]+" "+nice_list_text(prop.danse_level, count.lines.taxonomy_terms.dance_level, count.lng)}</Text>
                         
                         {prop.nid == info._selectedLearn && 
                         <View style={{

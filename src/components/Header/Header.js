@@ -103,39 +103,12 @@ const Header = (info) => {
 			<View style={[styles.headerMenuAndTitle, {
 				flexDirection: count.lng == "en" ? "row" : "row-reverse",
 			}]}>
-				{info._selectedScreen != "Lines" && 
+				
 					<View style={styles.headerMenuTitle}>
 						<Text style={styles.headerMenuTitleText}>{setTitle()}</Text>
 					</View>
-				}
-				{info._selectedScreen == "Lines" && 
-					<View style={[styles.headerMenuTitle, {
-						flexDirection: count.lng == "en" ? "row" : "row-reverse",
-					}]}>
-						<View>
-							<Text style={styles.headerMenuTitleText}>{setTitle()}</Text>
-						</View>
-
-						<TouchableOpacity
-							onPress={() => _changeShowFilter(count.showFilter ? false : true)}
-							
-							style={[styles.filterButton, {
-								flexDirection: count.lng == "en" ? "row" : "row-reverse",
-								borderWidth:2,
-								borderColor:"#d3d3d3",
-								height:28,
-								padding:2,
-								paddingRight:4,
-								paddingLeft:4,
-								marginTop:12
-						}]}>
-							<MaterialCommunityIcons name="filter" size={16} color={"#d3d3d3"} />
-							<View  style={styles.filterButtonText}>
-								<Text style={styles.headerMenuTitleTextFilter}>{"Filter"}</Text>
-							</View>
-						</TouchableOpacity>
-					</View>
-				}	
+				
+				
 
 
 				<View style={[styles.headerMenu, {

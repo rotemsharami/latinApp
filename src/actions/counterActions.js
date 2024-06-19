@@ -22,6 +22,29 @@ export const increment = (value) => {
   };
 
 
+  export const changeOrganizationsSelectedFilters = (selectedFilters) => {
+    return {
+      type: 'CHANGE_ORGANIZATIONS_SELECTED_FILTERS',
+      payload: selectedFilters
+    };
+  };
+
+  export const changeLinesSelectedFilters = (selectedFilters) => {
+    return {
+      type: 'CHANGE_LINES_SELECTED_FILTERS',
+      payload: selectedFilters
+    };
+  };
+
+  export const changeLearnsSelectedFilters = (selectedFilters) => {
+    return {
+      type: 'CHANGE_LEARNS_SELECTED_FILTERS',
+      payload: selectedFilters
+    };
+  };
+
+  
+
   export const changeShowFilter = (value) => {
     return {
       type: 'CHANGE_SHOW_FILTER',

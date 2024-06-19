@@ -52,6 +52,17 @@ const Flex = (navigation) => {
 			fetch(linesUrl)
 			.then((res) => res.json())
 			.then((data) => {
+
+				data.data.lines.forEach(element => {
+					element.area = data.data.organizations[element.org_nid].area;
+					element.services = data.data.organizations[element.org_nid].services;
+				});
+
+				data.data.learn.forEach(element => {
+					element.area = data.data.organizations[element.org_nid].area;
+				});
+
+
 				dispatch(setLines(data.data));
 				setIsLinesReady(true);
 			});

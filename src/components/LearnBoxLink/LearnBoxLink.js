@@ -56,7 +56,7 @@ const LearnBoxLink = (item) => {
                             color: '#595959',
                             fontSize: 20,
                             fontWeight: 'bold',
-                        }}>{count.lines.taxonomy_terms.cours_type[item.organization.course_type][count.lng]+" "+count.lines.taxonomy_terms.dance_floors[item.organization.dance_style][count.lng]}</Text>
+                        }}>{count.lines.taxonomy_terms.cours_type[item.organization.course_type][count.lng]+" "+count.lines.taxonomy_terms.dance_floors[item.organization.dance_floors][count.lng]}</Text>
                         <Text style={{
                             paddingRight: count.lng =="he" ? 10 : 0,
                             paddingLeft: count.lng =="he" ? 0 : 10,

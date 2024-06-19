@@ -95,16 +95,17 @@ export const setArray = (values) => {
 }
 
 
-export const filterDataItem = (item, eventsSelectedFilters) => {
-    const deepCopy = JSON.parse(JSON.stringify(eventsSelectedFilters));
-    if(Object.keys(eventsSelectedFilters).length > 0){
-        Object.keys(eventsSelectedFilters).forEach(filterKey => {
-            if(eventsSelectedFilters[filterKey].length > 0){
-                eventsSelectedFilters[filterKey].forEach(filterTagKey => {
-                    if(item[filterKey].split(",").includes(filterTagKey)){
-                        deepCopy[filterKey] = [];
-                        return true;
-                    }
+export const filterDataItem = (item, selectedFilters) => {
+    const deepCopy = JSON.parse(JSON.stringify(selectedFilters));
+    if(Object.keys(selectedFilters).length > 0){
+        Object.keys(selectedFilters).forEach(filterKey => {
+            if(selectedFilters[filterKey].length > 0){
+                selectedFilters[filterKey].forEach(filterTagKey => {
+                    if(item[filterKey] != undefined)
+                        if(item[filterKey].split(",").includes(filterTagKey)){
+                            deepCopy[filterKey] = [];
+                            return true;
+                        }
                 });
             }else{
                 deepCopy[filterKey] = [];

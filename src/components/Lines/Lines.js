@@ -1,7 +1,7 @@
 import {Image,StyleSheet,Text,View,Dimensions,Animated, PanResponder, Easing,ImageBackground,TouchableOpacity,I18nManager,ScrollView, SafeAreaView, StatusBar} from 'react-native';
 import React, {useRef, useState, useEffect} from 'react';
 import moment from 'moment';
-import { setRowType, getSelectedLang, setTextDirection, setArray, nice_list_text, getPlayingHeight} from '../../tools/tools';
+import { setRowType, getSelectedLang, setTextDirection, setArray, nice_list_text, getPlayingHeight, filterDataItem} from '../../tools/tools';
 import { useSelector, useDispatch } from 'react-redux';
 import OrganizationStudies from '../OrganizationStudies/OrganizationStudies.js';
 import Line from '../Line/Line';
@@ -9,63 +9,63 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {LinearGradient} from 'expo-linear-gradient';
 const {width, height} = Dimensions.get('screen');
 let windowH = Dimensions.get('window').height;
-
+import Filters from '../Filters/Filters';
+import {changeLinesSelectedFilters} from '../../actions/counterActions';
 const logoWidth = width/5;
 const textWidth = width - logoWidth;
 const STATUS_BAR_HEIGHT = StatusBar.currentHeight || 24; 
 
-const setText = (text) => {
-	return {html:text}
-}
-
 const Lines = (info) => {
 
-	console.log(info.route.params._showFilters);
-
+	const [showFilter, setShowFilter] = useState(false);
 	const count = useSelector((store) => store.count.count);
 	const dir = setTextDirection(count.lng);
-	const [lines, setLines] = useState(count.lines);
+	const [lines, setLines] = useState(undefined);
 	const [weeklyData, setWeeklyData] = useState([]);
 	const [selectedDanceFloors, setSelectedDanceFloors] = useState([]);
 	const [selectedAreas, setSelectedAreas] = useState([]);
 	const [selectedDay, setSelectedDay] = useState("0");
 	const animationValues = useRef([]).current;
-
 	const [showFilters, setShowFilters] = useState(info.route.params._showFilters);
+	const [events, setEvents] = useState(undefined);
 
 
-	console.log(count.showFilter);
+	const dispatch = useDispatch();
+	const _changeLinesSelectedFilters = (linesSelectedFilters) => {
+		dispatch(changeLinesSelectedFilters(linesSelectedFilters));
+	};
 
-	
+
+	let setFilterColor = () => {
+		let result = false;
+		if(Object.keys(count.linesSelectedFilters).length > 0){
+			Object.keys(count.linesSelectedFilters).forEach(key => {
+				if(count.linesSelectedFilters[key].length > 0){
+					result = true;
+				}
+			});
+		}
+		return result;
+	}
+
+	let setFiltersResults = () => {
+		if(lines != undefined)
+			return lines.length + " Items";
+	}
+
+	let filterAll = async () => {
+		let filterdEvents = setArray(count.lines.lines).filter((event) => {
+			return filterDataItem(event, count.linesSelectedFilters);
+		});
+		return filterdEvents;
+	}
+
 	let getTagInfo = (tid, data) => {
 		let result = "no";
 		let filter = data.filter(item => item.tid == tid);
 		if(filter.length > 0)
 			result = filter[0].name;
 		return result;
-	}
-
-	let getSelectedDanceFloor = async (index) => {
-		let oldSelectedDanceFloors = selectedDanceFloors;
-		if (oldSelectedDanceFloors.includes(index))
-			oldSelectedDanceFloors = oldSelectedDanceFloors.filter(a => a !== index);
-		else
-			oldSelectedDanceFloors = [...oldSelectedDanceFloors, index];
-		return oldSelectedDanceFloors;
-	}
-
-	let _getSelectedDanceFloor = async () => {
-		let oldSelectedDanceFloors = selectedDanceFloors;
-		return oldSelectedDanceFloors;
-	}
-
-	let getSelectedAreas = async (index) => {
-		let oldSelectedAreas = selectedAreas;
-		if (oldSelectedAreas.includes(index))
-			oldSelectedAreas = oldSelectedAreas.filter(a => a !== index);
-		else
-			oldSelectedAreas = [...oldSelectedAreas, index];
-		return oldSelectedAreas;
 	}
 
 	let getSelectedDay = async (index) => {
@@ -75,18 +75,6 @@ const Lines = (info) => {
 	let setFirstData = async (data) => {
 		setLines(pre => data);
 		return true;
-	}
-
-	function changeDanceFloor(index) {
-		getSelectedDanceFloor(index).then(function(_selectedDanceFloor) {
-			setSelectedDanceFloors(pre => _selectedDanceFloor);
-		});
-	}
-
-	function changeAreas(area) {
-		getSelectedAreas(area).then(function(_selectedAreas) {
-			setSelectedAreas(pre=>_selectedAreas);
-		});
 	}
 
 	function changeDay(day) {
@@ -114,20 +102,18 @@ const Lines = (info) => {
             };
             weekly.push(object);
         }
-		
         return weekly;
     };
 
     let filterDayEvents = async() => {
+		
 		const newWeeklyData =  getWeekly();
 		let filterdEvents = [];
         newWeeklyData.forEach((day, index) => {
             if(day.events != undefined){
-				filterdEvents = count.lines.lines.filter((event) => {
+				filterdEvents = lines.filter((event) => {
 					let wd = event.week_day == "7" ? "0" : event.week_day;
                     let in_day = parseInt(wd) == parseInt(day.day_index);
-					
-					
                     if(event.changed_type != undefined && event.event_type[Object.keys(event.event_type)[0]].tid == "49"){
                         if(event.changed_type == "1"){
                             if(event.date_of_changed_line != undefined){
@@ -136,70 +122,21 @@ const Lines = (info) => {
                             }
                         }
                     }
-                    let in_type = true;
-                    let in_area = true;
-                    let in_event_types = true;
-                    if(selectedDanceFloors.length > 0){
-                        in_type = false;
-                        if(event.dance_floors != null){
-                            event.dance_floors.split(",").forEach(function(key) {
-                                if(selectedDanceFloors.indexOf(key) != -1)
-                                     in_type = true;
-                            });
-                        }
-                    }
-                    if(selectedAreas.length > 0){
-                        in_area = false;
-                        let area = count.lines.organizations[event.org_nid].area ;
-						if(selectedAreas.indexOf(area) != -1)
-							in_area = true;
-                        
-                    }
-                    let result = in_day == true && in_type == true && in_area == true;
-					
-                    return result;
-
+                    return in_day;
                 });
 				newWeeklyData[index].events = filterdEvents;
             }
         });
 		return newWeeklyData;
     }
-
+	
 	useEffect(() => {
-		setLines(undefined);
-	}, [count.lng]);
-
-
-	useEffect(() => {
-		let url = 'https://latinet.co.il/'+count.lng+'/lines_data/';
 		if(lines === undefined){
-			// fetch(url)
-			// .then((res) => res.json())
-			// .then((data) => {
-				//setLines(pre => data.data);
-				setLines(count.lines);
-
-
-				  
-
-			// });
+			setLines(setArray(count.lines.lines));
 		}
-		if(lines != undefined){
+		else{
 			filterDayEvents().then(function(filterd) {
 				setWeeklyData(pre => filterd);
-
-				
-
-				//animationValues.current = setArray(weeklyData[selectedDay].events).map(() => new Animated.Value(-60));
-
-			// Animated.stagger(60, weeklyData[selectedDay].events.map(item => Animated.timing(item, {
-			// 	toValue: 0,
-			// 	duration: 180,
-			// 	useNativeDriver: true,
-			//   })).concat()).start();
-
-				
 			});
 		}
 	}, [lines]);
@@ -208,133 +145,117 @@ const Lines = (info) => {
 		if(weeklyData.length > 0){
 			filterDayEvents().then(function(filterd) {
 				setWeeklyData(pre => filterd);
-				// animationValues.current = setArray(weeklyData[selectedDay].events).map(() => new Animated.Value(-60));
-
-				// Animated.stagger(60, weeklyData[selectedDay].events.map(item => Animated.timing(item, {
-				// 	toValue: 0,
-				// 	duration: 180,
-				// 	useNativeDriver: true,
-				//   })).concat()).start();
-
 			});
 		}
-
-	}, [selectedAreas, selectedDanceFloors, selectedDay]);
-
-	const [slideAnim] = useState(new Animated.Value(0));
-
-	const slideDown = () => {
-		if(count.showFilter){
-			Animated.timing(
-				slideAnim,
-				{
-				  toValue: 1,
-				  duration: 500,
-				  useNativeDriver: true, // Add this line for better performance
-				}
-			  ).start();
-		}else{
-			Animated.timing(
-				slideAnim,
-				{
-				  toValue: 0,
-				  duration: 500,
-				  useNativeDriver: true, // Add this line for better performance
-				}
-			  ).start();
-		}
-
-	};
-
+	}, [selectedDay]);
 
 	useEffect(() => {
-		slideDown();
-	}, [count.showFilter]);
-
-
+		if(lines !== undefined){
+			filterAll().then(function(all) {
+				setLines(pre => all);
+				filterDayEvents().then(function(filterd) {
+					setWeeklyData(pre => filterd);
+				});
+			});
+		}
+		
+	}, [count.linesSelectedFilters]);
 
 	return(
 		<View style={[styles.box, {}]}>
 			{lines != undefined &&
 			<View style={[styles.boxContainer, {}]}>
-				
-
-
-
-				<Animated.View
-					style={[styles.filtersBox, {
-						height:getPlayingHeight()-80,
-						position: 'absolute',
-						top: 0,
-						left: 0,
-						right: 0,
-						zIndex: 1,
-
-
-						transform: [{
-							translateY: slideAnim.interpolate({
-								inputRange: [0, 1],
-								outputRange: [-1000, 0],
-							}),
-						},
-					]}]}
-				>
-
-
-
-					<View style={[styles.filtersBox, {
+				<View style={{
+				paddingTop:10,
+				paddingBottom:10,
+				paddingRight:10,
+				paddingLeft:10,
+				justifyContent:"space-between",
+				height:40,
+				backgroundColor:"#d3d3d3",
+				borderTopColor:"#000",
+				borderTopWidth:1,
+				flexDirection: count.lng == "en" ? "row" : "row-reverse",
+			}}>
+				{!showFilter &&
+				<View></View>
+				}
+				{showFilter &&
+				<TouchableOpacity
+					onPress={()=>{
+						setShowFilter(false);
+					}}
+					style={[styles.calenderListSwitch, {
 						flexDirection: count.lng == "en" ? "row" : "row-reverse",
-					}]}>
-						<View style={[styles.filterItems, {}]}>
-							<View style={styles.filterIcon}><MaterialCommunityIcons name="music" size={14} color="#fff" /></View>
-							{Object.keys(lines.used_dance_floors).map((index) => {
-								return(
-									<View key={"dnacFloor-"+index} style={{
-										backgroundColor: selectedDanceFloors.includes(index) ? "#730874" : "#FFF",
-										borderWidth:1,
-										padding:3,
-									}}>
-										<TouchableOpacity onPress={() => changeDanceFloor(index)}>
-											<Text
-												style={{
-													textAlign: count.lng == "en" ? "left" : "right",
-													color: selectedDanceFloors.includes(index) ? "#FFF" : "#000",
-												}}
-											>{getTagInfo(index, lines.dance_floors[count.lng])}</Text>
-										</TouchableOpacity>
-									</View>
-								);
-							})}
+						alignSelf:"center",
+						
+					}]}
+				>
+					<Text 
+						style={{
+							textDecorationLine:'underline'
+						}}
+					>
+						{setFiltersResults()}
+					</Text>
+				</TouchableOpacity>
+				}
+				<View style={{
+					flexDirection: count.lng == "en" ? "row" : "row-reverse",
+					alignSelf:"center",
+				}}>
+					{setFilterColor() &&
+					<TouchableOpacity
+						onPress={() => {_changeLinesSelectedFilters({})}}
+						style={{
+							borderWidth:2,
+							borderColor:"#730874",
+							backgroundColor:"#730874",
+							borderRadius:3,
+							marginRight:3,
+							marginLeft:3,
+						}}
+					>
+						<MaterialCommunityIcons name="trash-can" size={18} color="#FFF" />
+					</TouchableOpacity>
+					}
+					<TouchableOpacity
+						onPress={() => {setShowFilter(showFilter ? false :true)}}
+						style={{
+							flexDirection: count.lng == "en" ? "row" : "row-reverse",
+							height:24,
+							paddingRight:4,
+							paddingLeft:4,
+							borderWidth:2,
+							borderRadius:3,
+							borderColor: showFilter ? (setFilterColor() ? "#730874" : "#545454")  :   (setFilterColor() ? "#730874" : "#545454"),
+							backgroundColor: showFilter ? (setFilterColor() ? "#730874" : "#545454")  : "#d3d3d3"
+					}}>
+						<View  style={{
+							paddingTop:2,
+							paddingLeft:count.lng == "en" ? 0 : 2,
+							paddingRight:count.lng == "en" ? 2 : 0	,
+						}}>
+							<MaterialCommunityIcons name={showFilter ? "minus-circle" : "plus-circle"} size={16} color={showFilter ? "#fff" : (setFilterColor() ? "#730874" : "#545454")} />
 						</View>
-						<View style={[styles.filterItems, {
-							//flexDirection: count.lng == "en" ? "row" : "row-reverse",
-						}]}>
-							<View style={styles.filterIcon}><MaterialCommunityIcons name="map-marker" size={14} color="#fff" /></View>
-							{Object.keys(lines.used_area).map((index) => {
-								return(
-									<View key={"area-"+index} style={{
-										backgroundColor: selectedAreas.includes(index) ? "#730874" : "#FFF",
-										borderWidth:1,
-										padding:3,
-										
-									}}>
-										<TouchableOpacity onPress={() => changeAreas(index)}>
-										<Text
-												style={{
-													color: selectedAreas.includes(index) ? "#FFF" : "#000",
-												}}
-											>{getTagInfo(index, lines.areas[count.lng])}</Text>
-										</TouchableOpacity>
-									</View>
-								);
-							})}
+						<View>
+							<Text style={{
+								color: showFilter ? "#fff" : (setFilterColor() ? "#730874" : "#545454")
+							}}>
+								{"Filter"}
+							</Text>
 						</View>
-					</View>
-				</Animated.View>
-
+					</TouchableOpacity>
+				</View>
+			</View>
+			{showFilter &&
+			<Filters type={"lines"}></Filters>
+			}
+				{!showFilter &&
+				<View>
 				<LinearGradient
 					style={[styles.linesBox, {
-						height: height-110-(height-windowH-STATUS_BAR_HEIGHT)-STATUS_BAR_HEIGHT-80,
+						height: getPlayingHeight()-40-80,
 						
 					}]}
 					colors={['#efdbf7','#FFF']}
@@ -449,6 +370,8 @@ const Lines = (info) => {
 					);
 					})}
             	</View>
+			</View>
+			}
 			</View>
 			}
 		</View>

@@ -56,6 +56,9 @@ export const getPlayingHeight = () => {
 
 
 export const nice_list_text = (list, taxonomy, lng) => {
+
+
+
     let text = "Bug!";
     if(list != null){
         text = "";

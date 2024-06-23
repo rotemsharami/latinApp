@@ -164,6 +164,24 @@ const Filters = ({ type }) => {
 				return count.lines.global_metadata.labels[count.lng][16];
 			case "event_type":
 				return count.lines.global_metadata.labels[count.lng][17];
+
+
+			case "area":
+				return count.lines.global_metadata.labels[count.lng][19];
+
+			case "gender":
+				return count.lines.global_metadata.labels[count.lng][20];
+
+			case "dance_level":
+				return count.lines.global_metadata.labels[count.lng][21];
+
+
+
+					
+
+
+
+
 		default:
 			return type;
 		}
@@ -175,10 +193,8 @@ const Filters = ({ type }) => {
 		delete copy["area"];
 		delete copy["gender"];
 		delete copy["dance_level"];
-
 		delete copy["dance_services"];
-
-		
+		delete copy["event_types"];
 		return copy;
 	}
 
@@ -186,10 +202,7 @@ const Filters = ({ type }) => {
 		const copy = Object.assign({}, filters);
 		delete copy["dance_floors"];
 		delete copy["services"];
-
-
-
-		
+		delete copy["event_types"];
 		return copy;
 	}
 
@@ -206,7 +219,7 @@ const Filters = ({ type }) => {
 	<View style ={{}}>
 		
 		{Object.keys(_removeFilter()).map((filterKey) => (
-		<View style={[styles.filtersContainer1, {}]}>
+		<View key={"lineFilter-"+filterKey} style={[styles.filtersContainer1, {}]}>
 			<View key={`filter-${filterKey}`} style={[styles.filterBoxa, {}]}>
 				<View style={styles.filterTitle}>
 					<Text style={{
@@ -266,7 +279,7 @@ const Filters = ({ type }) => {
 			
 		}]}>
 			{Object.keys(removeFilter()).map((filterKey) => (
-			<View style={{
+			<View key={"blockFilter-"+filterKey} style={{
 				flex:1,
 				alignItems:"center",
 			}}>

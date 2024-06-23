@@ -118,7 +118,7 @@ const Event = (event) => {
 								</View> */}
 				
 
-
+							
 				
 							<View style={[styles.danceFloorsAndServices, {
 								flexDirection: count.lng == "en" ? "row" :"row-reverse",

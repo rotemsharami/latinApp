@@ -1,7 +1,9 @@
-import React, {useRef, useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Image, Button, ScrollView, Animated, Dimensions, TouchableOpacity, AppRegistry, I18nManager, StatusBar, SafeAreaView} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, View, StatusBar, SafeAreaView, Dimensions} from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { Provider, useSelector, useDispatch } from 'react-redux';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Header from "./src/components/Header/Header";
 import EventsCalender from "./src/components/EventsCalender/EventsCalender";
 import DayEvents from "./src/components/DayEvents/DayEvents";
@@ -10,67 +12,52 @@ import Event from "./src/components/Event/Event";
 import Organization from "./src/components/Organization/organization";
 import Organizations from "./src/components/Organizations/Organizations";
 import Lines from './src/components/Lines/Lines';
-import {getData, storeData, setArray, getPlayingHeight} from "./src/tools/tools";
-import {navigate, navigationRef} from "./RootNavigation";
-import { Provider } from 'react-redux';
+import { setLines } from './src/actions/counterActions';
 import { store } from './store/store';
-import { useSelector, useDispatch } from 'react-redux';
-import {increment, decrement, setLines, setEvents} from './src/actions/counterActions';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { navigationRef } from "./RootNavigation";
+
 const Stack = createNativeStackNavigator();
-const {width, height} = Dimensions.get('screen');
-StatusBar.setHidden(false);
-const STATUS_BAR_HEIGHT = StatusBar.currentHeight || 24; 
-const WINDOW_HEIGHT = Dimensions.get('window').height;
-const appBox = () => {
+const { height: windowHeight } = Dimensions.get('window');
+
+const AppBox = () => {
 	return(
 		<Provider store={store}>
-			<View>
-				<Flex></Flex>
-			</View>
+			<GestureHandlerRootView style={{ flex: 1 }}>
+				<Flex />
+			</GestureHandlerRootView>
 		</Provider>
 	);
 }
-const Flex = (navigation) => {
+
+const Flex = () => {
 	const dispatch = useDispatch();
 	const [showFilters, setShowFilters] = useState(false);
-	const [organizationNid, setOrganizationNid] = useState(1);
-	const [organizationScreen, setOrganizationScreen] = useState("lines");
 	const [selectedScreen, setSelectedScreen] = useState("Organizations");
 	const count = useSelector((store) => store.count.count);
 	const [isLinesReady, setIsLinesReady] = useState(false);
-	const [isEventsReady, setEventsReady] = useState(false);
-
-	const [eventsFilters, setEventsFilters] = useState({});
-
-
-
 
 	useEffect(() => {
-		let linesUrl = 'https://latinet.co.il/'+count.lng+'/super_lines/';
-		if(isLinesReady === false){
+		const linesUrl = `https://latinet.co.il/${count.lng}/super_lines/`;
+		if (!isLinesReady) {
 			fetch(linesUrl)
-			.then((res) => res.json())
-			.then((data) => {
-
-				data.data.lines.forEach(element => {
-					element.area = data.data.organizations[element.org_nid].area;
-					element.services = data.data.organizations[element.org_nid].services;
+				.then(res => res.json())
+				.then(data => {
+					data.data.lines.forEach(element => {
+						element.area = data.data.organizations[element.org_nid].area;
+						element.services = data.data.organizations[element.org_nid].services;
+					});
+					data.data.learn.forEach(element => {
+						element.area = data.data.organizations[element.org_nid].area;
+					});
+					dispatch(setLines(data.data));
+					setIsLinesReady(true);
 				});
-
-				data.data.learn.forEach(element => {
-					element.area = data.data.organizations[element.org_nid].area;
-				});
-
-
-				dispatch(setLines(data.data));
-				setIsLinesReady(true);
-			});
 		}
 	}, [count.lng, isLinesReady]);
+
 	return (
 		<View style={styles.app}>
-			<StatusBar barStyle="light-content" backgroundColor={"#4a0a55"}/>
+			<StatusBar barStyle="light-content" backgroundColor={"#4a0a55"} />
 			<View style={styles.appBox}>
 				<Header
 					style={styles.header}
@@ -78,28 +65,41 @@ const Flex = (navigation) => {
 					_setSelectedScreen={setSelectedScreen}
 					_setShowFilters={setShowFilters}
 					_showFilters={showFilters}
-				>
-				</Header>
+				/>
 				{isLinesReady && 
-				<SafeAreaView style={{
-					height:getPlayingHeight()
-				}}>
-					<NavigationContainer ref={navigationRef}>
-						<Stack.Navigator screenOptions={{ headerShown: false }}>
-							<Stack.Screen name="Organizations" component={Organizations} />
-							<Stack.Screen name="EventsCalender" component={EventsCalender} />
-							<Stack.Screen name="Event" component={Event}/>
-							<Stack.Screen name="DayEvents" component={DayEvents}/>
-							<Stack.Screen name="Learns" component={Learns}/>
-							<Stack.Screen name="Organization" component={Organization}/>
-							<Stack.Screen name="Lines" component={Lines} initialParams={{"_showFilters": showFilters }}/>
-						</Stack.Navigator>
-					</NavigationContainer>
-				</SafeAreaView>
+					<SafeAreaView style={styles.safeAreaView}>
+						<NavigationContainer ref={navigationRef}>
+							<Stack.Navigator screenOptions={{ headerShown: false }}>
+								<Stack.Screen name="Organizations" component={Organizations} />
+								<Stack.Screen name="EventsCalender" component={EventsCalender} />
+								<Stack.Screen name="Event" component={Event}/>
+								<Stack.Screen name="DayEvents" component={DayEvents}/>
+								<Stack.Screen name="Learns" component={Learns}/>
+								<Stack.Screen name="Organization" component={Organization}/>
+								<Stack.Screen name="Lines" component={Lines} initialParams={{ "_showFilters": showFilters }} />
+							</Stack.Navigator>
+						</NavigationContainer>
+					</SafeAreaView>
 				}
 			</View>
 		</View>
 	);
 };
-const styles = StyleSheet.create({});
-export default appBox;
+
+const styles = StyleSheet.create({
+	app: {
+		flex: 1,
+		backgroundColor: '#f5f5f5',
+	},
+	appBox: {
+		flex: 1,
+	},
+	header: {
+		// Add your header styles here
+	},
+	safeAreaView: {
+		flex: 1,
+	},
+});
+
+export default AppBox;

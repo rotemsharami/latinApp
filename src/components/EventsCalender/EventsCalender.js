@@ -11,6 +11,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {navigate} from "../../../RootNavigation";
 import {LinearGradient} from 'expo-linear-gradient';
 import {changeEventsSelectedFilters} from '../../actions/counterActions';
+import { PanGestureHandler, State } from 'react-native-gesture-handler';
 
 const {width, height} = Dimensions.get('screen');
 const logoWidth = width/5;
@@ -29,8 +30,27 @@ const EventsCalender = (navigateProps) => {
 	const [selectedDisplay, setSelectedDisplay] = useState("Calender");
 	const [showFilter, setShowFilter] = useState(false);
 	const scaleAnim = useRef(new Animated.Value(0)).current;
-
+	const translateX = useRef(new Animated.Value(0)).current;
 	
+    const handleGesture = (event) => {
+        const { translationX } = event.nativeEvent;
+        translateX.setValue(translationX);
+    };
+
+    const handleGestureEnd = (event) => {
+        const { translationX } = event.nativeEvent;
+        Animated.timing(translateX, {
+            toValue: 0,
+            duration: 250,
+            useNativeDriver: true
+        }).start();
+        if (translationX < -100) {
+            changeMonth(0);
+        } else if (translationX > 100) {
+            changeMonth(1);
+        }
+    };	
+
 	const dispatch = useDispatch();
 	const _changeEventsSelectedFilters = (eventsSelectedFilters) => {
 		dispatch(changeEventsSelectedFilters(eventsSelectedFilters));
@@ -89,22 +109,16 @@ const EventsCalender = (navigateProps) => {
         newWeeklyData.forEach((week, weekIndex) => {
 			week.forEach((day, dayIndex) => {
 				if(day.events != undefined){
-					//filterdEvents = count.lines.events.filter((event) => {
 					if(events != undefined){
 						filterdEvents = events.filter((event) => {
-						
-						let today = moment();
-						let in_day = event.event_date == moment(day.date).format('YYYY-MM-DD');
-						//let otherFilters = filterDataItem(event, count.eventsSelectedFilters);
-						//let result = in_day && otherFilters;
-						let result = in_day;
-
-						return result;
+							let today = moment();
+							let in_day = event.event_date == moment(day.date).format('YYYY-MM-DD');
+							let result = in_day;
+							return result;
 						});
 					}
-					if(newWeeklyData[weekIndex][dayIndex].events != undefined){
+					if(newWeeklyData[weekIndex][dayIndex].events != undefined)
 						newWeeklyData[weekIndex][dayIndex].events = filterdEvents;
-					}
 				}
 			});
         });
@@ -190,17 +204,20 @@ const EventsCalender = (navigateProps) => {
 
 
 	let setFiltersResults = () => {
-		return events.length + " Items";
+		return events.length + " "+count.lines.global_metadata.labels[count.lng][22];
 	}
 
 	  
 
 	return(
-		<View>
+		<View style={{
+			flex:1
+		}}>
 			{events != undefined &&
 			<Animated.View
 			style={[styles.container,{
 				transform: [{ scale: scaleAnim}],
+				flex:1
 				
 			}]}
 			>
@@ -338,7 +355,7 @@ const EventsCalender = (navigateProps) => {
 								}}>
 									<Text style={{
 										color: showFilter ? "#fff" : (setFilterColor() ? "#730874" : "#545454")
-									}}>{"Filter"}</Text>
+									}}>{count.lines.global_metadata.labels[count.lng][18]}</Text>
 								</View>
 							</TouchableOpacity>
 
@@ -355,28 +372,46 @@ const EventsCalender = (navigateProps) => {
 
 
 					{showFilter &&
-						<Filters type={"events"} info={navigateProps.route.params}></Filters>
+					<Filters type={"events"} info={navigateProps.route.params}></Filters>
 					}
 
 					{selectedDisplay == "List" &&
-						<AllEventsList style={{
-						}}></AllEventsList>
+					<AllEventsList style={{
+						flex:1
+					}}></AllEventsList>
 					}
 
 					{selectedDisplay == "Calender" &&
-					<View>
-					<View style={styles.calenderSection}>
-						<View style={styles.containerBox}>
-							<View style={[styles.daysOfWeekContainer, {
-								height:31
-							}]}>
-								<LinearGradient style={[styles.daysOfWeek, {
-									
-								}]}
-								colors={['#a7a7a7','#888888','#a7a7a7']}
-								>
-									{Object.keys(count.lines.global_metadata.days_of_week[count.lng]).map((index) => {
-										return(
+					<View style={{
+						flex:1
+					}}>
+					
+
+
+
+							<View style={styles.calenderSection}>
+							<PanGestureHandler
+						onGestureEvent={handleGesture}
+						onHandlerStateChange={handleGestureEnd}
+					>
+
+						<Animated.View
+							style={[
+								styles.box,
+								{
+									transform: [{ translateX: translateX }]
+								}
+							]}
+						>
+								<View style={styles.containerBox}>
+									<View style={[styles.daysOfWeekContainer, {
+										height:31
+									}]}>
+										<LinearGradient style={[styles.daysOfWeek, {}]}
+											colors={['#a7a7a7','#888888','#a7a7a7']}
+										>
+											{Object.keys(count.lines.global_metadata.days_of_week[count.lng]).map((index) => {
+											return(
 											<View key={"calenderDayHeader-"+index} style={{
 												flex:1,
 												alignItems:"center",
@@ -389,128 +424,137 @@ const EventsCalender = (navigateProps) => {
 													style={{
 														color: "#FFF",
 													}}
-												>{count.lines.global_metadata.days_of_week_short[count.lng][index]}</Text>
+												>
+													{count.lines.global_metadata.days_of_week_short[count.lng][index]}
+												</Text>
 											</View>
-										);
-									})}
-								</LinearGradient>
-							</View>
-						
-							{weeklyData != undefined && 
-								<LinearGradient
-									style={styles.daysOfWeekContainer}
-									resizeMode="cover"
-									colors={['#FFF','#f3c6ff','#efd7ff']}
-								>
-									{Object.keys(weeklyData).map((weekIndex) => {
+											);
+											})}
+										</LinearGradient>
+									</View>
+									{weeklyData != undefined && 
+									<LinearGradient
+										style={[styles.monthContainer, {
+											flex:1,
+										}]}
+										resizeMode="cover"
+										colors={['#FFF','#f3c6ff','#efd7ff']}
+									>
+										{Object.keys(weeklyData).map((weekIndex) => {
 										return(
-											<View key={"week-"+weekIndex} style={{
-												borderBottomWidth:1
-											}}>
-												<View style={styles.calenderWeekContainer}>
-													{Object.keys(weeklyData[weekIndex]).map((dayIndex) => {
-														return(
-															
-															<View
-																key={"day-"+weekIndex+"-"+dayIndex}
-																style={{
-																	flex:1,
-																	resizeMode: 'cover',
-																	justifyContent: 'center',
-																	alignItems: 'center',
-																	borderRightWidth:dayIndex == 6 ? 0 : 1,
-																	height:(height-340) / 5,
-																	height:60
-																	
-																}}
-															>
+										<View key={"week-"+weekIndex} style={{
+											borderBottomWidth:1,
+											flex:1,
+										}}>
+											<View style={styles.calenderWeekContainer}>
+												{Object.keys(weeklyData[weekIndex]).map((dayIndex) => {
+												return(
+												<View
+													key={"day-"+weekIndex+"-"+dayIndex}
+													style={{
+														flex:1,
+														resizeMode: 'cover',
+														justifyContent: 'center',
+														alignItems: 'center',
+														borderRightWidth:dayIndex == 6 ? 0 : 1,
 
-																{getDayEventsState(weeklyData[weekIndex][dayIndex].events) &&
-																	<TouchableOpacity
-																		onPress={() => {
-																			navigate("DayEvents", {events:weeklyData[weekIndex][dayIndex].events, date:weeklyData[weekIndex][dayIndex].date});
-																		}}
-																	>
-																		<View style={[styles.dayDate, {
-																			borderRadius:100,
-																			backgroundColor:"#474747",
-																			width:40,
-																			height:40,
-																			alignContent:"center",
-																			justifyContent:"center"
-																		}]}>
-																			{weeklyData[weekIndex][dayIndex].day_of_month != undefined && 
-																				<Text style={{
-																					color:"#FFF",
-																					alignSelf:"center",
-																					fontSize:15
-																				}}>{weeklyData[weekIndex][dayIndex].day_of_month}</Text>
-																			}
-																		</View>
-																		</TouchableOpacity>
-																	}
+														
+													}}
+												>
+													{getDayEventsState(weeklyData[weekIndex][dayIndex].events) &&
+													<TouchableOpacity
+														onPress={() => {
+															navigate("DayEvents", {events:weeklyData[weekIndex][dayIndex].events, date:weeklyData[weekIndex][dayIndex].date});
+														}}
+													>
+														<View style={[styles.dayDate, {
+															borderRadius:100,
+															backgroundColor:"#474747",
+															width:40,
+															height:40,
+															alignContent:"center",
+															justifyContent:"center"
+														}]}>
+															{weeklyData[weekIndex][dayIndex].day_of_month != undefined && 
+															<Text style={{
+																	color:"#FFF",
+																	alignSelf:"center",
+																	fontSize:15
+																}}>
+																	{weeklyData[weekIndex][dayIndex].day_of_month}
+															</Text>
+															}
+														</View>
+													</TouchableOpacity>
+													}
 
-																{getDayEventsState(weeklyData[weekIndex][dayIndex].events) == false &&
-																	<View style={[styles.dayDate, {
-																		borderRadius:100,
-																		width:30,
-																		height:30,
-																		alignContent:"center",
-																		justifyContent:"center"
-																	}]}>
-																		{weeklyData[weekIndex][dayIndex].day_of_month != undefined && 
-																			<Text style={{
-																				color: weeklyData[weekIndex][dayIndex].today ? "#000" : "#999",
-																				alignSelf:"center",
-																				fontSize:15
-																			}}>{weeklyData[weekIndex][dayIndex].day_of_month}</Text>
-																		}
-																	</View>
-																}
-															</View>
-														);
+													{getDayEventsState(weeklyData[weekIndex][dayIndex].events) == false &&
+													<View style={[styles.dayDate, {
+														borderRadius:100,
+														width:30,
+														height:30,
+														alignContent:"center",
+														justifyContent:"center"
+													}]}>
+														{weeklyData[weekIndex][dayIndex].day_of_month != undefined && 
+															<Text style={{
+																color: weeklyData[weekIndex][dayIndex].today ? "#000" : "#999",
+																alignSelf:"center",
+																fontSize:15
+															}}>{weeklyData[weekIndex][dayIndex].day_of_month}</Text>
+														}
+													</View>
+													}
 
-													})}
 												</View>
+												);
+												})}
 											</View>
+										</View>
 										);
-									})}
-								</LinearGradient>
-							}
-						</View>
-					</View>
-					
-
-					
-					<View style={[styles.calenderButtonsAndMonth, {
-						flexDirection: count.lng == "en" ? "row" : "row-reverse",
-					}]}>
-						<View style={[styles.calenderButton, {
-							flexDirection: count.lng == "en" ? "column" : "column-reverse",
-						}]}>
-							<TouchableOpacity onPress={()=>changeMonth(1)}>
-								<View style={styles.iconBox}>
-									<MaterialCommunityIcons name={count.lng == "en" ? "arrow-left-bold-circle" : "arrow-right-bold-circle"} size={30} color="#000" />
+										})}
+									</LinearGradient>
+									}
 								</View>
-							</TouchableOpacity>
-						</View>
-						<View style={styles.calenderMonth}>
-							<Text style={styles.calenderMonthText}>{count.lines.global_metadata.months[count.lng][moment(moment().year()+"-"+selectedMonth+"-01").month()]}</Text>
-						</View>
-						<View style={[styles.calenderButton, {
-							flexDirection: count.lng == "en" ? "column" : "column-reverse",
-						}]}>
-							<TouchableOpacity onPress={()=>changeMonth(0)}>
-							<View style={styles.iconBox}>
-								<MaterialCommunityIcons name={count.lng == "en" ? "arrow-right-bold-circle" : "arrow-left-bold-circle"} size={30} color="#000" />
+								</Animated.View>
+								</PanGestureHandler>
 							</View>
-							</TouchableOpacity>
-						</View>
-					</View>
+
+
+
+
+
+							<View style={[styles.calenderButtonsAndMonth, {
+								flexDirection: count.lng == "en" ? "row" : "row-reverse",
+							}]}>
+								<View style={[styles.calenderButton, {
+									flexDirection: count.lng == "en" ? "column" : "column-reverse",
+								}]}>
+									<TouchableOpacity onPress={()=>changeMonth(1)}>
+										<View style={styles.iconBox}>
+											<MaterialCommunityIcons name={count.lng == "en" ? "arrow-left-bold-circle" : "arrow-right-bold-circle"} size={30} color="#000" />
+										</View>
+									</TouchableOpacity>
+								</View>
+
+
+								<View style={styles.calenderMonth}>
+									<Text style={styles.calenderMonthText}>{count.lines.global_metadata.months[count.lng][moment(moment().year()+"-"+selectedMonth+"-01").month()]}</Text>
+								</View>
+								<View style={[styles.calenderButton, {
+									flexDirection: count.lng == "en" ? "column" : "column-reverse",
+								}]}>
+									<TouchableOpacity onPress={()=>changeMonth(0)}>
+									<View style={styles.iconBox}>
+										<MaterialCommunityIcons name={count.lng == "en" ? "arrow-right-bold-circle" : "arrow-left-bold-circle"} size={30} color="#000" />
+									</View>
+									</TouchableOpacity>
+								</View>
+							</View>
+
 
 					</View>
 					}
-					
 				</Animated.View>
 			}
 		</View>
@@ -532,7 +576,7 @@ const styles = StyleSheet.create({
 	calenderSection:{
 		width:width,
 		backgroundColor:"#999",
-		height:getPlayingHeight()-70-37,
+		flex:1,
 		alignItems:"center"
 	},
 	calenderListSwitchButtonIconBox:{
@@ -571,6 +615,7 @@ const styles = StyleSheet.create({
 	container:{
 	},
 	containerBox:{
+		flex:1,
 		borderRightWidth:1,
 		borderLeftWidth:1,
 		borderColor:"#000",
@@ -584,7 +629,8 @@ const styles = StyleSheet.create({
 		borderColor:"#000"
 	},
 	calenderWeekContainer:{
-		flexDirection:'row'
+		flexDirection:'row',
+		flex:1,
 	},
 	calenderDay:{
 		

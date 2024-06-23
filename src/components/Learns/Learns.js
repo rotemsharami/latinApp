@@ -33,14 +33,14 @@ const Learns = (info) => {
 
   const setFiltersResults = () => {
     if (events !== undefined)
-      return events.length + " Items";
+      return events.length + " "+count.lines.global_metadata.labels[count.lng][22];
   };
 
   const filterAll = async () => {
     let filterdEvents = count.lines.learn.filter((item) => {
       return filterDataItem(item, count.learnsSelectedFilters);
     });
-	console.log(filterdEvents);
+	
     return filterdEvents;
   };
 
@@ -129,7 +129,7 @@ const Learns = (info) => {
               <Text style={{
                 color: showFilter ? "#fff" : (setFilterColor() ? "#730874" : "#545454")
               }}>
-                {"Filter"}
+                {count.lines.global_metadata.labels[count.lng][18]}
               </Text>
             </View>
           </TouchableOpacity>

@@ -43,19 +43,14 @@ const AllEventsList = () => {
 
 
 	let getEventDates = (event) => {
-		let date = "";
-		// if(event.event_end_date === null)
-		// 	date = event.event_date +" - "+ event.event_end_date;
-		// else
-		// 	date = event.event_date;
-		return event.event_date;
+		return moment(event.event_date).format("DD/MM/YYYY");
 	}
 
 
 	return(
 		<ScrollView
 			style={[styles.container,{
-				height:getPlayingHeight()-37,
+				flex:1
 			}]}
 		>
 			{count != undefined &&
@@ -68,53 +63,40 @@ const AllEventsList = () => {
 								{events.map((event) => {
 									return(
 										<TouchableOpacity kay={"calenderEventItem"+event.nid} onPress={() => navigate("Event", {event: event})} key={"calenderEventItem-"+event.nid}>
-						
-						
-
-										<LinearGradient style={[styles.eventItem, {
-											flexDirection: count.lng == "en" ? "row" : "row-reverse",
-										}]}
-													colors={["#FFF", "#FFF", '#fbefff',]}
-												>
-
-
-											<View style={styles.image}>
-												<Image
-													style={{width: '80%', height: '80%'}}
-													source={{uri:getImageUrl(event.general_image)}}
-													/>
-											</View>
-											<View style={[styles.titleAndText, {
-												alignItems: count.lng == "en" ? "flex-start" : "flex-end",
-												padding:10
-											}]}>
-
-												<View style={styles.itemTitle}>
-													<Text style={[styles.titleText, {
-														textAlign: count.lng == "en" ? "left" : "right",
-													}]}>
-														{event.title}
-													</Text>
-
-
-													<Text style={[styles.textText, {
-														textAlign: count.lng == "en" ? "left" : "right",
-													}]}>
-														{getEventDates(event)}
-													</Text>
-
-
-													<Text style={[styles.textText, {
-														textAlign: count.lng == "en" ? "left" : "right",
-													}]}>
-														{event.city}
-													</Text>
-
-
+											<LinearGradient style={[styles.eventItem, {
+												flexDirection: count.lng == "en" ? "row" : "row-reverse",
+											}]}
+												colors={["#FFF", "#FFF", '#fbefff',]}
+											>
+												<View style={styles.image}>
+													<Image
+														style={{width: '80%', height: '80%'}}
+														source={{uri:getImageUrl(event.general_image)}}
+														/>
 												</View>
-											</View>
-
-										</LinearGradient>
+												<View style={[styles.titleAndText, {
+													alignItems: count.lng == "en" ? "flex-start" : "flex-end",
+													padding:10
+												}]}>
+													<View style={styles.itemTitle}>
+														<Text style={[styles.titleText, {
+															textAlign: count.lng == "en" ? "left" : "right",
+														}]}>
+															{event.title}
+														</Text>
+														<Text style={[styles.textText, {
+															textAlign: count.lng == "en" ? "left" : "right",
+														}]}>
+															{getEventDates(event)}
+														</Text>
+														<Text style={[styles.textText, {
+															textAlign: count.lng == "en" ? "left" : "right",
+														}]}>
+															{event.city}
+														</Text>
+													</View>
+												</View>
+											</LinearGradient>
 										</TouchableOpacity>
 									);
 								})}

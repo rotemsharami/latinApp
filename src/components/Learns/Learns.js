@@ -46,20 +46,24 @@ const Learns = (info) => {
 
   useEffect(() => {
     if (events === undefined) {
-      setEvents(setArray(count.lines.learn));
+      if(count.lines.learn != undefined)
+        setEvents(setArray(count.lines.learn));
     }
   }, [events]);
 
   useEffect(() => {
-    filterAll().then(function (all) {
-      setEvents(all);
-    });
+    if(count.lines.learn != undefined){
+      filterAll().then(function (all) {
+        setEvents(all);
+      });
+    }
   }, [count.learnsSelectedFilters]);
 
 	
 	return(
 
 	<View style={{ flex: 1 }}>
+      {events != undefined && 
       <View style={{
         paddingTop: 10,
         paddingBottom: 10,
@@ -73,7 +77,7 @@ const Learns = (info) => {
         flexDirection: count.lng === "en" ? "row" : "row-reverse",
       }}>
         {!showFilter && <View></View>}
-        {showFilter &&
+        {(showFilter) && 
           <TouchableOpacity
             onPress={() => { setShowFilter(false); }}
             style={[styles.calenderListSwitch, {
@@ -81,7 +85,11 @@ const Learns = (info) => {
               alignSelf: "center",
             }]}
           >
-            <Text style={{ textDecorationLine: 'underline' }}>
+            <Text style={{
+                textDecorationLine: 'underline',
+                fontSize:14,
+                fontWeight:"normal"
+            }}>
               {setFiltersResults()}
             </Text>
           </TouchableOpacity>
@@ -109,9 +117,9 @@ const Learns = (info) => {
             onPress={() => { setShowFilter(showFilter ? false : true) }}
             style={{
               flexDirection: count.lng === "en" ? "row" : "row-reverse",
-              height: 24,
-              paddingRight: 4,
-              paddingLeft: 4,
+              height: 27,
+              paddingLeft: count.lng === "en" ? 0 : 2,
+              paddingRight: count.lng === "en" ? 2 : 0,
               borderWidth: 2,
               borderRadius: 3,
               borderColor: showFilter ? (setFilterColor() ? "#730874" : "#545454") : (setFilterColor() ? "#730874" : "#545454"),
@@ -127,6 +135,8 @@ const Learns = (info) => {
             </View>
             <View>
               <Text style={{
+                fontSize:14,
+                fontWeight:"normal",
                 color: showFilter ? "#fff" : (setFilterColor() ? "#730874" : "#545454")
               }}>
                 {count.lines.global_metadata.labels[count.lng][18]}
@@ -135,7 +145,8 @@ const Learns = (info) => {
           </TouchableOpacity>
         </View>
       </View>
-      {showFilter &&
+      }
+      {(showFilter && events != undefined) &&
         <Filters type={"learn"}></Filters>
       }
       {!showFilter &&

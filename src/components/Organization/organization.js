@@ -116,7 +116,9 @@ const Organization = (info) => {
 		setSelectedLearn(getSelectedLearn());  
 	}, [info.route.params]);
 
-
+	useEffect(() => {
+		setMenu(setMenuItems());
+	}, [count.lng]);
 
 	return(
 		<LinearGradient style={styles.container}
@@ -148,39 +150,37 @@ const Organization = (info) => {
 			})}
 			</View>
 			<View style={[styles.subContainer, {flex:1}]}>
-				<View>
+				<View style={{
+					flex:1
+				}}>
 					{menuOn("info") &&
-						<View>
+						<View style={{
+							flex:1
+						}}>
 							<SliderX gallery={count.lines.organizations[info.route.params.orgNid].gallery}></SliderX>
 
-							<View style={[styles.danceFloorsAndServices, {
-								flexDirection: count.lng == "en" ? "row" :"row-reverse",
-								
-							}]}>
-								<LinearGradient style={styles.danceServices}
-									colors={['#FFF','#efdbf7']}
-								>
-									<View style={styles.centerBox}>
-										<DanceServices danceServices={count.lines.organizations[info.route.params.orgNid].dance_services}></DanceServices>
-									</View>
-								</LinearGradient>
+					
 
-								<LinearGradient style={styles.danceFloors}
-									colors={['#FFF','#efdbf7']}
-								>
-									<View style={styles.centerBox}>
-										<DanceFloors danceServices={count.lines.organizations[info.route.params.orgNid].dance_floors}></DanceFloors>
-									</View>
-								</LinearGradient>
-								<LinearGradient style={styles.globalServices}
-									colors={['#FFF','#efdbf7']}
-								>
-									
-									<View style={styles.centerBox}>
-										<ServicesX services={count.lines.organizations[info.route.params.orgNid].services}></ServicesX>
-									</View>
-								</LinearGradient>
-							</View>
+							<LinearGradient style={{
+								flexDirection: count.lng == "en" ? "row" :"row-reverse",
+								flex:1,
+								justifyContent:"space-around",
+								alignItems:"center"
+								}}
+								colors={['#FFF','#efdbf7']}
+							>
+
+								<View style={styles.danceServices}>
+									<DanceServices danceServices={count.lines.organizations[info.route.params.orgNid].dance_services}></DanceServices>
+								</View>
+
+								<View style={styles.danceFloors}>
+									<DanceFloors danceServices={count.lines.organizations[info.route.params.orgNid].dance_floors}></DanceFloors>
+								</View>
+								<View style={styles.globalServices}>
+									<ServicesX services={count.lines.organizations[info.route.params.orgNid].services}></ServicesX>
+								</View>
+							</LinearGradient>
 						</View>
 					}
 					{(menuOn("lines")) && 
@@ -214,27 +214,6 @@ export default Organization;
 const styles = StyleSheet.create({
 	container:{
 		flex:1
-	},
-	centerBox:{
-		alignSelf: "baseline"
-	},
-	danceServices:{
-		width:100,
-		justifyContent:"center",
-		height:height-110-100-30-(Math.round(height/3))-50-72,
-	},
-	danceFloors:{
-		width:120,
-		backgroundColor:"#efdbf7",
-		justifyContent:"center",
-		height:height-110-100-30-(Math.round(height/3))-50-72,
-	},
-	globalServices:{
-		width:width-220,
-		backgroundColor:"#efdbf7",
-		justifyContent:"center",
-		height:height-110-100-30-(Math.round(height/3))-50-72,
-
 	},
 	fullInfoBox:{
 		paddingLeft:10,

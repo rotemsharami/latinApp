@@ -78,7 +78,11 @@ const Organizations = (info) => {
               alignSelf: "center",
             }]}
           >
-            <Text style={{ textDecorationLine: 'underline' }}>
+            <Text style={{
+              textDecorationLine: 'underline',
+              fontSize:14,
+              fontWeight:"normal"
+              }}>
               {setFiltersResults()}
             </Text>
           </TouchableOpacity>
@@ -106,9 +110,9 @@ const Organizations = (info) => {
             onPress={() => { setShowFilter(showFilter ? false : true) }}
             style={{
               flexDirection: count.lng === "en" ? "row" : "row-reverse",
-              height: 24,
-              paddingRight: 4,
-              paddingLeft: 4,
+              height: 27,
+              paddingLeft: count.lng === "en" ? 0 : 2,
+              paddingRight: count.lng === "en" ? 2 : 0,
               borderWidth: 2,
               borderRadius: 3,
               borderColor: showFilter ? (setFilterColor() ? "#730874" : "#545454") : (setFilterColor() ? "#730874" : "#545454"),
@@ -116,7 +120,7 @@ const Organizations = (info) => {
             }}
           >
             <View style={{
-              paddingTop: 2,
+              paddingTop: 3,
               paddingLeft: count.lng === "en" ? 0 : 2,
               paddingRight: count.lng === "en" ? 2 : 0,
             }}>
@@ -124,6 +128,8 @@ const Organizations = (info) => {
             </View>
             <View>
               <Text style={{
+                fontSize:14,
+                fontWeight:"normal",
                 color: showFilter ? "#fff" : (setFilterColor() ? "#730874" : "#545454")
               }}>
                 {count.lines.global_metadata.labels[count.lng][18]}

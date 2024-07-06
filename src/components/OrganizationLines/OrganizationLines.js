@@ -35,7 +35,10 @@ const OrganizationLines = (organizationLines) => {
                         marginRight:  I18nManager.isRTL ? 0 : 0,
                         paddingBottom:3,
                     }}>
-                        <Text style={styles.dayText}>{count.lines.global_metadata.days_of_week[count.lng][week_day]}</Text>
+                        <Text style={{
+                            fontSize:14,
+                            fontWeight:"bold"
+                        }}>{count.lines.global_metadata.days_of_week[count.lng][week_day]}</Text>
                     </View>
                 </TouchableOpacity>
             );

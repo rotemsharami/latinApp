@@ -34,7 +34,7 @@ const Location = (organization) => {
                 <View style={[styles.text, {
                     alignSelf:"flex-end"
                 }]}>
-                    <Text>{organization.organization[count.lng].address}, {organization.organization[count.lng].city}</Text>
+                    <Text style={{fontWeight:"bold"}}>{organization.organization[count.lng].address}, {organization.organization[count.lng].city}</Text>
                 </View>
             </View>
         </View>

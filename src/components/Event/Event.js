@@ -34,7 +34,6 @@ const Event = (event) => {
 
 
 
-
 	let getDateType = () => {
 		let type = "0";
 		
@@ -89,16 +88,19 @@ const Event = (event) => {
 						<View style={styles.itemTitle}>
 							<Text style={[styles.titleText, {
 								textAlign: "center",
+								fontWeight:"bold"
 							}]}>{event.route.params.event.title}</Text>
 							<Text style={[styles.textText, {
 								textAlign: "center",
-							}]}>{event.route.params.event.address}</Text>						
+								fontWeight:"normal"
+							}]}>{event.route.params.event.event_address}, {event.route.params.event.city}</Text>						
 							<View style={{
 								alignItems:"center"
 							}}>
 								<Text style={{
 									 textAlign: "center",
-									 fontSize:16
+									 fontSize:16,
+									 fontWeight:"bold"
 								}}>{moment(event.route.params.event.event_date).format("DD/MM/YYYY")}{event.route.params.event.event_end_date != undefined ? " - "+moment(event.route.params.event.event_end_date).format("DD/MM/YYYY")  : ""}</Text>
 							</View>
 
@@ -118,52 +120,34 @@ const Event = (event) => {
 								</View> */}
 				
 
+
+
+							<LinearGradient style={{
+								flexDirection: count.lng == "en" ? "row" :"row-reverse",
+								flex:1,
+								justifyContent:"space-around",
+								alignItems:"center"
+								}}
+								colors={['#FFF','#efdbf7']}
+							>
+								<View style={styles.danceServices}>
+									<DanceServices danceServices={event.route.params.event.dance_services}></DanceServices>
+								</View>
+
+								<View style={styles.danceFloors}>
+									<DanceFloors danceServices={event.route.params.event.dance_floors}></DanceFloors>
+								</View>
+								<View style={styles.globalServices}>
+									<ServicesX services={event.route.params.event.services}></ServicesX>
+								</View>
+							</LinearGradient>
+
+
+
+
 							
 				
-							<View style={[styles.danceFloorsAndServices, {
-								flexDirection: count.lng == "en" ? "row" :"row-reverse",
-								justifyContent:"space-between",
-								alignItems:"stretch",
-								flex:1
-							}]}>
-
-								<LinearGradient style={{
-									flex:1,
-									padding:5
-								}}
-									colors={['#FFF','#efdbf7']}
-								>
-
-									<View style={styles.centerBox}>
-										<DanceServices danceServices={event.route.params.event.dance_services}></DanceServices>
-									</View>
-									
-								</LinearGradient>
-
-								<LinearGradient style={{
-									flex:1,
-									padding:5
-								}}
-									colors={['#FFF','#efdbf7']}
-								>
-									<View style={styles.centerBox}>
-										<DanceFloors danceServices={event.route.params.event.dance_floors}></DanceFloors>
-									</View>
-								</LinearGradient>
-
-
-								<LinearGradient style={{
-									flex:1,
-									padding:5
-								}}
-									colors={['#FFF','#efdbf7']}
-								>
-									
-									<View style={styles.centerBox}>
-										<ServicesX services={event.route.params.event.services}></ServicesX>
-									</View>
-								</LinearGradient>
-							</View>
+							
 
 							<ContactInfo organization={event.route.params.event}></ContactInfo>
 

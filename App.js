@@ -46,9 +46,10 @@ const Flex = () => {
 						element.area = data.data.organizations[element.org_nid].area;
 						element.services = data.data.organizations[element.org_nid].services;
 					});
-					data.data.learn.forEach(element => {
-						element.area = data.data.organizations[element.org_nid].area;
-					});
+					if(data.data.learn != undefined)
+						data.data.learn.forEach(element => {
+							element.area = data.data.organizations[element.org_nid].area;
+						});
 					dispatch(setLines(data.data));
 					setIsLinesReady(true);
 				});

@@ -83,6 +83,7 @@ const OrganizationStudies = (info) => {
                             }}>
                                 <View style={styles.value}>
                                     <Text style={{
+                                        fontWeight:"normal",
                                         textAlign:"center",
                                         color:"#FFF"
                                     }}>{count.lines.global_metadata.labels[count.lng][13]+(count.lng == "he" ? "" : " ")+nice_list_text(prop.gender, count.lines.taxonomy_terms.gender, count.lng)}</Text>
@@ -104,7 +105,12 @@ const OrganizationStudies = (info) => {
                                     onPress={() => { Linking.openURL(info._organizationLearn.filter(item => item.nid == info._selectedLearn)[0].info_link); }}
                                 >
                 
-                                    <Text style={{fontSize:16, color:"#f640b2"}}>{count.lines.global_metadata.labels[count.lng][12]}</Text>
+                                    <Text style={{
+                                        fontSize:16,
+                                        color:"#f640b2",
+                                        fontWeight:"bold"
+                                        }}
+                                    >{count.lines.global_metadata.labels[count.lng][12]}</Text>
 
                                 </TouchableOpacity>
                             }

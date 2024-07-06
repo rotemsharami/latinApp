@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
 
     },
     text:{
-        fontSize:16
+        fontSize:16,
+        fontWeight:"normal"
     },
 });

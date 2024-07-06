@@ -81,16 +81,19 @@ const AllEventsList = () => {
 													<View style={styles.itemTitle}>
 														<Text style={[styles.titleText, {
 															textAlign: count.lng == "en" ? "left" : "right",
+															fontWeight:"bold"
 														}]}>
 															{event.title}
 														</Text>
 														<Text style={[styles.textText, {
 															textAlign: count.lng == "en" ? "left" : "right",
+															fontWeight:"normal"
 														}]}>
 															{getEventDates(event)}
 														</Text>
 														<Text style={[styles.textText, {
 															textAlign: count.lng == "en" ? "left" : "right",
+															fontWeight:"bold"
 														}]}>
 															{event.city}
 														</Text>
@@ -130,6 +133,7 @@ const styles = StyleSheet.create({
 		fontWeight:"bold",
 	},
 	titleText:{
+		paddingTop:2,
 		fontSize:20,
 		lineHeight:20,
 	},

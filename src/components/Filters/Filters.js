@@ -223,7 +223,7 @@ const Filters = ({ type }) => {
 			<View key={`filter-${filterKey}`} style={[styles.filterBoxa, {}]}>
 				<View style={styles.filterTitle}>
 					<Text style={{
-						textAlign: count.lng === "en" ? "left" : "right",
+						textAlign: "center",
 						color: "#d3d3d3"
 					}}>
 						{setFilterTitle(filterKey)}
@@ -241,7 +241,6 @@ const Filters = ({ type }) => {
 							backgroundColor: isActive(filterKey, tagKey) ? "#730874" : "#d3d3d3",
 							borderLeftWidth:1,
 							flex:1,
-							alignItems:"center",
 							justifyContent:"center",
 							height:36 
 						}]}>

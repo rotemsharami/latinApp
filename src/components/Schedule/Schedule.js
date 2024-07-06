@@ -54,7 +54,7 @@ const Schedule = (schedule) => {
                             <Text>{count.lines.global_metadata.labels[count.lng][6]}:</Text>
                         </View>
                         <View style={styles.scheduleListItemHour}>
-                            <Text>{NumberToStringTime(schedule.opening)}</Text>
+                            <Text style={{fontWeight:"bold"}}>{NumberToStringTime(schedule.opening)}</Text>
                         </View>
                     </View>
                 }
@@ -69,7 +69,7 @@ const Schedule = (schedule) => {
                             <Text>{count.lines.global_metadata.labels[count.lng][7]}:</Text>
                         </View>
                         <View style={styles.scheduleListItemHour}>
-                            <Text>{NumberToStringTime(schedule.lessons)}</Text>
+                            <Text style={{fontWeight:"bold"}}>{NumberToStringTime(schedule.lessons)}</Text>
                         </View>
                     </View>
                 }
@@ -85,7 +85,7 @@ const Schedule = (schedule) => {
                             <Text>{count.lines.global_metadata.labels[count.lng][8]}:</Text>
                         </View>
                         <View style={styles.scheduleListItemHour}>
-                            <Text>{NumberToStringTime(schedule.party)}</Text>
+                            <Text style={{fontWeight:"bold"}}>{NumberToStringTime(schedule.party)}</Text>
                         </View>
                     </View>
                 }

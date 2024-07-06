@@ -27,10 +27,13 @@ const EventsCalender = (navigateProps) => {
 	const [selectedAreas, setSelectedAreas] = useState([]);
 	const [selectedDay, setSelectedDay] = useState("0");
 	const [selectedMonth, setSelectedMonth] = useState(moment().format("MM"));
-	const [selectedDisplay, setSelectedDisplay] = useState("Calender");
+	const [selectedYear, setSelectedYear] = useState(moment().format("YYYY"));
+	const [selectedDisplay, setSelectedDisplay] = useState("List");
 	const [showFilter, setShowFilter] = useState(false);
 	const scaleAnim = useRef(new Animated.Value(0)).current;
 	const translateX = useRef(new Animated.Value(0)).current;
+
+	
 	
     const handleGesture = (event) => {
         const { translationX } = event.nativeEvent;
@@ -59,9 +62,13 @@ const EventsCalender = (navigateProps) => {
 
 
 	function changeMonth(type) {
-		let currentMonth = moment(moment().year()+"-"+selectedMonth+"-02");
-		let _currentMonth =  type == 1 ? currentMonth.add(1, 'months').format("MM") : currentMonth.subtract(1, 'months').format("MM");
-		setSelectedMonth(_currentMonth);
+		let currentDate = moment(selectedYear+"-"+selectedMonth+"-02");
+		let _currentDate =  type == 1 ? currentDate.add(1, 'months') : currentDate.subtract(1, 'months');
+		let __currentDate = _currentDate.format("MM");
+		
+		
+		setSelectedMonth(_currentDate.format("MM"));
+		setSelectedYear(pre => _currentDate.format("YYYY"))
 	}
 
     const set_zero = (num)=> {
@@ -86,7 +93,7 @@ const EventsCalender = (navigateProps) => {
                 day = {
                     active: true,
                     day_of_month: day_index,
-                    date: moment(date_obj.year()+"-"+(date_obj.month()+1)+"-"+set_zero(day_index), 'YYYY-MM-DD'),
+                    date: moment(selectedYear+"-"+(date_obj.month()+1)+"-"+set_zero(day_index), 'YYYY-MM-DD'),
                     today: dayObject.isSame(moment(), 'day'),
                     vecationDay: dayObject.day() == 5 || dayObject.day() == 6,
                     events: []
@@ -111,7 +118,6 @@ const EventsCalender = (navigateProps) => {
 				if(day.events != undefined){
 					if(events != undefined){
 						filterdEvents = events.filter((event) => {
-							let today = moment();
 							let in_day = event.event_date == moment(day.date).format('YYYY-MM-DD');
 							let result = in_day;
 							return result;
@@ -249,7 +255,9 @@ const EventsCalender = (navigateProps) => {
 							>
 								<Text 
 									style={{
-										textDecorationLine:'underline'
+										textDecorationLine:'underline',
+										fontWeight:"normal",
+										fontSize:14
 									}}
 								>{setFiltersResults()}</Text>
 							</TouchableOpacity>
@@ -280,6 +288,9 @@ const EventsCalender = (navigateProps) => {
 									<View style={styles.calenderListSwitchButtonText}>
 										<Text style={[styles.calenderListSwitchButtonTextText, {
 											color: "#545454",
+											fontSize:14,
+											fontWeight:"bold",
+
 										}]}>{getTranslationString("Calender", count.lng)}</Text>
 									</View>
 								</TouchableOpacity>
@@ -299,7 +310,9 @@ const EventsCalender = (navigateProps) => {
 									</View>
 									<View style={styles.calenderListSwitchButtonText}>
 									<Text style={[styles.calenderListSwitchButtonTextText, {
-											color: "#545454"
+											color: "#545454",
+											fontSize:14,
+											fontWeight:"bold",
 										}]}>{getTranslationString("List", count.lng)}</Text>
 									</View>
 								</TouchableOpacity>
@@ -334,15 +347,16 @@ const EventsCalender = (navigateProps) => {
 							<TouchableOpacity
 								onPress={() => {setShowFilter(showFilter ? false :true)}}
 								style={{
-									flexDirection: count.lng == "en" ? "row" : "row-reverse",
-									height:24,
-									paddingRight:4,
-									paddingLeft:4,
-									borderWidth:2,
-									borderRadius:3,
-									borderColor: showFilter ? (setFilterColor() ? "#730874" : "#545454")  :   (setFilterColor() ? "#730874" : "#545454"),
-									backgroundColor: showFilter ? (setFilterColor() ? "#730874" : "#545454")  : "#d3d3d3"
-							}}>
+									flexDirection: count.lng === "en" ? "row" : "row-reverse",
+									height: 27,
+									paddingLeft: count.lng === "en" ? 0 : 2,
+									paddingRight: count.lng === "en" ? 2 : 0,
+									borderWidth: 2,
+									borderRadius: 3,
+									borderColor: showFilter ? (setFilterColor() ? "#730874" : "#545454") : (setFilterColor() ? "#730874" : "#545454"),
+									backgroundColor: showFilter ? (setFilterColor() ? "#730874" : "#545454") : "#d3d3d3"
+								  }}
+							>
 								<View  style={{
 									paddingTop:2,
 									paddingLeft:count.lng == "en" ? 0 : 2,
@@ -354,7 +368,11 @@ const EventsCalender = (navigateProps) => {
 									
 								}}>
 									<Text style={{
+										fontSize:14,
+										fontWeight:"normal",
 										color: showFilter ? "#fff" : (setFilterColor() ? "#730874" : "#545454")
+
+
 									}}>{count.lines.global_metadata.labels[count.lng][18]}</Text>
 								</View>
 							</TouchableOpacity>
@@ -539,7 +557,15 @@ const EventsCalender = (navigateProps) => {
 
 
 								<View style={styles.calenderMonth}>
-									<Text style={styles.calenderMonthText}>{count.lines.global_metadata.months[count.lng][moment(moment().year()+"-"+selectedMonth+"-01").month()]}</Text>
+									<Text style={[styles.calenderMonthText, {
+										
+										fontWeight:"normal"
+									}]}>{count.lines.global_metadata.months[count.lng][moment(moment().year()+"-"+selectedMonth+"-01").month()]}</Text>
+									<Text style={{
+										color:"#FFF",
+										fontSize:14,
+										fontWeight:"normal"
+										}}>{selectedYear}</Text>
 								</View>
 								<View style={[styles.calenderButton, {
 									flexDirection: count.lng == "en" ? "column" : "column-reverse",

@@ -180,9 +180,7 @@ const styles = StyleSheet.create({
 	filterButtonText:{
 
 	},
-	headerMenuTitleText:{
 
-	},
 	headerMenuTitleWithFilter:{
 		flexDirection:"row"
 	},
@@ -198,11 +196,13 @@ const styles = StyleSheet.create({
 		textDecorationLine:"underline",
 		paddingRight:10,
 		paddingLeft:10,
+		fontWeight:"bold"
 	},
 
 	headerMenuTitleText:{
 		color:"#d3d3d3",
 		fontSize:28,
+		fontWeight:"normal",
 		paddingRight:15,
 		paddingLeft:15,
 		paddingTop:5,

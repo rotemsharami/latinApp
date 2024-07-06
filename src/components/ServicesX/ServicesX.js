@@ -57,13 +57,12 @@ const Services = (services) => {
                     <View style={styles.textBox}>
                         <Text style={{
                             paddingTop:4,
-                                alignItems:"center",
                                 paddingRight: 5,
                                 paddingLeft: 5,
                                 fontSize:14,
                                 color: "#000",
-                                textAlign: 'center',
-                                lineHeight:11
+                                lineHeight:11,
+                                fontWeight:"normal"
                                 }}
                         >{count.lines.taxonomy_terms.services[prop][count.lng]}</Text>
                     </View>

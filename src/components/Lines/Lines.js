@@ -176,15 +176,31 @@ const Lines = (info) => {
 							<TouchableOpacity
 								onPress={() => { setShowFilter(showFilter ? false : true) }}
 								style={[styles.filterToggleContainer, {
+				
+
 									flexDirection: count.lng === "en" ? "row" : "row-reverse",
+									height: 27,
+									paddingLeft: count.lng === "en" ? 0 : 2,
+									paddingRight: count.lng === "en" ? 2 : 0,
+									borderWidth: 2,
+									borderRadius: 3,
 									borderColor: showFilter ? (setFilterColor() ? "#730874" : "#545454") : (setFilterColor() ? "#730874" : "#545454"),
 									backgroundColor: showFilter ? (setFilterColor() ? "#730874" : "#545454") : "#d3d3d3"
+
+
+
 								}]}
 							>
-								<View style={styles.filterIconContainer}>
+								<View style={[styles.filterIconContainer, {
+									              paddingTop: 3,
+												  paddingLeft: count.lng === "en" ? 0 : 2,
+												  paddingRight: count.lng === "en" ? 2 : 0,
+								}]}>
 									<MaterialCommunityIcons name={showFilter ? "minus-circle" : "plus-circle"} size={16} color={showFilter ? "#fff" : (setFilterColor() ? "#730874" : "#545454")} />
 								</View>
 								<Text style={[styles.filterToggleText, {
+									fontWeight:"normal",
+									fontSize:14,
 									color: showFilter ? "#fff" : (setFilterColor() ? "#730874" : "#545454")
 								}]}>
 									{count.lines.global_metadata.labels[count.lng][18]}
@@ -306,7 +322,9 @@ const styles = StyleSheet.create({
 		alignSelf: "center",
 	},
 	filterResultText: {
-		textDecorationLine: 'underline'
+		textDecorationLine:'underline',
+		fontWeight:"normal",
+		fontSize:14
 	},
 	filterContainer: {
 		alignSelf: "center",
@@ -333,6 +351,7 @@ const styles = StyleSheet.create({
 	},
 	filterToggleText: {
 		color: "#545454",
+		fontWeight:"normal"
 	},
 	contentContainer: {
 		flex: 1,

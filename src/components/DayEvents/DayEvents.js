@@ -150,6 +150,7 @@ const styles = StyleSheet.create({
 		fontWeight:"bold",
 	},
 	titleText:{
+		paddingTop:2,
 		fontSize:20,
 		lineHeight:20,
 	},

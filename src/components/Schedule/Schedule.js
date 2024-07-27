@@ -44,7 +44,7 @@ const Schedule = (schedule) => {
                 
                 {schedule.opening != undefined &&
                         <View style={[styles.scheduleListItemIconAndLabel, {
-                            flexDirection: count.lng == "en" ? "row" : "row-reverse",
+                            flexDirection: setRowType(count.lng),
                         }]}>
                         <View style={styles.scheduleListItemIcon}>
                             <MaterialCommunityIcons name="door-open" size={14} color="#000" />
@@ -60,7 +60,7 @@ const Schedule = (schedule) => {
                 }
                 {schedule.lessons != undefined &&
                         <View style={[styles.scheduleListItemIconAndLabel, {
-                            flexDirection: count.lng == "en" ? "row" : "row-reverse",
+                            flexDirection: setRowType(count.lng),
                         }]}>
                         <View style={styles.scheduleListItemIcon}>
                             <MaterialCommunityIcons name="school" size={14} color="#000" />
@@ -76,7 +76,7 @@ const Schedule = (schedule) => {
                 {schedule.party != undefined &&
 
                         <View style={[styles.scheduleListItemIconAndLabel, {
-                            flexDirection: count.lng == "en" ? "row" : "row-reverse",
+                            flexDirection: setRowType(count.lng),
                         }]}>
                         <View style={styles.scheduleListItemIcon}>
                             <MaterialCommunityIcons name="music" size={14} color="#000" />

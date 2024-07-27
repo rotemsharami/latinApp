@@ -8,9 +8,7 @@ const {width, height} = Dimensions.get('screen');
 
 const Line = (item) => {
 	const count = useSelector((store) => store.count.count);
-
-
-
+	const dir = setTextDirection(count.lng);
 
 	const goToOrganizationLine = useCallback((nid) => {
 		item._setOrganizationNid(nid);
@@ -19,7 +17,7 @@ const Line = (item) => {
 
 	return(
 		<View style={{
-			flexDirection: count.lng == "en" ? "row" : "row-reverse",
+			flexDirection: setRowType(count.lng),
 		}}>
 			{item != undefined && 
 
@@ -29,50 +27,62 @@ const Line = (item) => {
 				}]}
 				key={"today-line-"+item.item.nid}
 			>
-
-
-				
 				<TouchableOpacity style={styles.logoAndTextBox} onPress={() => {
 					//goToOrganizationLine(item.item.org_nid)
 					navigate("Organization", {"orgNid": item.item.org_nid, "screenType": "lines", "selectedLine": item.item.nid, "source": "Lines"})
 				}}>
-				<View style={{
-					padding:10,
-					flexDirection: count.lng == "en" ? "row" : "row-reverse",
-					
-				}}>
-					<View style={styles.generalImageBox}>
-						<View style={styles.generalImage}>
-							<Image
-								style={{width: '100%', height: '100%'}}
-								source={{uri: count.lines.organizations[item.item.org_nid].general_image.replace("public://", "https://latinet.co.il/sites/default/files/")}}
-							/>
-						</View>
-					</View>
-					<View style={styles.textBox}>
-						<View style={styles.textBoxInner}>
-							<View style={styles.title}>
-								<Text style={{
-									color:"#3a2f3a",
-									fontSize:20,
-									paddingLeft: 10,
-									paddingRight: 10,
-									fontWeight:"bold",                                 
-								}}>{nice_list_text(item.item.dance_floors != null ? item.item.dance_floors : count.lines.organizations[item.item.org_nid].dance_floors, count.lines.taxonomy_terms.dance_floors, count.lng)}</Text>
+					<View style={{
+						padding:10,
+						flexDirection: setRowType(count.lng),
+						
+					}}>
+						<View style={styles.generalImageBox}>
+							<View style={styles.generalImage}>
+								<Image
+									style={{width: '100%', height: '100%'}}
+									source={{uri: count.lines.organizations[item.item.org_nid].general_image.replace("public://", "https://latinet.co.il/sites/default/files/")}}
+								/>
 							</View>
 						</View>
-						<View style={styles.subTitle}><Text style={{
-							color:"#3a2f3a",
-							fontSize:14,
-							paddingLeft: 10,
-							paddingRight: 10,
-							textAlign: count.lng == "en" ? "left" : "right",
-						}}>{count.lines.organizations[item.item.org_nid][count.lng].title}</Text></View>
+						<View style={styles.textBox}>
+							<View style={styles.textBoxInner}>
+								<View style={[styles.title, {
+									paddingLeft: 10,
+									paddingRight: 10,
+									flex: 1,
+									justifyContent: 'center',
+									alignItems: 'center',
+									width: '100%',
+
+								}]}>
+									<Text style={{
+										color:"#3a2f3a",
+										fontSize:20,
+										lineHeight:20,
+										flexShrink: 1,
+										flex:1,
+										alignContent:"center",
+										width: '100%',
+										fontWeight:"bold",                                 
+									}}>{nice_list_text(item.item.dance_floors != null ? item.item.dance_floors : count.lines.organizations[item.item.org_nid].dance_floors, count.lines.taxonomy_terms.dance_floors, count.lng)}</Text>
+								</View>
+							</View>
+							<View style={styles.subTitle}>
+								<Text style={{
+									color:"#3a2f3a",
+									fontSize:14,
+									paddingLeft: 10,
+									paddingRight: 10,
+									textAlign: dir,
+								
+								}}>{count.lines.organizations[item.item.org_nid][count.lng].title}, {count.lines.organizations[item.item.org_nid][count.lng].city}
+								</Text>
+							</View>
 						</View>
 					</View>
 				</TouchableOpacity>
 			</View>
-			}
+		}
 		</View>
 	);
 }
@@ -84,7 +94,7 @@ const styles = StyleSheet.create({
 		fontSize:20,
 	},
 	display: {
-		marginTop:0,
+		
 	},
 	icon: {
 		color:"#FFF",
@@ -106,7 +116,8 @@ const styles = StyleSheet.create({
 		overflow: "hidden",
 	},
 	textBox:{
-		paddingTop:10
+		justifyContent:"center",
+		flex:1
 	},
 });
 export default Line;

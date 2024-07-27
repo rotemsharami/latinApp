@@ -6,6 +6,14 @@ import { useSelector } from 'react-redux';
 
 
 
+export function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
 
 export const rotem = () => {
     return "Good!";
@@ -25,6 +33,36 @@ export const setRowType = (appLng) => {
 	return style;
 }
 
+
+export const setSimpleRow = () => {
+    let style = "";
+    if(I18nManager.isRTL == false){
+        style = "row";
+    }else{
+        style = "row-reverse";
+    }
+    return style;
+}
+
+
+export const setColType = (appLng) => {
+	let style = "";
+	if(I18nManager.isRTL == false && appLng == "en"){
+		style = "column";
+	}else if(I18nManager.isRTL == false && appLng == "he"){
+		style = "column-reverse";
+	}else if(I18nManager.isRTL == true && appLng == "he"){
+		style = "column";
+	}else if(I18nManager.isRTL == true && appLng == "en"){
+		style = "column-reverse";
+	}
+	return style;
+}
+
+
+
+
+
 export const setTextDirection = (appLng) => {
 	let style = "";
 	if(I18nManager.isRTL == false && appLng == "en"){
@@ -38,6 +76,22 @@ export const setTextDirection = (appLng) => {
 	}
 	return style;
 }
+
+export const setAlignItems = (appLng) => {
+	let style = "";
+	if(I18nManager.isRTL == false && appLng == "en"){
+		style = "flex-start";
+	}else if(I18nManager.isRTL == false && appLng == "he"){
+		style = "flex-end";
+	}else if(I18nManager.isRTL == true && appLng == "he"){
+		style = "flex-start";
+	}else if(I18nManager.isRTL == true && appLng == "en"){
+		style = "flex-end";
+	}
+	return style;
+}
+
+
 
 
 export const getImageUrl = (uri) => {

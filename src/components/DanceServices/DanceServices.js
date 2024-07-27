@@ -9,7 +9,7 @@ import {
 	} from 'react-native';
 
 import React, {useRef, useState, useEffect} from 'react';
-import {setArray} from "../../tools/tools.js";
+import {setArray, setRowType} from "../../tools/tools.js";
 import { Icon } from 'react-native-elements';
 import { Flex } from '@react-native-material/core';
 import { useSelector, useDispatch } from 'react-redux';
@@ -28,7 +28,7 @@ const DanceServices = (danceServices) => {
         {danceServices.danceServices.split(",").map((prop, key) => {
             return (
                 <View style={[styles.listItem, {
-                    flexDirection: count.lng == "en" ? "row" :"row-reverse"
+                    flexDirection: setRowType(count.lng),
                 }]} key={key}>
                     <View style={styles.iconBox}>
                         <Icon style={styles.mainMenuListItemIcon} name='check-circle' color='#730874' size={16}/>

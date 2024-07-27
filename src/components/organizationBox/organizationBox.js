@@ -44,25 +44,25 @@ const OrganizationBox = (item) => {
                 </View>
                 <View style={styles.text}>
                     <Text style={{
-						paddingRight: 10,
-						paddingLeft: 10,
+						paddingRight: 4,
+						paddingLeft: 4,
                         textAlign: dir,
                         color: '#000',
                         fontSize: 24,
-                        lineHeight:26,
+                        lineHeight:24,
                         fontWeight: 'bold',
                     }}>{item.organization[count.lng].title}</Text>
                     <Text style={{
-						paddingRight: 10,
-						paddingLeft: 10,
+						paddingRight: 4,
+						paddingLeft: 4,
                         color: '#000',
                         textAlign: dir,
                         fontSize: 18,
-                        lineHeight:20,
+                        lineHeight:18,
                     }}>{item.organization[count.lng].slogen}</Text>
                     <View style={{
-                        paddingLeft:7,
-                        paddingRight:7
+                        paddingLeft:2,
+                        paddingRight:2
                     }}>
                         <Location organization={item.organization}></Location>
                     </View>

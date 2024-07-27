@@ -58,6 +58,7 @@ const OrganizationStudies = (info) => {
                         }}>
                             <Text style={{
                                 fontSize:prop.nid == info._selectedLearn ? 20 : 15,
+                                lineHeight:prop.nid == info._selectedLearn ? 20 : 15,
                                 textAlign:"center",
                                 color:prop.nid == info._selectedLearn ? "#FFF" : "#000",
                             }}>{count.lines.taxonomy_terms.cours_type[prop.course_type][count.lng]+" "+count.lines.taxonomy_terms.dance_floors[prop.dance_floors][count.lng]+" "+nice_list_text(prop.dance_level, count.lines.taxonomy_terms.dance_level, count.lng)}</Text>
@@ -102,7 +103,7 @@ const OrganizationStudies = (info) => {
                                         borderColor:"#f640b2",
                                         backgroundColor:"#000"
                                     }}
-                                    onPress={() => { Linking.openURL(info._organizationLearn.filter(item => item.nid == info._selectedLearn)[0].info_link); }}
+                                    onPress={() => { Linking.openURL(decodeURI(info._organizationLearn.filter(item => item.nid == info._selectedLearn)[0].info_link)); }}
                                 >
                 
                                     <Text style={{

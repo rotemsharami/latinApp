@@ -90,10 +90,23 @@ const Event = (event) => {
 								textAlign: "center",
 								fontWeight:"bold"
 							}]}>{event.route.params.event.title}</Text>
+
+
+							{event.route.params.event.event_address != undefined &&
 							<Text style={[styles.textText, {
 								textAlign: "center",
 								fontWeight:"normal"
-							}]}>{event.route.params.event.event_address}, {event.route.params.event.city}</Text>						
+							}]}>{event.route.params.event.event_address}, {event.route.params.event.city}</Text>
+							}
+
+							{event.route.params.event.event_address == undefined &&
+							<Text style={[styles.textText, {
+								textAlign: "center",
+								fontWeight:"normal"
+							}]}>{event.route.params.event.city}, {event.route.params.event.country}</Text>
+							}
+
+
 							<View style={{
 								alignItems:"center"
 							}}>
@@ -123,7 +136,7 @@ const Event = (event) => {
 
 
 							<LinearGradient style={{
-								flexDirection: count.lng == "en" ? "row" :"row-reverse",
+								flexDirection: setRowType(count.lng),
 								flex:1,
 								justifyContent:"space-around",
 								alignItems:"center"

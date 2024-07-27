@@ -33,7 +33,7 @@ const ContactInfo = (organization) => {
 
             <View style={styles.list}>
                 {organization.organization.facebook != undefined &&
-                    <TouchableOpacity onPress={() => { Linking.openURL(organization.organization.facebook); }}>
+                    <TouchableOpacity onPress={() => { Linking.openURL(encodeURI(organization.organization.facebook)); }}>
                         <View style={styles.listItem}>
                             <View style={styles.iconBox}>
                                 <Icon style={styles.mainMenuListItemIcon} name='facebook' color='#FFF' size={30}/>
@@ -53,7 +53,7 @@ const ContactInfo = (organization) => {
                 }
 
                 {organization.organization.instegram != undefined &&
-                    <TouchableOpacity onPress={() => { Linking.openURL(organization.organization.instegram); }}>
+                    <TouchableOpacity onPress={() => { Linking.openURL(encodeURI(organization.organization.instegram)); }}>
                         <View style={styles.listItem}>
                             <View style={styles.iconBox}>
                                 <MaterialCommunityIcons name="instagram" size={30} color="#FFF" />
@@ -63,7 +63,7 @@ const ContactInfo = (organization) => {
                 }
 
                 {organization.organization.site != undefined &&
-                    <TouchableOpacity onPress={() => { Linking.openURL(organization.organization.site); }}>
+                    <TouchableOpacity onPress={() => { Linking.openURL(encodeURI(organization.organization.site)); }}>
                         <View style={styles.listItem}>
                             <View style={styles.iconBox}>
                                 <MaterialCommunityIcons name="web" size={30} color="#FFF" />
@@ -74,7 +74,7 @@ const ContactInfo = (organization) => {
 
 
                 {organization.organization.info_link != undefined &&
-                    <TouchableOpacity onPress={() => { Linking.openURL(organization.organization.info_link); }}>
+                    <TouchableOpacity onPress={() => { Linking.openURL(encodeURI(organization.organization.info_link)); }}>
                         <View style={styles.listItem}>
                             <View style={styles.iconBox}>
                                 <MaterialCommunityIcons name="credit-card-outline" size={30} color="#FFF" />

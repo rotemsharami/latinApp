@@ -7,7 +7,7 @@ import { changeLearnsSelectedFilters } from '../../actions/counterActions';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Filters from '../Filters/Filters';
 import { useSelector, useDispatch } from 'react-redux';
-import { setArray, filterDataItem } from '../../tools/tools';
+import { setArray, filterDataItem, setRowType} from '../../tools/tools';
 
 const Learns = (info) => {
 	const count = useSelector((store) => store.count.count);
@@ -74,14 +74,14 @@ const Learns = (info) => {
         backgroundColor: "#d3d3d3",
         borderTopColor: "#000",
         borderTopWidth: 1,
-        flexDirection: count.lng === "en" ? "row" : "row-reverse",
+        flexDirection: setRowType(count.lng),
       }}>
         {!showFilter && <View></View>}
         {(showFilter) && 
           <TouchableOpacity
             onPress={() => { setShowFilter(false); }}
             style={[styles.calenderListSwitch, {
-              flexDirection: count.lng === "en" ? "row" : "row-reverse",
+              flexDirection: setRowType(count.lng),
               alignSelf: "center",
             }]}
           >
@@ -95,31 +95,33 @@ const Learns = (info) => {
           </TouchableOpacity>
         }
         <View style={{
-          flexDirection: count.lng === "en" ? "row" : "row-reverse",
+          flexDirection: setRowType(count.lng),
           alignSelf: "center",
         }}>
-          {setFilterColor() &&
-            <TouchableOpacity
-              onPress={() => { _changeLearnsSelectedFilters({}) }}
-              style={{
-                borderWidth: 2,
-                borderColor: "#730874",
-                backgroundColor: "#730874",
-                borderRadius: 3,
-                marginRight: 3,
-                marginLeft: 3,
-              }}
-            >
-              <MaterialCommunityIcons name="trash-can" size={18} color="#FFF" />
-            </TouchableOpacity>
-          }
+							{setFilterColor() &&
+							<TouchableOpacity
+								onPress={() => {_changeLearnsSelectedFilters({})}}
+								
+
+								style={{
+									paddingTop:2,
+									borderColor:"#730874",
+									backgroundColor:"#730874",
+									borderRadius:3,
+									marginRight:3,
+									marginLeft:3,
+								}}
+							>
+								<MaterialCommunityIcons name="trash-can" size={22} color="#FFF" />
+							</TouchableOpacity>
+							}
           <TouchableOpacity
             onPress={() => { setShowFilter(showFilter ? false : true) }}
             style={{
-              flexDirection: count.lng === "en" ? "row" : "row-reverse",
+              flexDirection: setRowType(count.lng),
               height: 27,
-              paddingLeft: count.lng === "en" ? 0 : 2,
-              paddingRight: count.lng === "en" ? 2 : 0,
+              paddingLeft: 2,
+              paddingRight: 2,
               borderWidth: 2,
               borderRadius: 3,
               borderColor: showFilter ? (setFilterColor() ? "#730874" : "#545454") : (setFilterColor() ? "#730874" : "#545454"),
@@ -127,15 +129,16 @@ const Learns = (info) => {
             }}
           >
             <View style={{
-              paddingTop: 2,
-              paddingLeft: count.lng === "en" ? 0 : 2,
-              paddingRight: count.lng === "en" ? 2 : 0,
+              paddingTop: 3,
+              
             }}>
               <MaterialCommunityIcons name={showFilter ? "minus-circle" : "plus-circle"} size={16} color={showFilter ? "#fff" : (setFilterColor() ? "#730874" : "#545454")} />
             </View>
             <View>
               <Text style={{
                 fontSize:14,
+                paddingRight:2,
+                paddingLeft:2,
                 fontWeight:"normal",
                 color: showFilter ? "#fff" : (setFilterColor() ? "#730874" : "#545454")
               }}>

@@ -9,7 +9,7 @@ import {
 	} from 'react-native';
 
 import React, {useRef, useState, useEffect} from 'react';
-import {setArray} from "../../tools/tools.js";
+import {setArray, setRowType} from "../../tools/tools.js";
 import { Icon } from 'react-native-elements';
 import { Flex } from '@react-native-material/core';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -27,7 +27,7 @@ const DanceFloors = (danceServices) => {
             return (
 
                     <View style={[styles.listItem, {
-                        flexDirection: count.lng == "en" ? "row" :"row-reverse"
+                        flexDirection: setRowType(count.lng),
                     }]} key={key}>
 
 

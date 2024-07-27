@@ -1,7 +1,7 @@
 import {Image,StyleSheet,Text,View,Dimensions,Animated,Easing,ImageBackground,TouchableOpacity,I18nManager,ScrollView, SafeAreaView, StatusBar} from 'react-native';
 import React, {useRef, useState, useEffect} from 'react';
 import moment from 'moment';
-import { setRowType, getSelectedLang, setTextDirection, setArray, nice_list_text, getTranslationString, getTranslationMonth, getPlayingHeight, filterDataItem} from '../../tools/tools';
+import { setRowType, getSelectedLang, setTextDirection, setArray, nice_list_text, getTranslationString, getTranslationMonth, getPlayingHeight, filterDataItem, setColType} from '../../tools/tools';
 import { useSelector, useDispatch } from 'react-redux';
 import OrganizationStudies from '../OrganizationStudies/OrganizationStudies';
 import AllEventsList from '../AllEventsList/AllEventsList';
@@ -235,7 +235,7 @@ const EventsCalender = (navigateProps) => {
 						backgroundColor:"#d3d3d3",
 						borderTopColor:"#000",
 						borderTopWidth:1,
-						flexDirection: count.lng == "en" ? "row" : "row-reverse",
+						flexDirection: setRowType(count.lng),
 					}}>
 
 
@@ -248,7 +248,7 @@ const EventsCalender = (navigateProps) => {
 								}}
 
 								style={[styles.calenderListSwitch, {
-									flexDirection: count.lng == "en" ? "row" : "row-reverse",
+									flexDirection: setRowType(count.lng),
 									alignSelf:"center",
 									
 								}]}
@@ -266,7 +266,7 @@ const EventsCalender = (navigateProps) => {
 						{!showFilter &&
 						<View
 							style={[styles.calenderListSwitch, {
-								flexDirection: count.lng == "en" ? "row" : "row-reverse",
+								flexDirection: setRowType(count.lng),
 								alignSelf:"center",
 								
 							}]}
@@ -278,7 +278,7 @@ const EventsCalender = (navigateProps) => {
 
 								}]}>
 								<TouchableOpacity style={[styles.calenderListSwitchButtonTouch, {
-									flexDirection: count.lng == "en" ? "row" : "row-reverse",
+									flexDirection: setRowType(count.lng),
 								}]} onPress={()=>{
 									setSelectedDisplay("Calender")
 									}}>
@@ -302,7 +302,7 @@ const EventsCalender = (navigateProps) => {
 
 								}]}>
 								<TouchableOpacity style={[styles.calenderListSwitchButtonTouch, {
-									flexDirection: count.lng == "en" ? "row" : "row-reverse",
+									flexDirection: setRowType(count.lng),
 									
 								}]} onPress={()=>setSelectedDisplay("List")}>
 									<View style={styles.calenderListSwitchButtonIconBox}>
@@ -321,7 +321,7 @@ const EventsCalender = (navigateProps) => {
 						}
 
 						<View style={{
-							flexDirection: count.lng == "en" ? "row" : "row-reverse",
+							flexDirection: setRowType(count.lng),
 							alignSelf:"center",
 						}}>
 
@@ -331,7 +331,7 @@ const EventsCalender = (navigateProps) => {
 								
 
 								style={{
-									borderWidth:2,
+									paddingTop:2,
 									borderColor:"#730874",
 									backgroundColor:"#730874",
 									borderRadius:3,
@@ -339,41 +339,40 @@ const EventsCalender = (navigateProps) => {
 									marginLeft:3,
 								}}
 							>
-								<MaterialCommunityIcons name="trash-can" size={18} color="#FFF" />
+								<MaterialCommunityIcons name="trash-can" size={22} color="#FFF" />
 							</TouchableOpacity>
 							}
 
 
 							<TouchableOpacity
-								onPress={() => {setShowFilter(showFilter ? false :true)}}
+								onPress={() => { setShowFilter(showFilter ? false : true) }}
 								style={{
-									flexDirection: count.lng === "en" ? "row" : "row-reverse",
-									height: 27,
-									paddingLeft: count.lng === "en" ? 0 : 2,
-									paddingRight: count.lng === "en" ? 2 : 0,
-									borderWidth: 2,
-									borderRadius: 3,
-									borderColor: showFilter ? (setFilterColor() ? "#730874" : "#545454") : (setFilterColor() ? "#730874" : "#545454"),
-									backgroundColor: showFilter ? (setFilterColor() ? "#730874" : "#545454") : "#d3d3d3"
-								  }}
+								flexDirection: setRowType(count.lng),
+								height: 27,
+								paddingLeft: 2,
+								paddingRight: 2,
+								borderWidth: 2,
+								borderRadius: 3,
+								borderColor: showFilter ? (setFilterColor() ? "#730874" : "#545454") : (setFilterColor() ? "#730874" : "#545454"),
+								backgroundColor: showFilter ? (setFilterColor() ? "#730874" : "#545454") : "#d3d3d3"
+								}}
 							>
-								<View  style={{
-									paddingTop:2,
-									paddingLeft:count.lng == "en" ? 0 : 2,
-									paddingRight:count.lng == "en" ? 2 : 0	,
+								<View style={{
+								paddingTop: 3,
+								
 								}}>
-									<MaterialCommunityIcons name={showFilter ? "minus-circle" : "plus-circle"} size={16} color={showFilter ? "#fff" : (setFilterColor() ? "#730874" : "#545454")} />
+								<MaterialCommunityIcons name={showFilter ? "minus-circle" : "plus-circle"} size={16} color={showFilter ? "#fff" : (setFilterColor() ? "#730874" : "#545454")} />
 								</View>
-								<View  style={{
-									
+								<View>
+								<Text style={{
+									fontSize:14,
+									paddingRight:2,
+									paddingLeft:2,
+									fontWeight:"normal",
+									color: showFilter ? "#fff" : (setFilterColor() ? "#730874" : "#545454")
 								}}>
-									<Text style={{
-										fontSize:14,
-										fontWeight:"normal",
-										color: showFilter ? "#fff" : (setFilterColor() ? "#730874" : "#545454")
-
-
-									}}>{count.lines.global_metadata.labels[count.lng][18]}</Text>
+									{count.lines.global_metadata.labels[count.lng][18]}
+								</Text>
 								</View>
 							</TouchableOpacity>
 
@@ -542,15 +541,24 @@ const EventsCalender = (navigateProps) => {
 
 
 
-							<View style={[styles.calenderButtonsAndMonth, {
-								flexDirection: count.lng == "en" ? "row" : "row-reverse",
-							}]}>
+
+
+
+							<LinearGradient
+								style={[styles.calenderButtonsAndMonth, {
+									flexDirection: setRowType(count.lng)
+								}]}
+								colors={['#555', '#373736', '#555']}
+							>
+
+
 								<View style={[styles.calenderButton, {
-									flexDirection: count.lng == "en" ? "column" : "column-reverse",
+									//flexDirection: count.lng == "en" ? "column" : "column-reverse",
+									flexDirection: setColType(count.lng)
 								}]}>
 									<TouchableOpacity onPress={()=>changeMonth(1)}>
 										<View style={styles.iconBox}>
-											<MaterialCommunityIcons name={count.lng == "en" ? "arrow-left-bold-circle" : "arrow-right-bold-circle"} size={30} color="#000" />
+											<MaterialCommunityIcons name={count.lng == "en" ? "arrow-left-bold-circle" : "arrow-right-bold-circle"} size={40} color="#d3d3d3" />
 										</View>
 									</TouchableOpacity>
 								</View>
@@ -562,21 +570,21 @@ const EventsCalender = (navigateProps) => {
 										fontWeight:"normal"
 									}]}>{count.lines.global_metadata.months[count.lng][moment(moment().year()+"-"+selectedMonth+"-01").month()]}</Text>
 									<Text style={{
-										color:"#FFF",
+										color:"#d3d3d3",
 										fontSize:14,
 										fontWeight:"normal"
 										}}>{selectedYear}</Text>
 								</View>
 								<View style={[styles.calenderButton, {
-									flexDirection: count.lng == "en" ? "column" : "column-reverse",
+									flexDirection: setColType(count.lng)
 								}]}>
 									<TouchableOpacity onPress={()=>changeMonth(0)}>
 									<View style={styles.iconBox}>
-										<MaterialCommunityIcons name={count.lng == "en" ? "arrow-right-bold-circle" : "arrow-left-bold-circle"} size={30} color="#000" />
+										<MaterialCommunityIcons name={count.lng == "en" ? "arrow-right-bold-circle" : "arrow-left-bold-circle"} size={40} color="#d3d3d3" />
 									</View>
 									</TouchableOpacity>
 								</View>
-							</View>
+							</LinearGradient>
 
 
 					</View>
@@ -622,16 +630,17 @@ const styles = StyleSheet.create({
 	calenderButtonsAndMonth:{
 		backgroundColor:"#474747",
 		height:70,
-		alignItems:"center"
+		alignItems:"center",
+		justifyContent:"space-between"
 		
 		
 	},
 	calenderMonthText:{
 		fontSize:26,
-		color:"#FFF"
+		color:"#d3d3d3"
 	},
 	calenderMonth:{
-		width: width - (2 * 40) - 20,
+		
 		alignItems:"center"
 	},
 	calenderButton:{

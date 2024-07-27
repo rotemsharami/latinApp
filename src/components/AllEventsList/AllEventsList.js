@@ -1,7 +1,7 @@
 import React, {useRef, Component, useState, useEffect } from 'react';
 import { Animated, Easing, View, Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity, I18nManager, ScrollView} from 'react-native';
 import { Icon } from 'react-native-elements';
-import {nice_list_text, setArray, getSelectedLang, setRowType, setTextDirection, getImageUrl, getPlayingHeight, filterDataItem} from "../../tools/tools.js";
+import {nice_list_text, setArray, getSelectedLang, setRowType, setTextDirection, getImageUrl, getPlayingHeight, filterDataItem, setAlignItems} from "../../tools/tools.js";
 import {navigate} from "../../../RootNavigation";
 import moment from 'moment';
 import { useSelector } from 'react-redux';
@@ -12,7 +12,7 @@ const textWidth = width - logoWidth;
 const AllEventsList = () => {
 	const count = useSelector((store) => store.count.count);
 	const scaleAnim = useRef(new Animated.Value(0)).current;
-
+	const dir = setTextDirection(count.lng);
 	const [events, setEvents] = useState(undefined);
 
     let filterEvents = async() => {
@@ -64,7 +64,7 @@ const AllEventsList = () => {
 									return(
 										<TouchableOpacity kay={"calenderEventItem"+event.nid} onPress={() => navigate("Event", {event: event})} key={"calenderEventItem-"+event.nid}>
 											<LinearGradient style={[styles.eventItem, {
-												flexDirection: count.lng == "en" ? "row" : "row-reverse",
+												flexDirection: setRowType(count.lng),
 											}]}
 												colors={["#FFF", "#FFF", '#fbefff',]}
 											>
@@ -75,28 +75,46 @@ const AllEventsList = () => {
 														/>
 												</View>
 												<View style={[styles.titleAndText, {
-													alignItems: count.lng == "en" ? "flex-start" : "flex-end",
+													//alignItems: count.lng == "en" ? "flex-start" : "flex-end",
+													alignItems:setAlignItems(count.lng),
 													padding:10
 												}]}>
 													<View style={styles.itemTitle}>
 														<Text style={[styles.titleText, {
-															textAlign: count.lng == "en" ? "left" : "right",
+															textAlign: dir,
 															fontWeight:"bold"
 														}]}>
 															{event.title}
 														</Text>
 														<Text style={[styles.textText, {
-															textAlign: count.lng == "en" ? "left" : "right",
+															textAlign: dir,
 															fontWeight:"normal"
 														}]}>
 															{getEventDates(event)}
 														</Text>
+														
+														{event.event_address != undefined &&
 														<Text style={[styles.textText, {
-															textAlign: count.lng == "en" ? "left" : "right",
+															textAlign: dir,
 															fontWeight:"bold"
 														}]}>
 															{event.city}
 														</Text>
+														}
+
+														{event.event_address == undefined &&
+														<Text style={[styles.textText, {
+															textAlign: dir,
+															fontWeight:"bold"
+														}]}>
+															{event.city}, {event.country}
+														</Text>
+														}
+
+
+
+
+
 													</View>
 												</View>
 											</LinearGradient>

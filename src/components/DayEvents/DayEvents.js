@@ -1,7 +1,7 @@
 import React, {Component, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity, I18nManager} from 'react-native';
 import { Icon } from 'react-native-elements';
-import {nice_list_text, setArray, getSelectedLang, setRowType, setTextDirection, getImageUrl} from "../../tools/tools.js";
+import {nice_list_text, setArray, getSelectedLang, setRowType, setTextDirection, getImageUrl, setAlignItems} from "../../tools/tools.js";
 import {navigate} from "../../../RootNavigation";
 import moment from 'moment';
 import { useSelector } from 'react-redux';
@@ -11,7 +11,7 @@ const logoWidth = 100;
 const textWidth = width - logoWidth;
 const DayEvents = (info) => {
 const count = useSelector((store) => store.count.count);
-
+const dir = setTextDirection(count.lng);
 let getEventDates = (event) => {
 	return moment(event.event_date).format("DD/MM/YYYY");
 }
@@ -26,11 +26,12 @@ let getEventDates = (event) => {
 							justifyContent:"center",
 							paddingRight:15,
 							paddingLeft:15,
+							textAlign: dir,
 							height:30
 						}]}
 					>
 						<Text style={[styles.pageTitleText, {
-							textAlign: count.lng == "en" ? "left" : "right",
+							textAlign: dir,
 						}]}>{info.route.params.date.format('DD/MM/YYYY')}</Text>
 					</View>
 					<View style={styles.eventsList}>
@@ -79,7 +80,7 @@ let getEventDates = (event) => {
 
 										<TouchableOpacity kay={"calenderEventItem"+event.nid} onPress={() => navigate("Event", {event: event})} key={"calenderEventItem-"+event.nid}>
 											<LinearGradient style={[styles.eventItem, {
-												flexDirection: count.lng == "en" ? "row" : "row-reverse",
+												flexDirection: setRowType(count.lng),
 											}]}
 												colors={["#FFF", "#FFF", '#fbefff',]}
 											>
@@ -90,17 +91,17 @@ let getEventDates = (event) => {
 														/>
 												</View>
 												<View style={[styles.titleAndText, {
-													alignItems: count.lng == "en" ? "flex-start" : "flex-end",
+													alignItems:setAlignItems(count.lng),
 													padding:10
 												}]}>
 													<View style={styles.itemTitle}>
 														<Text style={[styles.titleText, {
-															textAlign: count.lng == "en" ? "left" : "right",
+															textAlign: dir,
 														}]}>
 															{event.title}
 														</Text>
 														<Text style={[styles.textText, {
-															textAlign: count.lng == "en" ? "left" : "right",
+															textAlign: dir,
 														}]}>
 															{event.city}
 														</Text>

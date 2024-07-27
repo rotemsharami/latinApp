@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { changeEventsSelectedFilters, changeOrganizationsSelectedFilters, changeLinesSelectedFilters, changeLearnsSelectedFilters} from '../../actions/counterActions';
-import { getPlayingHeight, setArray } from '../../tools/tools';
+import { getPlayingHeight, setArray, setRowType } from '../../tools/tools';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
@@ -211,8 +211,8 @@ const Filters = ({ type }) => {
 	return (
 	<View style={{
 		backgroundColor: "#545454",
-		paddingTop: 10,
 		paddingBottom: 10,
+		paddingTop: 10,
 		height: getPlayingHeight() - 40
 	}}>
 	{filters && (
@@ -230,7 +230,7 @@ const Filters = ({ type }) => {
 					</Text>
 				</View>
 				<View style={[styles.filtersButtonsRow, {
-					flexDirection: count.lng === "en" ? "row" : "row-reverse",
+					flexDirection: setRowType(count.lng),
 					justifyContent: 'space-between',
 				}]}>
 					{Object.keys(filters[filterKey]).map((tagKey) => (
@@ -255,16 +255,6 @@ const Filters = ({ type }) => {
 								{count.lines.taxonomy_terms[filterKey][tagKey][count.lng]}
 							</Text>
 							)}
-							{isActive("area", tagKey) && 
-							<View style={{
-								position:"absolute",
-								left:2,
-								top:2
-							}}>
-								
-								<MaterialCommunityIcons name={"close-thick"} size={14} color="#FFF" />
-							</View>
-							}
 					</TouchableOpacity>
 					))}
 				</View>
@@ -272,9 +262,9 @@ const Filters = ({ type }) => {
 		</View>
 		))}
 		<View style={[styles.filtersContainer2, {
-			flexDirection: count.lng === "en" ? "row" : "row-reverse",
+			flexDirection: setRowType(count.lng),
 			justifyContent: 'space-between',
-			marginTop:20
+			
 			
 		}]}>
 			{Object.keys(removeFilter()).map((filterKey) => (
@@ -303,6 +293,8 @@ const Filters = ({ type }) => {
 							backgroundColor: isActive(filterKey, tagKey) ? "#730874" : "#d3d3d3",
 							borderBottomWidth:1,
 							borderLeftWidth:1,
+							alignContent:"center",
+							justifyContent:"center",
 							height:36
 						}]}>
 							{count.lines.taxonomy_terms[filterKey][tagKey] && (
@@ -314,16 +306,7 @@ const Filters = ({ type }) => {
 							</Text>
 							)}
 
-							{isActive(filterKey, tagKey) && 
-							<View style={{
-								position:"absolute",
-								left:2,
-								top:2
-							}}>
-								
-								<MaterialCommunityIcons name={"close-thick"} size={12} color="#FFF" />
-							</View>
-							}
+
 
 					</TouchableOpacity>
 					))}
@@ -343,6 +326,10 @@ const styles = StyleSheet.create({
 	
 
 	
+  },
+
+  filterBoxa:{
+	marginBottom:10
   },
   
   filterTitle: {

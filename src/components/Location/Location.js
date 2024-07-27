@@ -9,7 +9,7 @@ import {
 	I18nManager
 	} from 'react-native';
 
-import {setArray} from "../../tools/tools.js";
+import {setArray, setRowType} from "../../tools/tools.js";
 import { Icon } from 'react-native-elements';
 import { Flex } from '@react-native-material/core';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -26,7 +26,7 @@ const Location = (organization) => {
     return(
         <View style={styles.container}>
             <View style={[styles.iconAndText, {
-                flexDirection: count.lng == "en" ? "row" :"row-reverse"
+                flexDirection: setRowType(count.lng),
             }]}>
                 <View style={styles.icon}>
                     <MaterialCommunityIcons name="map-marker" size={16} color="#730874" />

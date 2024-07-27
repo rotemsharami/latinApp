@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Image, StyleSheet, Text, View, Dimensions, Animated, PanResponder, Easing, ImageBackground, TouchableOpacity, I18nManager, ScrollView, SafeAreaView, StatusBar } from 'react-native';
 import moment from 'moment';
-import { setRowType, getSelectedLang, setTextDirection, setArray, nice_list_text, getPlayingHeight, filterDataItem } from '../../tools/tools';
+import { setRowType, getSelectedLang, setTextDirection, setArray, nice_list_text, getPlayingHeight, filterDataItem, shuffle } from '../../tools/tools';
 import { useSelector, useDispatch } from 'react-redux';
 import OrganizationStudies from '../OrganizationStudies/OrganizationStudies.js';
 import Line from '../Line/Line';
@@ -21,7 +21,7 @@ const Lines = (info) => {
 	const dir = setTextDirection(count.lng);
 	const [lines, setLines] = useState(undefined);
 	const [weeklyData, setWeeklyData] = useState([]);
-	const [selectedDay, setSelectedDay] = useState("0");
+	const [selectedDay, setSelectedDay] = useState(moment().day());
 	const animationValues = useRef([]).current;
 	const [showFilters, setShowFilters] = useState(info.route.params._showFilters);
 
@@ -51,7 +51,8 @@ const Lines = (info) => {
 		let filteredEvents = setArray(count.lines.lines).filter((event) => {
 			return filterDataItem(event, count.linesSelectedFilters);
 		});
-		return filteredEvents;
+		
+		return shuffle(filteredEvents);
 	};
 
 	const getSelectedDay = async (index) => {
@@ -70,7 +71,8 @@ const Lines = (info) => {
 	};
 
 	const getWeekly = () => {
-		let date_obj = moment();
+		//let date_obj = moment();
+		let date_obj = moment().startOf('week');
 		let weekly = [];
 		let this_week_start = date_obj;
 		let dayObject = this_week_start;
@@ -109,7 +111,7 @@ const Lines = (info) => {
 					}
 					return in_day;
 				});
-				newWeeklyData[index].events = filteredEvents;
+				newWeeklyData[index].events = shuffle(filteredEvents);
 			}
 		});
 		return newWeeklyData;
@@ -149,62 +151,69 @@ const Lines = (info) => {
 			{lines != undefined &&
 				<View style={styles.container}>
 					<View style={[styles.headerContainer, {
-						flexDirection: count.lng === "en" ? "row" : "row-reverse",
+						flexDirection: setRowType(count.lng),
 					}]}>
 						{!showFilter && <View></View>}
 						{showFilter &&
 							<TouchableOpacity
 								onPress={() => { setShowFilter(false); }}
 								style={[styles.filterResultContainer, {
-									flexDirection: count.lng === "en" ? "row" : "row-reverse",
+									flexDirection: setRowType(count.lng),
 								}]}
 							>
 								<Text style={styles.filterResultText}>{setFiltersResults()}</Text>
 							</TouchableOpacity>
 						}
 						<View style={[styles.filterContainer,{
-							flexDirection: count.lng === "en" ? "row" : "row-reverse",
+							flexDirection: setRowType(count.lng),
 						}]}>
 							{setFilterColor() &&
-								<TouchableOpacity
-									onPress={() => { _changeLinesSelectedFilters({}) }}
-									style={styles.trashIconContainer}
-								>
-									<MaterialCommunityIcons name="trash-can" size={18} color="#FFF" />
-								</TouchableOpacity>
+							<TouchableOpacity
+								onPress={() => {_changeLinesSelectedFilters({})}}
+								
+
+								style={{
+									paddingTop:2,
+									borderColor:"#730874",
+									backgroundColor:"#730874",
+									borderRadius:3,
+									marginRight:3,
+									marginLeft:3,
+								}}
+							>
+								<MaterialCommunityIcons name="trash-can" size={22} color="#FFF" />
+							</TouchableOpacity>
 							}
 							<TouchableOpacity
 								onPress={() => { setShowFilter(showFilter ? false : true) }}
-								style={[styles.filterToggleContainer, {
-				
-
-									flexDirection: count.lng === "en" ? "row" : "row-reverse",
-									height: 27,
-									paddingLeft: count.lng === "en" ? 0 : 2,
-									paddingRight: count.lng === "en" ? 2 : 0,
-									borderWidth: 2,
-									borderRadius: 3,
-									borderColor: showFilter ? (setFilterColor() ? "#730874" : "#545454") : (setFilterColor() ? "#730874" : "#545454"),
-									backgroundColor: showFilter ? (setFilterColor() ? "#730874" : "#545454") : "#d3d3d3"
-
-
-
-								}]}
+								style={{
+								flexDirection: setRowType(count.lng),
+								height: 27,
+								paddingLeft: 2,
+								paddingRight: 2,
+								borderWidth: 2,
+								borderRadius: 3,
+								borderColor: showFilter ? (setFilterColor() ? "#730874" : "#545454") : (setFilterColor() ? "#730874" : "#545454"),
+								backgroundColor: showFilter ? (setFilterColor() ? "#730874" : "#545454") : "#d3d3d3"
+								}}
 							>
-								<View style={[styles.filterIconContainer, {
-									              paddingTop: 3,
-												  paddingLeft: count.lng === "en" ? 0 : 2,
-												  paddingRight: count.lng === "en" ? 2 : 0,
-								}]}>
-									<MaterialCommunityIcons name={showFilter ? "minus-circle" : "plus-circle"} size={16} color={showFilter ? "#fff" : (setFilterColor() ? "#730874" : "#545454")} />
+								<View style={{
+								paddingTop: 3,
+								
+								}}>
+								<MaterialCommunityIcons name={showFilter ? "minus-circle" : "plus-circle"} size={16} color={showFilter ? "#fff" : (setFilterColor() ? "#730874" : "#545454")} />
 								</View>
-								<Text style={[styles.filterToggleText, {
-									fontWeight:"normal",
+								<View>
+								<Text style={{
 									fontSize:14,
+									paddingRight:2,
+									paddingLeft:2,
+									fontWeight:"normal",
 									color: showFilter ? "#fff" : (setFilterColor() ? "#730874" : "#545454")
-								}]}>
+								}}>
 									{count.lines.global_metadata.labels[count.lng][18]}
 								</Text>
+								</View>
 							</TouchableOpacity>
 						</View>
 					</View>
@@ -221,14 +230,16 @@ const Lines = (info) => {
 											<View style={styles.linesList}>
 												{weeklyData[selectedDay] !== undefined &&
 													<SafeAreaView style={{ flex: 1 }}>
-														<ScrollView>
+														<ScrollView 
+															accessible={true} accessibilityLabel="Selected day lines"
+														>
 															<View style={styles.displayBox}>
 																<View style={styles.display}>
 																	<View style={styles.listBox}>
 																		{setArray(weeklyData[selectedDay].events).map((item, key) => {
 																			return (
 																				<View key={"day-" + key} style={[styles.lineContainer, {
-																					flexDirection: count.lng === "en" ? "row" : "row-reverse",
+																					flexDirection: setRowType(count.lng),
 																				}]}>
 																					<View style={styles.lineNumberContainer}>
 																						<Text style={styles.lineNumber}>{key + 1}</Text>
@@ -254,10 +265,12 @@ const Lines = (info) => {
 									</View>
 								}
 							</LinearGradient>
-							<View style={styles.daysControls}>
+							<View style={[styles.daysControls, {
+								flexDirection:setRowType(count.lng)
+							}]}>
 								{Object.keys(weeklyData).map((index) => {
 									return (
-										<View key={"day-" + index} style={[styles.dayFilterItem, { backgroundColor: selectedDay == index ? "#730874" : "#474747" }]}>
+										<View key={"day-" + index} style={[styles.dayFilterItem, { backgroundColor: "#474747" }]}>
 											<TouchableOpacity onPress={() => changeDay(index)}>
 												{weeklyData[index] !== undefined &&
 													<View style={styles.day}>
@@ -268,8 +281,8 @@ const Lines = (info) => {
 																		{weeklyData[index].events !== undefined &&
 																			<View>
 																				{weeklyData[index].events[0] !== undefined &&
-																					<View style={[styles.linesAmount, { backgroundColor: selectedDay == index ? "#f640b2" : "#d3d3d3" }]}>
-																						<Text style={[styles.linesAmountText, { color: selectedDay == index ? "#d3d3d3" : "#000" }]}>
+																					<View style={[styles.linesAmount, { backgroundColor: "#d3d3d3" }]}>
+																						<Text style={[styles.linesAmountText, {fontWeight: "bold", color: selectedDay == index ? "#000" : "#000" }]}>
 																							{weeklyData[index].events.length}
 																						</Text>
 																					</View>
@@ -282,7 +295,9 @@ const Lines = (info) => {
 														}
 													</View>
 												}
-												<View style={styles.dayShort}>
+												<View style={[styles.dayShort, {
+													backgroundColor: selectedDay == index ? "#ff85d1" : "#FFF"
+												}]}>
 													<Text style={styles.dayShortText}>
 														{count.lines.global_metadata.days_of_week_short[count.lng][weeklyData[index].day_index == "7" ? "1" : parseInt(weeklyData[index].day_index)]}
 													</Text>

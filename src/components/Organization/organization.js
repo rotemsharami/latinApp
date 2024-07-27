@@ -125,7 +125,9 @@ const Organization = (info) => {
             colors={['#FFF', '#FFF', '#efdbf7']}
         >
 			<OrganizationBox style={{flex:1}} organization={count.lines.organizations[info.route.params.orgNid]}></OrganizationBox>
-			<View style={styles.organizationMenu}>
+			<View style={[styles.organizationMenu, {
+				flexDirection: setRowType(count.lng),
+			}]}>
 			{menu.map((prop, key) => {
 			return (
 				<View key={"menu"+key}>
@@ -158,18 +160,15 @@ const Organization = (info) => {
 							flex:1
 						}}>
 							<SliderX gallery={count.lines.organizations[info.route.params.orgNid].gallery}></SliderX>
-
-					
-
+							
 							<LinearGradient style={{
-								flexDirection: count.lng == "en" ? "row" :"row-reverse",
+								flexDirection: setRowType(count.lng),
 								flex:1,
 								justifyContent:"space-around",
 								alignItems:"center"
 								}}
 								colors={['#FFF','#efdbf7']}
 							>
-
 								<View style={styles.danceServices}>
 									<DanceServices danceServices={count.lines.organizations[info.route.params.orgNid].dance_services}></DanceServices>
 								</View>

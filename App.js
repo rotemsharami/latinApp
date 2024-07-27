@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, StatusBar, SafeAreaView, Dimensions} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, StatusBar, SafeAreaView, Dimensions } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider, useSelector, useDispatch } from 'react-redux';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Header from "./src/components/Header/Header";
@@ -15,6 +15,12 @@ import Lines from './src/components/Lines/Lines';
 import { setLines } from './src/actions/counterActions';
 import { store } from './store/store';
 import { navigationRef } from "./RootNavigation";
+import NetInfo from '@react-native-community/netinfo';
+import Menu from './src/components/Menu/Menu';
+import Posts from './src/components/Posts/Posts';
+import Post from './src/components/Post/Post';
+Posts
+
 
 const Stack = createNativeStackNavigator();
 const { height: windowHeight } = Dimensions.get('window');
@@ -35,30 +41,53 @@ const Flex = () => {
 	const [selectedScreen, setSelectedScreen] = useState("Organizations");
 	const count = useSelector((store) => store.count.count);
 	const [isLinesReady, setIsLinesReady] = useState(false);
+	const [isConnected, setIsConnected] = useState(false);
+	const [previousConnection, setPreviousConnection] = useState(false);
+	const [showMenu, setshowMenu] = useState(false);
+
+	const linesUrl = `https://latinet.co.il/${count.lng}/super_lines/`;
 
 	useEffect(() => {
-		const linesUrl = `https://latinet.co.il/${count.lng}/super_lines/`;
-		if (!isLinesReady) {
+		const unsubscribe = NetInfo.addEventListener(state => {
+			setIsConnected(state.isConnected);
+		});
+		return () => unsubscribe();
+	}, []);
+
+	useEffect(() => {
+		const fetchData = () => {
 			fetch(linesUrl)
 				.then(res => res.json())
 				.then(data => {
+					
 					data.data.lines.forEach(element => {
 						element.area = data.data.organizations[element.org_nid].area;
 						element.services = data.data.organizations[element.org_nid].services;
 					});
-					if(data.data.learn != undefined)
+					if (data.data.learn != undefined)
 						data.data.learn.forEach(element => {
 							element.area = data.data.organizations[element.org_nid].area;
 						});
 					dispatch(setLines(data.data));
 					setIsLinesReady(true);
 				});
+		};
+
+		if (!isLinesReady && isConnected) {
+			fetchData();
 		}
-	}, [count.lng, isLinesReady]);
+
+		if (isConnected && !previousConnection) {
+			fetchData();
+		}
+
+		setPreviousConnection(isConnected);
+	}, [isLinesReady, isConnected]);
 
 	return (
 		<View style={styles.app}>
-			<StatusBar barStyle="light-content" backgroundColor={"#4a0a55"} />
+			<StatusBar barStyle="light-content" backgroundColor={"#5b086b"} />
+			
 			<View style={styles.appBox}>
 				<Header
 					style={styles.header}
@@ -66,8 +95,14 @@ const Flex = () => {
 					_setSelectedScreen={setSelectedScreen}
 					_setShowFilters={setShowFilters}
 					_showFilters={showFilters}
+					_showMenu = {showMenu}
+					_setshowMenu = {setshowMenu}
+
 				/>
-				{isLinesReady && 
+				{showMenu &&
+				<Menu></Menu>
+				}
+				{(isLinesReady &&  !showMenu) && 
 					<SafeAreaView style={styles.safeAreaView}>
 						<NavigationContainer ref={navigationRef}>
 							<Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -78,11 +113,14 @@ const Flex = () => {
 								<Stack.Screen name="Learns" component={Learns}/>
 								<Stack.Screen name="Organization" component={Organization}/>
 								<Stack.Screen name="Lines" component={Lines} initialParams={{ "_showFilters": showFilters }} />
+								<Stack.Screen name="Posts" component={Posts} initialParams={{ "_showFilters": showFilters }} />
+								<Stack.Screen name="Post" component={Post} initialParams={{ "_showFilters": showFilters }} />
 							</Stack.Navigator>
 						</NavigationContainer>
 					</SafeAreaView>
 				}
 			</View>
+			
 		</View>
 	);
 };
